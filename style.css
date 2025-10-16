@@ -76,6 +76,30 @@ main {
     margin-bottom: 25px;
     color: #000000;
     letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.info-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background-color: #000000;
+    color: #ffffff;
+    border-radius: 50%;
+    font-size: 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.info-btn:hover {
+    background-color: #333333;
+    transform: scale(1.1);
 }
 
 .control-item {
@@ -301,10 +325,107 @@ select:hover {
     }
 }
 
+/* Info Popup Overlay */
+.info-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.info-overlay.active {
+    display: flex;
+}
+
+.info-popup {
+    background-color: #ffffff;
+    border: 2px solid #000000;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.info-header h3 {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #000000;
+    margin: 0;
+}
+
+.info-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #000000;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.info-close:hover {
+    background-color: #f0f0f0;
+}
+
+.info-content {
+    padding: 30px;
+    line-height: 1.6;
+    color: #333333;
+}
+
+.info-content h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #000000;
+    margin: 20px 0 10px 0;
+}
+
+.info-content h4:first-child {
+    margin-top: 0;
+}
+
+.info-content p {
+    margin: 10px 0;
+}
+
+.info-content ul {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.info-content li {
+    margin: 5px 0;
+}
+
 /* Focus States for Accessibility */
 select:focus,
 .btn:focus,
-.preset-btn:focus {
+.preset-btn:focus,
+.info-btn:focus,
+.info-close:focus {
     outline: 2px solid #000000;
     outline-offset: 2px;
 }

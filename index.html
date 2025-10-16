@@ -17,7 +17,7 @@
             <div class="main-content">
                 <div class="controls-section">
                     <div class="category-group">
-                        <h2>Personality & Approach</h2>
+                        <h2>Personality & Approach <span class="info-btn" data-category="personality">ℹ</span></h2>
                         <div class="control-item">
                             <label for="personality">Intellectual Style</label>
                             <select id="personality">
@@ -38,7 +38,7 @@
                     </div>
 
                     <div class="category-group">
-                    <h2>Cognition & Logic</h2>
+                    <h2>Cognition & Logic <span class="info-btn" data-category="cognition">ℹ</span></h2>
                     <div class="control-item">
                         <label for="bluntness">Bluntness Level</label>
                         <select id="bluntness">
@@ -67,7 +67,7 @@
                 </div>
 
                 <div class="category-group">
-                    <h2>Affect & Tone</h2>
+                    <h2>Affect & Tone <span class="info-btn" data-category="affect">ℹ</span></h2>
                     <div class="control-item">
                         <label for="tone-neutrality">Tone Neutrality</label>
                         <select id="tone-neutrality">
@@ -97,7 +97,7 @@
                 </div>
 
                 <div class="category-group">
-                    <h2>Interface & Flow</h2>
+                    <h2>Interface & Flow <span class="info-btn" data-category="interface">ℹ</span></h2>
                     <div class="control-item">
                         <label for="element-elimination">Element Elimination</label>
                         <select id="element-elimination">
@@ -128,7 +128,7 @@
                 </div>
 
                 <div class="category-group">
-                    <h2>Behavioral Controls</h2>
+                    <h2>Behavioral Controls <span class="info-btn" data-category="behavioral">ℹ</span></h2>
                     <div class="control-item">
                         <label for="questions">Questions</label>
                         <select id="questions">
@@ -158,7 +158,7 @@
                 </div>
 
                 <div class="category-group">
-                    <h2>Goal Orientation</h2>
+                    <h2>Goal Orientation <span class="info-btn" data-category="goals">ℹ</span></h2>
                     <div class="control-item">
                         <label for="continuation-bias">Continuation Bias</label>
                         <select id="continuation-bias">
@@ -216,6 +216,19 @@
                 </div>
             </div>
         </main>
+    </div>
+
+    <!-- Info Popup Overlay -->
+    <div id="info-overlay" class="info-overlay">
+        <div class="info-popup">
+            <div class="info-header">
+                <h3 id="info-title">Category Information</h3>
+                <button id="info-close" class="info-close">×</button>
+            </div>
+            <div class="info-content" id="info-content">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>

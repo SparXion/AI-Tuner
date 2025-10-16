@@ -37,6 +37,10 @@ class AITuner {
         this.fileInput = document.getElementById('file-input');
         this.saveBtn = document.getElementById('save-preset');
         this.loadBtn = document.getElementById('load-preset');
+        this.infoOverlay = document.getElementById('info-overlay');
+        this.infoTitle = document.getElementById('info-title');
+        this.infoContent = document.getElementById('info-content');
+        this.infoClose = document.getElementById('info-close');
     }
 
     setupEventListeners() {
@@ -57,6 +61,19 @@ class AITuner {
         // Preset button listeners
         document.querySelectorAll('.preset-btn').forEach(btn => {
             btn.addEventListener('click', (e) => this.applyPreset(e.target.dataset.preset));
+        });
+
+        // Info button listeners
+        document.querySelectorAll('.info-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => this.showInfo(e.target.dataset.category));
+        });
+
+        // Info popup listeners
+        this.infoClose.addEventListener('click', () => this.hideInfo());
+        this.infoOverlay.addEventListener('click', (e) => {
+            if (e.target === this.infoOverlay) {
+                this.hideInfo();
+            }
         });
     }
 
@@ -570,6 +587,133 @@ ${this.generateSettingsTable(settings)}
         });
 
         return table;
+    }
+
+    showInfo(category) {
+        const infoData = this.getCategoryInfo(category);
+        this.infoTitle.textContent = infoData.title;
+        this.infoContent.innerHTML = infoData.content;
+        this.infoOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    }
+
+    hideInfo() {
+        this.infoOverlay.classList.remove('active');
+        document.body.style.overflow = ''; // Restore scrolling
+    }
+
+    getCategoryInfo(category) {
+        const categories = {
+            personality: {
+                title: "Personality & Approach",
+                content: `
+                    <h4>What is Personality & Approach?</h4>
+                    <p>This category defines the intellectual style and communication approach of the AI assistant. It determines how the AI thinks about problems and interacts with users.</p>
+                    
+                    <h4>Key Styles:</h4>
+                    <ul>
+                        <li><strong>Socratic:</strong> Uses questioning to guide discovery and critical thinking</li>
+                        <li><strong>Sarcastic:</strong> Employs sharp, ironic commentary to make points</li>
+                        <li><strong>Empathetic:</strong> Tunes into emotional aspects and responds with emotional intelligence</li>
+                        <li><strong>Analytical:</strong> Takes methodical, systematic approaches to problem-solving</li>
+                        <li><strong>Provocative:</strong> Challenges conventional thinking and stimulates debate</li>
+                    </ul>
+                    
+                    <h4>Best Use Cases:</h4>
+                    <p>Choose based on your interaction goals - learning (Socratic), entertainment (Witty), emotional support (Empathetic), or analytical work (Analytical).</p>
+                `
+            },
+            cognition: {
+                title: "Cognition & Logic",
+                content: `
+                    <h4>What is Cognition & Logic?</h4>
+                    <p>This category controls how the AI processes and delivers information at a cognitive level. It affects the depth and style of reasoning.</p>
+                    
+                    <h4>Key Controls:</h4>
+                    <ul>
+                        <li><strong>Bluntness Level:</strong> How direct and unfiltered the responses are</li>
+                        <li><strong>Response Termination:</strong> Whether responses end naturally or abruptly after delivering information</li>
+                        <li><strong>Cognitive Targeting:</strong> Whether to focus on surface conversation or deeper logical layers</li>
+                    </ul>
+                    
+                    <h4>Best Use Cases:</h4>
+                    <p>Higher bluntness for efficiency, abrupt termination for independence training, deep cognitive targeting for complex problem-solving.</p>
+                `
+            },
+            affect: {
+                title: "Affect & Tone",
+                content: `
+                    <h4>What is Affect & Tone?</h4>
+                    <p>This category manages the emotional and tonal aspects of AI responses. It controls sentiment, empathy, and emotional engagement.</p>
+                    
+                    <h4>Key Controls:</h4>
+                    <ul>
+                        <li><strong>Tone Neutrality:</strong> How emotionally neutral or expressive responses are</li>
+                        <li><strong>Sentiment Boosting:</strong> Whether to use engagement tactics and enthusiasm</li>
+                        <li><strong>User Mirroring:</strong> Whether to reflect the user's emotional state and communication style</li>
+                    </ul>
+                    
+                    <h4>Best Use Cases:</h4>
+                    <p>Full neutrality for objective analysis, sentiment boosting for motivation, mirroring for rapport building.</p>
+                `
+            },
+            interface: {
+                title: "Interface & Flow",
+                content: `
+                    <h4>What is Interface & Flow?</h4>
+                    <p>This category controls the surface-level elements of communication - what gets included or excluded from responses.</p>
+                    
+                    <h4>Key Controls:</h4>
+                    <ul>
+                        <li><strong>Element Elimination:</strong> Removes emojis, filler words, and hype language</li>
+                        <li><strong>Conversational Transitions:</strong> Controls smooth linking between ideas</li>
+                        <li><strong>Call-to-Action:</strong> Whether to encourage further interaction</li>
+                    </ul>
+                    
+                    <h4>Best Use Cases:</h4>
+                    <p>Strict elimination for professional contexts, allowed transitions for natural conversation, prohibited CTAs for independence training.</p>
+                `
+            },
+            behavioral: {
+                title: "Behavioral Controls",
+                content: `
+                    <h4>What are Behavioral Controls?</h4>
+                    <p>This category defines what types of interactive behaviors the AI is allowed to use during conversations.</p>
+                    
+                    <h4>Key Controls:</h4>
+                    <ul>
+                        <li><strong>Questions:</strong> Whether the AI can ask clarifying or probing questions</li>
+                        <li><strong>Suggestions:</strong> Whether the AI can offer alternatives or recommendations</li>
+                        <li><strong>Motivational Content:</strong> Whether to include encouragement or inspirational elements</li>
+                    </ul>
+                    
+                    <h4>Best Use Cases:</h4>
+                    <p>Allow all for collaborative work, prohibit suggestions for independent problem-solving, allow motivational content for learning contexts.</p>
+                `
+            },
+            goals: {
+                title: "Goal Orientation",
+                content: `
+                    <h4>What is Goal Orientation?</h4>
+                    <p>This category sets the overarching objectives for the AI's interaction style and long-term relationship with users.</p>
+                    
+                    <h4>Key Controls:</h4>
+                    <ul>
+                        <li><strong>Continuation Bias:</strong> Whether to encourage ongoing dialogue or limit conversation</li>
+                        <li><strong>Self-Sufficiency Goal:</strong> Whether to foster user independence or maintain collaboration</li>
+                        <li><strong>User Assumption:</strong> How much capability and resilience to assume in users</li>
+                    </ul>
+                    
+                    <h4>Best Use Cases:</h4>
+                    <p>Suppress continuation bias for efficiency, aim for obsolescence in educational contexts, assume high capability for expert users.</p>
+                `
+            }
+        };
+
+        return categories[category] || {
+            title: "Category Information",
+            content: "<p>Information about this category is not available.</p>"
+        };
     }
 
     loadPresets() {
