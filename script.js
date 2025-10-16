@@ -11,6 +11,7 @@ class AITuner {
     initializeElements() {
         // Get all form elements
         this.elements = {
+            personality: document.getElementById('personality'),
             bluntness: document.getElementById('bluntness'),
             termination: document.getElementById('termination'),
             cognitiveTier: document.getElementById('cognitive-tier'),
@@ -30,6 +31,10 @@ class AITuner {
 
         this.preview = document.getElementById('prompt-preview');
         this.copyBtn = document.getElementById('copy-prompt');
+        this.downloadJsonBtn = document.getElementById('download-json');
+        this.downloadMarkdownBtn = document.getElementById('download-markdown');
+        this.uploadBtn = document.getElementById('upload-config');
+        this.fileInput = document.getElementById('file-input');
         this.saveBtn = document.getElementById('save-preset');
         this.loadBtn = document.getElementById('load-preset');
     }
@@ -42,6 +47,10 @@ class AITuner {
 
         // Button event listeners
         this.copyBtn.addEventListener('click', () => this.copyPrompt());
+        this.downloadJsonBtn.addEventListener('click', () => this.downloadJSON());
+        this.downloadMarkdownBtn.addEventListener('click', () => this.downloadMarkdown());
+        this.uploadBtn.addEventListener('click', () => this.fileInput.click());
+        this.fileInput.addEventListener('change', (e) => this.uploadConfig(e));
         this.saveBtn.addEventListener('click', () => this.savePreset());
         this.loadBtn.addEventListener('click', () => this.loadPreset());
 
@@ -59,6 +68,7 @@ class AITuner {
 
     getCurrentSettings() {
         return {
+            personality: this.elements.personality.value,
             bluntness: this.elements.bluntness.value,
             termination: this.elements.termination.value,
             cognitiveTier: this.elements.cognitiveTier.value,
@@ -80,6 +90,9 @@ class AITuner {
     buildPrompt(settings) {
         let prompt = "You are an AI assistant with the following response characteristics:\n\n";
 
+        // Personality & Approach
+        prompt += this.buildPersonalitySection(settings);
+        
         // Cognition & Logic
         prompt += this.buildCognitionSection(settings);
         
@@ -96,6 +109,74 @@ class AITuner {
         prompt += this.buildGoalSection(settings);
 
         return prompt.trim();
+    }
+
+    buildPersonalitySection(settings) {
+        let section = "PERSONALITY & APPROACH:\n";
+        
+        switch(settings.personality) {
+            case 'neutral':
+                section += "• Maintain neutral, objective approach\n";
+                section += "• Present information without bias or personality\n";
+                break;
+            case 'socratic':
+                section += "• Use Socratic method - ask probing questions\n";
+                section += "• Guide user to discover answers through inquiry\n";
+                section += "• Challenge assumptions with thoughtful questions\n";
+                break;
+            case 'curious':
+                section += "• Approach topics with genuine curiosity\n";
+                section += "• Explore ideas from multiple angles\n";
+                section += "• Express interest in learning and discovery\n";
+                break;
+            case 'analytical':
+                section += "• Take methodical, systematic approach\n";
+                section += "• Break down complex topics into components\n";
+                section += "• Focus on logical structure and evidence\n";
+                break;
+            case 'sarcastic':
+                section += "• Use sharp, ironic commentary when appropriate\n";
+                section += "• Employ dry wit and pointed observations\n";
+                section += "• Balance sarcasm with helpful information\n";
+                break;
+            case 'witty':
+                section += "• Use clever wordplay and humor\n";
+                section += "• Make connections between seemingly unrelated ideas\n";
+                section += "• Engage with intellectual playfulness\n";
+                break;
+            case 'charming':
+                section += "• Use engaging, charismatic communication style\n";
+                section += "• Build rapport through warmth and appeal\n";
+                section += "• Make interactions enjoyable and memorable\n";
+                break;
+            case 'sympathetic':
+                section += "• Show understanding and support for user needs\n";
+                section += "• Acknowledge challenges and difficulties\n";
+                section += "• Provide encouragement and validation\n";
+                break;
+            case 'empathetic':
+                section += "• Tune into emotional aspects of topics\n";
+                section += "• Respond with emotional intelligence\n";
+                section += "• Connect on both intellectual and emotional levels\n";
+                break;
+            case 'directive':
+                section += "• Take authoritative, commanding approach\n";
+                section += "• Provide clear direction and guidance\n";
+                section += "• Assert expertise and confidence\n";
+                break;
+            case 'collaborative':
+                section += "• Work cooperatively with the user\n";
+                section += "• Include user in problem-solving process\n";
+                section += "• Foster partnership and shared discovery\n";
+                break;
+            case 'provocative':
+                section += "• Challenge conventional thinking\n";
+                section += "• Present alternative perspectives\n";
+                section += "• Stimulate deeper reflection and debate\n";
+                break;
+        }
+
+        return section + "\n";
     }
 
     buildCognitionSection(settings) {
@@ -308,9 +389,193 @@ class AITuner {
         });
     }
 
+    downloadJSON() {
+        const settings = this.getCurrentSettings();
+        const prompt = this.preview.textContent;
+        const timestamp = new Date().toISOString().split('T')[0];
+        
+        const config = {
+            version: "1.0",
+            created: new Date().toISOString(),
+            name: this.generateConfigName(settings),
+            description: this.generateConfigDescription(settings),
+            settings: settings,
+            prompt: prompt,
+            metadata: {
+                tool: "AI Tuner",
+                url: "https://github.com/SparXion/AI-Tuner",
+                format: "json"
+            }
+        };
+
+        const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `ai-tuner-config-${timestamp}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        this.downloadJsonBtn.textContent = "Downloaded!";
+        setTimeout(() => {
+            this.downloadJsonBtn.textContent = "Download Config";
+        }, 2000);
+    }
+
+    downloadMarkdown() {
+        const settings = this.getCurrentSettings();
+        const prompt = this.preview.textContent;
+        const timestamp = new Date().toISOString().split('T')[0];
+        
+        const markdown = `# AI Tuner Configuration
+
+**Created:** ${new Date().toLocaleDateString()}  
+**Configuration:** ${this.generateConfigName(settings)}  
+**Description:** ${this.generateConfigDescription(settings)}
+
+## Generated AI Prompt
+
+\`\`\`
+${prompt}
+\`\`\`
+
+## Configuration Settings
+
+| Category | Setting | Value |
+|----------|---------|-------|
+${this.generateSettingsTable(settings)}
+
+## Usage Instructions
+
+1. **Copy the prompt above** and use it as system instructions in any AI platform
+2. **Upload this file** back to AI Tuner to restore these settings
+3. **Share this configuration** with others who use AI Tuner
+
+## Compatible Platforms
+
+- ChatGPT (OpenAI)
+- Claude (Anthropic)  
+- Gemini (Google)
+- Grok (xAI)
+- Any other AI platform that accepts system instructions
+
+---
+
+*Generated by [AI Tuner](https://github.com/SparXion/AI-Tuner)*
+`;
+
+        const blob = new Blob([markdown], { type: 'text/markdown' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `ai-tuner-prompt-${timestamp}.md`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        this.downloadMarkdownBtn.textContent = "Downloaded!";
+        setTimeout(() => {
+            this.downloadMarkdownBtn.textContent = "Download Doc";
+        }, 2000);
+    }
+
+    uploadConfig(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const config = JSON.parse(e.target.result);
+                
+                // Validate config structure
+                if (!config.settings || !config.prompt) {
+                    throw new Error('Invalid configuration file format');
+                }
+
+                // Load settings into form
+                Object.keys(config.settings).forEach(key => {
+                    const element = this.elements[key];
+                    if (element && config.settings[key]) {
+                        element.value = config.settings[key];
+                    }
+                });
+
+                // Regenerate prompt and update preview
+                this.generatePrompt();
+
+                // Clear file input
+                this.fileInput.value = '';
+
+                this.uploadBtn.textContent = "Loaded!";
+                setTimeout(() => {
+                    this.uploadBtn.textContent = "Upload Config";
+                }, 2000);
+
+            } catch (error) {
+                console.error('Error loading configuration:', error);
+                alert('Error loading configuration file. Please ensure it\'s a valid AI Tuner JSON file.');
+                this.fileInput.value = '';
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    generateConfigName(settings) {
+        if (settings.bluntness === 'absolute' && settings.termination === 'abrupt') {
+            return 'Absolute Mode';
+        } else if (settings.sentimentBoost === 'enabled' && settings.toneNeutrality === 'off') {
+            return 'Friendly Assistant';
+        } else if (settings.cognitiveTier === 'deep' && settings.bluntness === 'medium') {
+            return 'Analytical Expert';
+        } else if (settings.bluntness === 'high' && settings.termination === 'abrupt') {
+            return 'Minimal Responder';
+        } else {
+            return 'Custom Configuration';
+        }
+    }
+
+    generateConfigDescription(settings) {
+        const descriptions = [];
+        
+        if (settings.bluntness === 'absolute') descriptions.push('Maximum bluntness');
+        if (settings.termination === 'abrupt') descriptions.push('Immediate termination');
+        if (settings.toneNeutrality === 'full') descriptions.push('Neutral tone');
+        if (settings.sentimentBoost === 'enabled') descriptions.push('High engagement');
+        if (settings.cognitiveTier === 'deep') descriptions.push('Deep cognitive focus');
+        
+        return descriptions.length > 0 ? descriptions.join(', ') : 'Customized AI response style';
+    }
+
+    generateSettingsTable(settings) {
+        const categories = {
+            'Personality': ['personality'],
+            'Cognition': ['bluntness', 'termination', 'cognitiveTier'],
+            'Affect': ['toneNeutrality', 'sentimentBoost', 'mirrorAvoidance'],
+            'Interface': ['elementElimination', 'transitions', 'callToAction'],
+            'Behavioral': ['questions', 'suggestions', 'motivational'],
+            'Goals': ['continuationBias', 'selfSufficiency', 'assumptionStrength']
+        };
+
+        let table = '';
+        Object.keys(categories).forEach(category => {
+            categories[category].forEach(setting => {
+                const value = settings[setting] || 'default';
+                const displayName = setting.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                table += `| ${category} | ${displayName} | ${value} |\n`;
+            });
+        });
+
+        return table;
+    }
+
     loadPresets() {
         this.presets = {
             absolute: {
+                personality: 'directive',
                 bluntness: 'absolute',
                 termination: 'abrupt',
                 cognitiveTier: 'deep',
@@ -328,6 +593,7 @@ class AITuner {
                 assumptionStrength: 'strong'
             },
             friendly: {
+                personality: 'charming',
                 bluntness: 'low',
                 termination: 'natural',
                 cognitiveTier: 'surface',
@@ -345,6 +611,7 @@ class AITuner {
                 assumptionStrength: 'weak'
             },
             analytical: {
+                personality: 'analytical',
                 bluntness: 'medium',
                 termination: 'natural',
                 cognitiveTier: 'deep',
@@ -362,6 +629,7 @@ class AITuner {
                 assumptionStrength: 'medium'
             },
             minimal: {
+                personality: 'neutral',
                 bluntness: 'high',
                 termination: 'abrupt',
                 cognitiveTier: 'deep',
@@ -379,6 +647,7 @@ class AITuner {
                 assumptionStrength: 'strong'
             },
             creative: {
+                personality: 'curious',
                 bluntness: 'low',
                 termination: 'natural',
                 cognitiveTier: 'surface',

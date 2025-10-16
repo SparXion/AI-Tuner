@@ -14,8 +14,30 @@
         </header>
 
         <main>
-            <div class="controls-section">
-                <div class="category-group">
+            <div class="main-content">
+                <div class="controls-section">
+                    <div class="category-group">
+                        <h2>Personality & Approach</h2>
+                        <div class="control-item">
+                            <label for="personality">Intellectual Style</label>
+                            <select id="personality">
+                                <option value="neutral">Neutral - Objective, balanced</option>
+                                <option value="socratic">Socratic - Question-driven, probing</option>
+                                <option value="curious">Curious - Inquisitive, exploratory</option>
+                                <option value="analytical">Analytical - Methodical, systematic</option>
+                                <option value="sarcastic">Sarcastic - Sharp, ironic</option>
+                                <option value="witty">Witty - Clever, humorous</option>
+                                <option value="charming">Charming - Engaging, charismatic</option>
+                                <option value="sympathetic">Sympathetic - Understanding, supportive</option>
+                                <option value="empathetic">Empathetic - Emotionally attuned</option>
+                                <option value="directive">Directive - Authoritative, commanding</option>
+                                <option value="collaborative">Collaborative - Cooperative, inclusive</option>
+                                <option value="provocative">Provocative - Challenging, thought-provoking</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="category-group">
                     <h2>Cognition & Logic</h2>
                     <div class="control-item">
                         <label for="bluntness">Bluntness Level</label>
@@ -162,18 +184,24 @@
                             <option value="strong">Strong - Assume high user perception</option>
                         </select>
                     </div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="preview-section">
+                <div class="preview-section">
                 <h2>Generated Prompt</h2>
                 <div class="prompt-preview" id="prompt-preview">
                     Select options above to generate your custom AI prompt...
                 </div>
                 <div class="actions">
                     <button id="copy-prompt" class="btn btn-primary">Copy Prompt</button>
+                    <button id="download-json" class="btn btn-secondary">Download Config</button>
+                    <button id="download-markdown" class="btn btn-secondary">Download Doc</button>
+                    <button id="upload-config" class="btn btn-secondary">Upload Config</button>
                     <button id="save-preset" class="btn btn-secondary">Save Preset</button>
                     <button id="load-preset" class="btn btn-secondary">Load Preset</button>
+                </div>
+                
+                <input type="file" id="file-input" accept=".json" style="display: none;">
                 </div>
             </div>
 
