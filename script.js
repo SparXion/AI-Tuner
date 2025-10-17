@@ -869,7 +869,10 @@ ${this.generateSettingsTable(settings)}
 
     applyPreset(presetName) {
         const preset = this.presets[presetName];
-        if (!preset) return;
+        if (!preset) {
+            console.error('Preset not found:', presetName);
+            return;
+        }
 
         // Update all dropdowns
         Object.keys(preset).forEach(key => {
@@ -883,7 +886,10 @@ ${this.generateSettingsTable(settings)}
         document.querySelectorAll('.preset-btn').forEach(btn => {
             btn.classList.remove('active');
         });
-        document.querySelector(`[data-preset="${presetName}"]`).classList.add('active');
+        const activeBtn = document.querySelector(`[data-preset="${presetName}"]`);
+        if (activeBtn) {
+            activeBtn.classList.add('active');
+        }
 
         // Regenerate prompt
         this.generatePrompt();
