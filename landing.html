@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tuner - Customize AI Response Styles with Visual Controls</title>
+    <meta name="description" content="Visual tool to customize AI response styles. Generate precise prompts for ChatGPT, Claude, Gemini, and Grok with personality controls, cognitive settings, and behavioral adjustments.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #ffffff;
+            color: #000000;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #000000 0%, #333333 100%);
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 300;
+            margin-bottom: 20px;
+            letter-spacing: -0.02em;
+        }
+        
+        .header .subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .header .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: 2px solid #ffffff;
+            border-radius: 8px;
+            background-color: transparent;
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background-color: #ffffff;
+            color: #000000;
+        }
+        
+        .btn-primary {
+            background-color: #ffffff;
+            color: #000000;
+        }
+        
+        .btn-primary:hover {
+            background-color: #f0f0f0;
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 100px 0;
+            background-color: #fafafa;
+        }
+        
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            font-weight: 300;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .feature-card p {
+            color: #666666;
+            font-size: 1.1rem;
+        }
+        
+        /* How It Works */
+        .how-it-works {
+            padding: 100px 0;
+        }
+        
+        .how-it-works h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            font-weight: 300;
+        }
+        
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+        
+        .step {
+            text-align: center;
+        }
+        
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background-color: #000000;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+        
+        .step h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .step p {
+            color: #666666;
+            font-size: 1.1rem;
+        }
+        
+        /* Screenshot Section */
+        .screenshot {
+            padding: 100px 0;
+            background-color: #f8f8f8;
+            text-align: center;
+        }
+        
+        .screenshot h2 {
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+        
+        .screenshot img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #000000 0%, #333333 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+        
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+        
+        /* Footer */
+        .footer {
+            padding: 40px 0;
+            background-color: #000000;
+            color: white;
+            text-align: center;
+        }
+        
+        .footer p {
+            opacity: 0.7;
+        }
+        
+        .footer a {
+            color: white;
+            text-decoration: underline;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .header .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <section class="header">
+        <div class="container">
+            <h1>AI Tuner</h1>
+            <p class="subtitle">Customize AI response styles with visual controls</p>
+            <div class="cta-buttons">
+                <a href="index.html" class="btn btn-primary">Try AI Tuner Free</a>
+                <a href="https://github.com/SparXion/AI-Tuner" class="btn">View on GitHub</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features">
+        <div class="container">
+            <h2>Why AI Tuner?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎭</div>
+                    <h3>12 Personality Styles</h3>
+                    <p>Choose from Socratic, Sarcastic, Empathetic, Analytical, and more. Each personality generates specific behavioral instructions for your AI.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚙️</div>
+                    <h3>6 Control Categories</h3>
+                    <p>Fine-tune cognition, affect, interface, behavior, and goals. Over 15 precise controls for complete AI customization.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>Universal Compatibility</h3>
+                    <p>Works with ChatGPT, Claude, Gemini, Grok, and any AI platform that accepts system instructions.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📋</div>
+                    <h3>5 Built-in Presets</h3>
+                    <p>Absolute Mode, Friendly Assistant, Analytical Expert, Minimal Responder, and Creative Collaborator.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💾</div>
+                    <h3>Save & Share</h3>
+                    <p>Download configurations as JSON or Markdown. Upload and share with team members or across projects.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">ℹ️</div>
+                    <h3>Educational</h3>
+                    <p>Learn prompt engineering through visual controls. Info buttons explain each setting with practical use cases.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2>How It Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Choose Your Style</h3>
+                    <p>Select from 12 personality types and adjust 6 categories of controls to match your needs.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Generate Prompt</h3>
+                    <p>Watch your custom AI prompt update in real-time as you adjust the visual controls.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Copy & Use</h3>
+                    <p>Copy the generated prompt and paste it as system instructions in any AI platform.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshot -->
+    <section class="screenshot">
+        <div class="container">
+            <h2>See It In Action</h2>
+            <p style="margin-bottom: 40px; color: #666; font-size: 1.1rem;">Visual controls make AI customization intuitive and powerful</p>
+            <!-- You can add a screenshot here later -->
+            <div style="background: #f0f0f0; padding: 60px; border-radius: 12px; color: #666;">
+                <p style="font-size: 1.2rem;">📸 Screenshot coming soon!</p>
+                <p>Try the live demo above to see AI Tuner in action.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Customize Your AI?</h2>
+            <p>Join thousands of users who are already customizing their AI interactions with AI Tuner.</p>
+            <div class="cta-buttons">
+                <a href="index.html" class="btn btn-primary">Start Using AI Tuner</a>
+                <a href="https://github.com/SparXion/AI-Tuner" class="btn">Star on GitHub</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>Open source project by <a href="https://github.com/SparXion">John Violette</a> | Licensed under Apache 2.0</p>
+        </div>
+    </footer>
+</body>
+</html>
