@@ -566,6 +566,10 @@ ${this.generateSettingsTable(settings)}
             return 'Analytical Expert';
         } else if (settings.bluntness === 'high' && settings.termination === 'abrupt') {
             return 'Minimal Responder';
+        } else if (settings.personality === 'analytical' && settings.elementElimination === 'strict') {
+            return 'Coding Assistant';
+        } else if (settings.personality === 'neutral' && settings.elementElimination === 'none') {
+            return 'Standard Reset';
         } else {
             return 'Custom Configuration';
         }
@@ -823,6 +827,42 @@ ${this.generateSettingsTable(settings)}
                 continuationBias: 'allowed',
                 selfSufficiency: 'collaborative',
                 assumptionStrength: 'medium'
+            },
+            coding: {
+                personality: 'analytical',
+                bluntness: 'medium',
+                termination: 'natural',
+                cognitiveTier: 'deep',
+                toneNeutrality: 'full',
+                sentimentBoost: 'disabled',
+                mirrorAvoidance: 'strict',
+                elementElimination: 'strict',
+                transitions: 'prohibited',
+                callToAction: 'prohibited',
+                questions: 'selective',
+                suggestions: 'prohibited',
+                motivational: 'prohibited',
+                continuationBias: 'suppressed',
+                selfSufficiency: 'independent',
+                assumptionStrength: 'strong'
+            },
+            standard: {
+                personality: 'neutral',
+                bluntness: 'low',
+                termination: 'natural',
+                cognitiveTier: 'surface',
+                toneNeutrality: 'partial',
+                sentimentBoost: 'selective',
+                mirrorAvoidance: 'selective',
+                elementElimination: 'none',
+                transitions: 'allowed',
+                callToAction: 'allowed',
+                questions: 'allowed',
+                suggestions: 'allowed',
+                motivational: 'minimal',
+                continuationBias: 'allowed',
+                selfSufficiency: 'collaborative',
+                assumptionStrength: 'weak'
             }
         };
     }
