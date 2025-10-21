@@ -62,26 +62,48 @@ class AITuner {
     setupEventListeners() {
         // Add change listeners to all dropdowns
         Object.values(this.elements).forEach(element => {
-            element.addEventListener('change', () => this.generatePrompt());
+            element.addEventListener('change', () => {
+                this.generatePrompt();
+                // Track setting changes
+                if (window.aiTunerAnalytics) {
+                    const category = this.getCategoryForElement(element);
+                    window.aiTunerAnalytics.trackSettingChanged(category, element.id, element.value);
+                }
+            });
         });
 
         // Button event listeners
         this.copyBtn.addEventListener('click', () => this.copyPrompt());
-        this.downloadJsonBtn.addEventListener('click', () => this.downloadJSON());
-        this.downloadMarkdownBtn.addEventListener('click', () => this.downloadMarkdown());
+        this.downloadJsonBtn.addEventListener('click', () => {
+            this.downloadJSON();
+            if (window.aiTunerAnalytics) window.aiTunerAnalytics.trackDownload('json');
+        });
+        this.downloadMarkdownBtn.addEventListener('click', () => {
+            this.downloadMarkdown();
+            if (window.aiTunerAnalytics) window.aiTunerAnalytics.trackDownload('markdown');
+        });
         this.uploadBtn.addEventListener('click', () => this.fileInput.click());
-        this.fileInput.addEventListener('change', (e) => this.uploadConfig(e));
+        this.fileInput.addEventListener('change', (e) => {
+            this.uploadConfig(e);
+            if (window.aiTunerAnalytics) window.aiTunerAnalytics.trackUpload();
+        });
         this.saveBtn.addEventListener('click', () => this.savePreset());
         this.loadBtn.addEventListener('click', () => this.loadPreset());
 
         // Preset button listeners
         document.querySelectorAll('.preset-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => this.applyPreset(e.target.dataset.preset));
+            btn.addEventListener('click', (e) => {
+                this.applyPreset(e.target.dataset.preset);
+                if (window.aiTunerAnalytics) window.aiTunerAnalytics.trackPresetUsed(e.target.dataset.preset);
+            });
         });
 
         // Info button listeners
         document.querySelectorAll('.info-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => this.showInfo(e.target.dataset.category));
+            btn.addEventListener('click', (e) => {
+                this.showInfo(e.target.dataset.category);
+                if (window.aiTunerAnalytics) window.aiTunerAnalytics.trackInfoButtonClicked(e.target.dataset.category);
+            });
         });
 
         // Info popup listeners
@@ -97,6 +119,11 @@ class AITuner {
         const settings = this.getCurrentSettings();
         const prompt = this.buildPrompt(settings);
         this.preview.textContent = prompt;
+        
+        // Track prompt generation
+        if (window.aiTunerAnalytics) {
+            window.aiTunerAnalytics.trackPromptGenerated(settings);
+        }
     }
 
     getCurrentSettings() {
@@ -142,6 +169,28 @@ class AITuner {
         prompt += this.buildGoalSection(settings);
 
         return prompt.trim();
+    }
+
+    getCategoryForElement(element) {
+        const categoryMap = {
+            'personality': 'Personality',
+            'bluntness': 'Cognition',
+            'termination': 'Cognition',
+            'cognitive-tier': 'Cognition',
+            'tone-neutrality': 'Affect',
+            'sentiment-boost': 'Affect',
+            'mirror-avoidance': 'Affect',
+            'element-elimination': 'Interface',
+            'transitions': 'Interface',
+            'call-to-action': 'Interface',
+            'questions': 'Behavioral',
+            'suggestions': 'Behavioral',
+            'motivational': 'Behavioral',
+            'continuation-bias': 'Goals',
+            'self-sufficiency': 'Goals',
+            'assumption-strength': 'Goals'
+        };
+        return categoryMap[element.id] || 'Unknown';
     }
 
     buildPersonalitySection(settings) {
