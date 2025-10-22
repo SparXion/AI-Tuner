@@ -113,6 +113,14 @@ class AITuner {
                 this.hideInfo();
             }
         });
+
+        // Analytics dashboard access (Ctrl+Shift+A)
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                e.preventDefault();
+                this.toggleAnalyticsDashboard();
+            }
+        });
     }
 
     generatePrompt() {
@@ -783,6 +791,36 @@ ${this.generateSettingsTable(settings)}
             title: "Category Information",
             content: "<p>Information about this category is not available.</p>"
         };
+    }
+
+    toggleAnalyticsDashboard() {
+        const dashboard = document.getElementById('analytics-dashboard');
+        const summary = document.getElementById('analytics-summary');
+        
+        if (dashboard.style.display === 'none') {
+            // Show dashboard
+            dashboard.style.display = 'block';
+            
+            // Populate summary
+            if (window.aiTunerAnalytics) {
+                const data = window.aiTunerAnalytics.getSummary();
+                summary.innerHTML = `
+                    <p><strong>Total Events:</strong> ${data.totalEvents}</p>
+                    <p><strong>Unique Sessions:</strong> ${data.uniqueSessions}</p>
+                    <p><strong>Downloads:</strong> ${data.downloads}</p>
+                    <p><strong>Uploads:</strong> ${data.uploads}</p>
+                    <h4>Most Popular Presets:</h4>
+                    <ul>
+                        ${Object.entries(data.presetUsage).map(([preset, count]) => 
+                            `<li>${preset}: ${count} uses</li>`
+                        ).join('')}
+                    </ul>
+                `;
+            }
+        } else {
+            // Hide dashboard
+            dashboard.style.display = 'none';
+        }
     }
 
     loadPresets() {
