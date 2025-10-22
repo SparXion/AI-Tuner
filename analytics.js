@@ -27,7 +27,23 @@ class AITunerAnalytics {
     init() {
         if (!this.consentGiven) {
             this.showConsentDialog();
+        } else {
+            this.trackPageVisit();
         }
+    }
+
+    // Track page visits with detailed visitor info
+    trackPageVisit() {
+        this.track('page_visit', {
+            url: window.location.href,
+            timestamp: new Date().toISOString(),
+            userAgent: navigator.userAgent,
+            referrer: document.referrer,
+            screenResolution: `${screen.width}x${screen.height}`,
+            language: navigator.language,
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            platform: navigator.platform
+        });
     }
 
     generateSessionId() {
@@ -75,6 +91,7 @@ class AITunerAnalytics {
         localStorage.setItem('ai_tuner_analytics_consent', consent.toString());
         if (consent) {
             this.track('consent_given');
+            this.trackPageVisit(); // Track the visit after consent
         }
     }
 
@@ -150,6 +167,13 @@ class AITunerAnalytics {
 
     // Export data for analysis
     exportData() {
+        // Check if user is admin (you)
+        const isAdmin = this.checkAdminAccess();
+        if (!isAdmin) {
+            alert('Analytics access restricted to admin only.');
+            return;
+        }
+        
         const events = JSON.parse(localStorage.getItem('ai_tuner_events') || '[]');
         const dataStr = JSON.stringify(events, null, 2);
         const blob = new Blob([dataStr], { type: 'application/json' });
@@ -161,6 +185,13 @@ class AITunerAnalytics {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+    }
+
+    // Check if current user is admin
+    checkAdminAccess() {
+        // Simple admin check - you can customize this
+        const adminKey = prompt('Enter admin key to access analytics:');
+        return adminKey === 'sparxion2025'; // Change this to your secret key
     }
 
     // Get analytics summary

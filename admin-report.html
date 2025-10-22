@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tuner - Admin Analytics Report</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #000;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #000;
+        }
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+        .chart-container {
+            margin: 30px 0;
+            height: 400px;
+        }
+        .admin-key {
+            margin: 20px 0;
+            padding: 15px;
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+        }
+        .admin-key input {
+            width: 200px;
+            padding: 8px;
+            margin-right: 10px;
+        }
+        .btn {
+            background: #000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background: #333;
+        }
+        .error {
+            color: #d63031;
+            background: #ffe6e6;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success {
+            color: #00b894;
+            background: #e6f7f4;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 AI Tuner Analytics Report</h1>
+        
+        <div class="admin-key">
+            <h3>Admin Access</h3>
+            <input type="password" id="admin-key-input" placeholder="Enter admin key">
+            <button class="btn" onclick="loadReport()">Load Report</button>
+        </div>
+        
+        <div id="error-message" class="error" style="display: none;"></div>
+        <div id="success-message" class="success" style="display: none;"></div>
+        
+        <div id="report-content" style="display: none;">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="total-visitors">-</div>
+                    <div class="stat-label">Total Visitors</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="total-events">-</div>
+                    <div class="stat-label">Total Events</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="total-sessions">-</div>
+                    <div class="stat-label">Unique Sessions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="total-downloads">-</div>
+                    <div class="stat-label">Downloads</div>
+                </div>
+            </div>
+            
+            <h2>Preset Usage</h2>
+            <div class="chart-container">
+                <canvas id="preset-chart"></canvas>
+            </div>
+            
+            <h2>Daily Activity</h2>
+            <div class="chart-container">
+                <canvas id="activity-chart"></canvas>
+            </div>
+            
+            <h2>Feature Usage</h2>
+            <div class="chart-container">
+                <canvas id="feature-chart"></canvas>
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <button class="btn" onclick="exportReport()">Export Full Report</button>
+                <button class="btn" onclick="refreshData()">Refresh Data</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ADMIN_KEY = 'sparxion2025'; // Change this to your secret key
+        let analyticsData = null;
+        
+        function loadReport() {
+            const key = document.getElementById('admin-key-input').value;
+            if (key !== ADMIN_KEY) {
+                showError('Invalid admin key');
+                return;
+            }
+            
+            // Load analytics data from localStorage
+            const events = JSON.parse(localStorage.getItem('ai_tuner_events') || '[]');
+            if (events.length === 0) {
+                showError('No analytics data found. Make sure you\'re on the AI Tuner site.');
+                return;
+            }
+            
+            analyticsData = events;
+            generateReport();
+            showSuccess('Report loaded successfully');
+        }
+        
+        function generateReport() {
+            const stats = calculateStats();
+            updateStatsDisplay(stats);
+            createCharts(stats);
+            document.getElementById('report-content').style.display = 'block';
+        }
+        
+        function calculateStats() {
+            const events = analyticsData;
+            const visitors = new Set();
+            const sessions = new Set();
+            const presetUsage = {};
+            const dailyActivity = {};
+            const featureUsage = {};
+            
+            events.forEach(event => {
+                // Count visitors (by user agent)
+                visitors.add(event.userAgent);
+                
+                // Count sessions
+                sessions.add(event.sessionId);
+                
+                // Count preset usage
+                if (event.event === 'preset_used') {
+                    const preset = event.data.preset;
+                    presetUsage[preset] = (presetUsage[preset] || 0) + 1;
+                }
+                
+                // Count daily activity
+                const date = event.timestamp.split('T')[0];
+                dailyActivity[date] = (dailyActivity[date] || 0) + 1;
+                
+                // Count feature usage
+                featureUsage[event.event] = (featureUsage[event.event] || 0) + 1;
+            });
+            
+            return {
+                totalVisitors: visitors.size,
+                totalEvents: events.length,
+                totalSessions: sessions.size,
+                totalDownloads: featureUsage.download || 0,
+                presetUsage,
+                dailyActivity,
+                featureUsage
+            };
+        }
+        
+        function updateStatsDisplay(stats) {
+            document.getElementById('total-visitors').textContent = stats.totalVisitors;
+            document.getElementById('total-events').textContent = stats.totalEvents;
+            document.getElementById('total-sessions').textContent = stats.totalSessions;
+            document.getElementById('total-downloads').textContent = stats.totalDownloads;
+        }
+        
+        function createCharts(stats) {
+            // Preset Usage Chart
+            const presetCtx = document.getElementById('preset-chart').getContext('2d');
+            new Chart(presetCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(stats.presetUsage),
+                    datasets: [{
+                        label: 'Usage Count',
+                        data: Object.values(stats.presetUsage),
+                        backgroundColor: '#000000',
+                        borderColor: '#000000',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Daily Activity Chart
+            const activityCtx = document.getElementById('activity-chart').getContext('2d');
+            const sortedDays = Object.keys(stats.dailyActivity).sort();
+            new Chart(activityCtx, {
+                type: 'line',
+                data: {
+                    labels: sortedDays,
+                    datasets: [{
+                        label: 'Events per Day',
+                        data: sortedDays.map(day => stats.dailyActivity[day]),
+                        borderColor: '#000000',
+                        backgroundColor: 'rgba(0,0,0,0.1)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Feature Usage Chart
+            const featureCtx = document.getElementById('feature-chart').getContext('2d');
+            new Chart(featureCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(stats.featureUsage),
+                    datasets: [{
+                        data: Object.values(stats.featureUsage),
+                        backgroundColor: [
+                            '#000000',
+                            '#333333',
+                            '#666666',
+                            '#999999',
+                            '#cccccc'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+        
+        function exportReport() {
+            const stats = calculateStats();
+            const report = {
+                generatedAt: new Date().toISOString(),
+                summary: {
+                    totalVisitors: stats.totalVisitors,
+                    totalEvents: stats.totalEvents,
+                    totalSessions: stats.totalSessions,
+                    totalDownloads: stats.totalDownloads
+                },
+                presetUsage: stats.presetUsage,
+                dailyActivity: stats.dailyActivity,
+                featureUsage: stats.featureUsage,
+                rawData: analyticsData
+            };
+            
+            const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ai-tuner-report-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        function refreshData() {
+            const events = JSON.parse(localStorage.getItem('ai_tuner_events') || '[]');
+            analyticsData = events;
+            generateReport();
+            showSuccess('Data refreshed');
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => errorDiv.style.display = 'none', 5000);
+        }
+        
+        function showSuccess(message) {
+            const successDiv = document.getElementById('success-message');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            setTimeout(() => successDiv.style.display = 'none', 3000);
+        }
+    </script>
+</body>
+</html>
