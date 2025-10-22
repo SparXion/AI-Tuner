@@ -1,4 +1,4 @@
-# ▣ AI Tuner
+# 🎛️ AI Tuner
 
 > **Visual AI Response Customization Tool** - Transform how you interact with AI through precise behavioral controls
 
@@ -8,7 +8,7 @@
 
 **Stop struggling with prompt engineering.** AI Tuner gives you visual controls to customize how AI responds - from personality and tone to cognitive depth and behavioral patterns. Works with ChatGPT, Claude, Gemini, Grok, and any AI platform.
 
-## ▲ **Why AI Tuner?**
+## 🚀 **Why AI Tuner?**
 
 ### **The Problem**
 - Manual prompt engineering is time-consuming and inconsistent
@@ -23,9 +23,9 @@ AI Tuner provides **visual controls** for every aspect of AI behavior:
 - **Real-time Preview** - See exactly how your AI will respond
 - **Universal Compatibility** - Works with any AI platform
 
-## ◇ **Key Features**
+## ✨ **Key Features**
 
-### ▣ **12 Personality Styles**
+### 🎭 **12 Personality Styles**
 Choose from intellectual approaches that change how AI thinks and communicates:
 - **Socratic** - Question-driven discovery and critical thinking
 - **Sarcastic** - Sharp, ironic commentary with dry wit
@@ -34,7 +34,7 @@ Choose from intellectual approaches that change how AI thinks and communicates:
 - **Provocative** - Challenges conventional thinking
 - **And 7 more styles...**
 
-### ⚙ **6 Control Categories**
+### ⚙️ **6 Control Categories**
 Fine-tune every aspect of AI behavior:
 
 1. **Personality & Approach** - Intellectual style and communication approach
@@ -44,7 +44,7 @@ Fine-tune every aspect of AI behavior:
 5. **Behavioral Controls** - Questions, suggestions, motivational content
 6. **Goal Orientation** - Continuation bias, self-sufficiency goals, user assumptions
 
-### ▣ **7 Built-in Presets**
+### 🎯 **7 Built-in Presets**
 Get started instantly with professionally crafted configurations:
 
 - **Absolute Mode** - Maximum bluntness, no fluff, immediate termination
@@ -55,18 +55,18 @@ Get started instantly with professionally crafted configurations:
 - **Coding Assistant** - Analytical, no emojis, no suggestions, independent
 - **Standard Reset** - Neutral, allows all elements, collaborative
 
-### ⚡ **Save & Share**
+### 💾 **Save & Share**
 - **Download Configurations** - JSON and Markdown formats
 - **Upload Settings** - Share configurations across teams
 - **Custom Presets** - Save your own configurations
 - **Cross-platform** - Use same settings across all AI platforms
 
-### ◇ **Educational**
+### ℹ️ **Educational**
 - **Info Buttons** - Learn what each setting does
 - **Practical Use Cases** - Understand when to use different configurations
 - **Best Practices** - Built-in guidance for optimal results
 
-## ▲ **Quick Start**
+## 🚀 **Quick Start**
 
 ### **Option 1: Live Demo (Recommended)**
 [**Try AI Tuner Now**](https://sparxion.github.io/AI-Tuner/) - No installation required!
@@ -90,7 +90,7 @@ python -m http.server 8000  # Then visit http://localhost:8000
 4. **Copy the prompt** and paste as system instructions
 5. **Use with any AI platform** - ChatGPT, Claude, Gemini, Grok, etc.
 
-## ▣ **Perfect For**
+## 🎯 **Perfect For**
 
 - **Developers** - Consistent AI behavior across projects
 - **Content Creators** - Brand-specific AI personalities
@@ -98,7 +98,7 @@ python -m http.server 8000  # Then visit http://localhost:8000
 - **Researchers** - Systematic AI behavior analysis
 - **Teams** - Shared AI interaction standards
 
-## ⚙ **Technical Details**
+## 🛠️ **Technical Details**
 
 - **Pure Web Technologies** - HTML, CSS, JavaScript (no dependencies)
 - **Responsive Design** - Works on desktop, tablet, and mobile
