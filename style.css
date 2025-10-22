@@ -234,6 +234,24 @@ select:hover {
     color: #000000;
 }
 
+.btn-analytics {
+    background-color: #000000;
+    color: #ffffff;
+    border: 2px solid #000000;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.btn-analytics:hover {
+    background-color: #333333;
+    color: #ffffff;
+}
+
 /* Presets Section */
 .presets-section {
     margin-top: 60px;

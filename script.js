@@ -114,9 +114,9 @@ class AITuner {
             }
         });
 
-        // Analytics dashboard access (Ctrl+Shift+A)
+        // Analytics dashboard access (Cmd+Shift+D for Dashboard)
         document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+            if (e.metaKey && e.shiftKey && e.key === 'D') {
                 e.preventDefault();
                 this.toggleAnalyticsDashboard();
             }
