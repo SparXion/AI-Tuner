@@ -1028,5 +1028,10 @@ ${this.generateSettingsTable(settings)}
 
 // Initialize the app when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize Lucide icons
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+    
     new AITuner();
 });

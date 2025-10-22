@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Tuner - Admin Analytics Report</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -37,6 +38,14 @@
             border-radius: 6px;
             text-align: center;
             border: 1px solid #e0e0e0;
+        }
+        .stat-icon {
+            margin-bottom: 10px;
+        }
+        .stat-icon i {
+            width: 24px;
+            height: 24px;
+            color: #000;
         }
         .stat-number {
             font-size: 2rem;
@@ -92,12 +101,12 @@
 </head>
 <body>
     <div class="container">
-        <h1>📊 AI Tuner Analytics Report</h1>
+        <h1><i data-lucide="bar-chart-3"></i> AI Tuner Analytics Report</h1>
         
         <div class="admin-key">
-            <h3>Admin Access</h3>
+            <h3><i data-lucide="shield-check"></i> Admin Access</h3>
             <input type="password" id="admin-key-input" placeholder="Enter admin key">
-            <button class="btn" onclick="loadReport()">Load Report</button>
+            <button class="btn" onclick="loadReport()"><i data-lucide="download"></i> Load Report</button>
         </div>
         
         <div id="error-message" class="error" style="display: none;"></div>
@@ -106,46 +115,53 @@
         <div id="report-content" style="display: none;">
             <div class="stats-grid">
                 <div class="stat-card">
+                    <div class="stat-icon"><i data-lucide="users"></i></div>
                     <div class="stat-number" id="total-visitors">-</div>
                     <div class="stat-label">Total Visitors</div>
                 </div>
                 <div class="stat-card">
+                    <div class="stat-icon"><i data-lucide="activity"></i></div>
                     <div class="stat-number" id="total-events">-</div>
                     <div class="stat-label">Total Events</div>
                 </div>
                 <div class="stat-card">
+                    <div class="stat-icon"><i data-lucide="clock"></i></div>
                     <div class="stat-number" id="total-sessions">-</div>
                     <div class="stat-label">Unique Sessions</div>
                 </div>
                 <div class="stat-card">
+                    <div class="stat-icon"><i data-lucide="download"></i></div>
                     <div class="stat-number" id="total-downloads">-</div>
                     <div class="stat-label">Downloads</div>
                 </div>
             </div>
             
-            <h2>Preset Usage</h2>
+            <h2><i data-lucide="settings"></i> Preset Usage</h2>
             <div class="chart-container">
                 <canvas id="preset-chart"></canvas>
             </div>
             
-            <h2>Daily Activity</h2>
+            <h2><i data-lucide="trending-up"></i> Daily Activity</h2>
             <div class="chart-container">
                 <canvas id="activity-chart"></canvas>
             </div>
             
-            <h2>Feature Usage</h2>
+            <h2><i data-lucide="pie-chart"></i> Feature Usage</h2>
             <div class="chart-container">
                 <canvas id="feature-chart"></canvas>
             </div>
             
             <div style="margin-top: 30px;">
-                <button class="btn" onclick="exportReport()">Export Full Report</button>
-                <button class="btn" onclick="refreshData()">Refresh Data</button>
+                <button class="btn" onclick="exportReport()"><i data-lucide="file-text"></i> Export Full Report</button>
+                <button class="btn" onclick="refreshData()"><i data-lucide="refresh-cw"></i> Refresh Data</button>
             </div>
         </div>
     </div>
 
     <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
         const ADMIN_KEY = 'sparxion2025'; // Change this to your secret key
         let analyticsData = null;
         
