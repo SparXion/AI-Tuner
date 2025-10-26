@@ -428,7 +428,8 @@ class AITuner {
                 section += "• No questions allowed\n";
                 break;
             default:
-                // No additional content for 'allowed'
+                // Explicitly allow questions
+                section += "• Questions allowed for clarification\n";
                 break;
         }
 
@@ -441,7 +442,8 @@ class AITuner {
                 section += "• No suggestions allowed\n";
                 break;
             default:
-                // No additional content for 'allowed'
+                // Explicitly allow suggestions
+                section += "• Suggestions allowed when helpful\n";
                 break;
         }
 
@@ -454,7 +456,8 @@ class AITuner {
                 section += "• No motivational content\n";
                 break;
             default:
-                // No additional content for 'allowed'
+                // Explicitly allow motivational content
+                section += "• Motivational content allowed when appropriate\n";
                 break;
         }
 
