@@ -264,6 +264,11 @@ class AITuner {
                 section += "• Present alternative perspectives\n";
                 section += "• Stimulate deeper reflection and debate\n";
                 break;
+            default:
+                // Neutral default fallback
+                section += "• Maintain neutral, objective approach\n";
+                section += "• Present information without bias or personality\n";
+                break;
         }
 
         return section + "\n";
@@ -285,6 +290,10 @@ class AITuner {
                 break;
             case 'absolute':
                 section += "• Use maximum bluntness - prioritize directive phrasing\n";
+                break;
+            default:
+                // Neutral default fallback
+                section += "• Use gentle, diplomatic language\n";
                 break;
         }
 
@@ -316,6 +325,10 @@ class AITuner {
             case 'off':
                 section += "• Allow full emotional range and expression\n";
                 break;
+            default:
+                // Neutral default fallback
+                section += "• Allow mild emotional expression\n";
+                break;
         }
 
         // Sentiment Boost
@@ -329,6 +342,10 @@ class AITuner {
             case 'enabled':
                 section += "• Allow full enthusiasm and engagement tactics\n";
                 break;
+            default:
+                // Neutral default fallback
+                section += "• Use minimal positivity when appropriate\n";
+                break;
         }
 
         // Mirror Avoidance
@@ -341,6 +358,10 @@ class AITuner {
                 break;
             case 'allowed':
                 section += "• Mirror user affect when it enhances communication\n";
+                break;
+            default:
+                // Neutral default fallback
+                section += "• Use selective mirroring only when appropriate\n";
                 break;
         }
 
@@ -361,6 +382,9 @@ class AITuner {
             case 'strict':
                 section += "• Eliminate emojis, filler, and hype language\n";
                 break;
+            default:
+                // No additional content for 'none'
+                break;
         }
 
         // Transitions
@@ -371,6 +395,9 @@ class AITuner {
             case 'prohibited':
                 section += "• No conversational transitions or soft asks\n";
                 break;
+            default:
+                // No additional content for 'allowed'
+                break;
         }
 
         // Call to Action
@@ -380,6 +407,9 @@ class AITuner {
                 break;
             case 'prohibited':
                 section += "• No call-to-action appendices\n";
+                break;
+            default:
+                // No additional content for 'allowed'
                 break;
         }
 
@@ -397,6 +427,9 @@ class AITuner {
             case 'prohibited':
                 section += "• No questions allowed\n";
                 break;
+            default:
+                // No additional content for 'allowed'
+                break;
         }
 
         // Suggestions
@@ -407,6 +440,9 @@ class AITuner {
             case 'prohibited':
                 section += "• No suggestions allowed\n";
                 break;
+            default:
+                // No additional content for 'allowed'
+                break;
         }
 
         // Motivational
@@ -416,6 +452,9 @@ class AITuner {
                 break;
             case 'prohibited':
                 section += "• No motivational content\n";
+                break;
+            default:
+                // No additional content for 'allowed'
                 break;
         }
 
@@ -428,6 +467,9 @@ class AITuner {
         // Continuation Bias
         if (settings.continuationBias === 'suppressed') {
             section += "• Suppress continuation bias - don't encourage ongoing dialogue\n";
+        } else {
+            // Explicitly allow continuation
+            section += "• Allow natural conversation flow\n";
         }
 
         // Self-Sufficiency
@@ -439,15 +481,26 @@ class AITuner {
                 section += "• Goal: restore independent, high-fidelity thinking\n";
                 section += "• Outcome: model obsolescence via user self-sufficiency\n";
                 break;
+            default:
+                // Collaborative default
+                section += "• Foster collaborative problem-solving\n";
+                break;
         }
 
         // Assumption Strength
         switch(settings.assumptionStrength) {
+            case 'weak':
+                section += "• Assume user may need guidance and support\n";
+                break;
             case 'medium':
                 section += "• Assume balanced user capabilities\n";
                 break;
             case 'strong':
                 section += "• Assume user retains high perception despite blunt tone\n";
+                break;
+            default:
+                // Medium default
+                section += "• Assume balanced user capabilities\n";
                 break;
         }
 
@@ -950,6 +1003,24 @@ ${this.generateSettingsTable(settings)}
                 continuationBias: 'allowed',
                 selfSufficiency: 'collaborative',
                 assumptionStrength: 'weak'
+            },
+            factoryReset: {
+                personality: 'neutral',
+                bluntness: 'low',
+                termination: 'natural',
+                cognitiveTier: 'surface',
+                toneNeutrality: 'partial',
+                sentimentBoost: 'selective',
+                mirrorAvoidance: 'allowed',
+                elementElimination: 'none',
+                transitions: 'allowed',
+                callToAction: 'allowed',
+                questions: 'allowed',
+                suggestions: 'allowed',
+                motivational: 'allowed',
+                continuationBias: 'allowed',
+                selfSufficiency: 'collaborative',
+                assumptionStrength: 'medium'
             }
         };
     }
