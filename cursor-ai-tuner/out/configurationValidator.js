@@ -1,0 +1,483 @@
+"use strict";
+/**
+ * @fileoverview Enterprise-grade configuration validation and management system
+ * @author SparXion
+ * @version 2.0.0
+ * @license Apache-2.0
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ConfigurationValidator = void 0;
+const errorHandler_1 = require("./errorHandler");
+/**
+ * Comprehensive configuration validator with type safety and fallbacks
+ * @class ConfigurationValidator
+ */
+class ConfigurationValidator {
+    /**
+     * Private constructor for singleton pattern
+     * @param config - Extension configuration
+     * @param logger - Logger instance
+     * @param errorHandler - Error handler instance
+     */
+    constructor(_config, logger, errorHandler) {
+        this.logger = logger;
+        this.errorHandler = errorHandler;
+    }
+    /**
+     * Get singleton instance
+     * @param config - Extension configuration
+     * @param logger - Logger instance
+     * @param errorHandler - Error handler instance
+     * @returns ConfigurationValidator instance
+     */
+    static getInstance(config, logger, errorHandler) {
+        if (!ConfigurationValidator.instance && config && logger && errorHandler) {
+            ConfigurationValidator.instance = new ConfigurationValidator(config, logger, errorHandler);
+        }
+        if (!ConfigurationValidator.instance) {
+            throw new Error('ConfigurationValidator must be initialized with configuration, logger, and error handler');
+        }
+        return ConfigurationValidator.instance;
+    }
+    /**
+     * Validate AI Tuner settings with comprehensive checks
+     * @param settings - Settings to validate
+     * @param source - Source of settings (user input, file, etc.)
+     * @returns Validation result
+     */
+    validateSettings(settings, source = 'unknown') {
+        const errors = [];
+        const warnings = [];
+        const validatedSettings = {};
+        try {
+            this.logger.debug('Starting settings validation', 'ConfigurationValidator', {
+                source,
+                settingsCount: Object.keys(settings).length
+            });
+            // Validate personality
+            if (settings.personality !== undefined) {
+                const validPersonalities = ['neutral', 'socratic', 'curious', 'analytical', 'sarcastic', 'witty', 'charming', 'sympathetic', 'empathetic', 'directive', 'collaborative', 'provocative'];
+                if (validPersonalities.includes(settings.personality)) {
+                    validatedSettings.personality = settings.personality;
+                }
+                else {
+                    errors.push(`Invalid personality: ${settings.personality}. Must be one of: ${validPersonalities.join(', ')}`);
+                }
+            }
+            // Validate bluntness
+            if (settings.bluntness !== undefined) {
+                const validBluntness = ['low', 'medium', 'high', 'absolute'];
+                if (validBluntness.includes(settings.bluntness)) {
+                    validatedSettings.bluntness = settings.bluntness;
+                }
+                else {
+                    errors.push(`Invalid bluntness: ${settings.bluntness}. Must be one of: ${validBluntness.join(', ')}`);
+                }
+            }
+            // Validate termination
+            if (settings.termination !== undefined) {
+                const validTermination = ['natural', 'abrupt'];
+                if (validTermination.includes(settings.termination)) {
+                    validatedSettings.termination = settings.termination;
+                }
+                else {
+                    errors.push(`Invalid termination: ${settings.termination}. Must be one of: ${validTermination.join(', ')}`);
+                }
+            }
+            // Validate cognitive tier
+            if (settings.cognitiveTier !== undefined) {
+                const validCognitiveTier = ['surface', 'deep'];
+                if (validCognitiveTier.includes(settings.cognitiveTier)) {
+                    validatedSettings.cognitiveTier = settings.cognitiveTier;
+                }
+                else {
+                    errors.push(`Invalid cognitive tier: ${settings.cognitiveTier}. Must be one of: ${validCognitiveTier.join(', ')}`);
+                }
+            }
+            // Validate tone neutrality
+            if (settings.toneNeutrality !== undefined) {
+                const validToneNeutrality = ['full', 'partial', 'off'];
+                if (validToneNeutrality.includes(settings.toneNeutrality)) {
+                    validatedSettings.toneNeutrality = settings.toneNeutrality;
+                }
+                else {
+                    errors.push(`Invalid tone neutrality: ${settings.toneNeutrality}. Must be one of: ${validToneNeutrality.join(', ')}`);
+                }
+            }
+            // Validate sentiment boost
+            if (settings.sentimentBoost !== undefined) {
+                const validSentimentBoost = ['disabled', 'selective', 'enabled'];
+                if (validSentimentBoost.includes(settings.sentimentBoost)) {
+                    validatedSettings.sentimentBoost = settings.sentimentBoost;
+                }
+                else {
+                    errors.push(`Invalid sentiment boost: ${settings.sentimentBoost}. Must be one of: ${validSentimentBoost.join(', ')}`);
+                }
+            }
+            // Validate mirror avoidance
+            if (settings.mirrorAvoidance !== undefined) {
+                const validMirrorAvoidance = ['strict', 'selective', 'allowed'];
+                if (validMirrorAvoidance.includes(settings.mirrorAvoidance)) {
+                    validatedSettings.mirrorAvoidance = settings.mirrorAvoidance;
+                }
+                else {
+                    errors.push(`Invalid mirror avoidance: ${settings.mirrorAvoidance}. Must be one of: ${validMirrorAvoidance.join(', ')}`);
+                }
+            }
+            // Validate element elimination
+            if (settings.elementElimination !== undefined) {
+                const validElementElimination = ['none', 'minimal', 'moderate', 'strict'];
+                if (validElementElimination.includes(settings.elementElimination)) {
+                    validatedSettings.elementElimination = settings.elementElimination;
+                }
+                else {
+                    errors.push(`Invalid element elimination: ${settings.elementElimination}. Must be one of: ${validElementElimination.join(', ')}`);
+                }
+            }
+            // Validate transitions
+            if (settings.transitions !== undefined) {
+                const validTransitions = ['allowed', 'minimal', 'prohibited'];
+                if (validTransitions.includes(settings.transitions)) {
+                    validatedSettings.transitions = settings.transitions;
+                }
+                else {
+                    errors.push(`Invalid transitions: ${settings.transitions}. Must be one of: ${validTransitions.join(', ')}`);
+                }
+            }
+            // Validate call to action
+            if (settings.callToAction !== undefined) {
+                const validCallToAction = ['allowed', 'minimal', 'prohibited'];
+                if (validCallToAction.includes(settings.callToAction)) {
+                    validatedSettings.callToAction = settings.callToAction;
+                }
+                else {
+                    errors.push(`Invalid call to action: ${settings.callToAction}. Must be one of: ${validCallToAction.join(', ')}`);
+                }
+            }
+            // Validate questions
+            if (settings.questions !== undefined) {
+                const validQuestions = ['allowed', 'selective', 'prohibited'];
+                if (validQuestions.includes(settings.questions)) {
+                    validatedSettings.questions = settings.questions;
+                }
+                else {
+                    errors.push(`Invalid questions: ${settings.questions}. Must be one of: ${validQuestions.join(', ')}`);
+                }
+            }
+            // Validate suggestions
+            if (settings.suggestions !== undefined) {
+                const validSuggestions = ['allowed', 'minimal', 'prohibited'];
+                if (validSuggestions.includes(settings.suggestions)) {
+                    validatedSettings.suggestions = settings.suggestions;
+                }
+                else {
+                    errors.push(`Invalid suggestions: ${settings.suggestions}. Must be one of: ${validSuggestions.join(', ')}`);
+                }
+            }
+            // Validate motivational
+            if (settings.motivational !== undefined) {
+                const validMotivational = ['allowed', 'minimal', 'prohibited'];
+                if (validMotivational.includes(settings.motivational)) {
+                    validatedSettings.motivational = settings.motivational;
+                }
+                else {
+                    errors.push(`Invalid motivational: ${settings.motivational}. Must be one of: ${validMotivational.join(', ')}`);
+                }
+            }
+            // Validate continuation bias
+            if (settings.continuationBias !== undefined) {
+                const validContinuationBias = ['allowed', 'suppressed'];
+                if (validContinuationBias.includes(settings.continuationBias)) {
+                    validatedSettings.continuationBias = settings.continuationBias;
+                }
+                else {
+                    errors.push(`Invalid continuation bias: ${settings.continuationBias}. Must be one of: ${validContinuationBias.join(', ')}`);
+                }
+            }
+            // Validate self sufficiency
+            if (settings.selfSufficiency !== undefined) {
+                const validSelfSufficiency = ['collaborative', 'independent', 'obsolescence'];
+                if (validSelfSufficiency.includes(settings.selfSufficiency)) {
+                    validatedSettings.selfSufficiency = settings.selfSufficiency;
+                }
+                else {
+                    errors.push(`Invalid self sufficiency: ${settings.selfSufficiency}. Must be one of: ${validSelfSufficiency.join(', ')}`);
+                }
+            }
+            // Validate assumption strength
+            if (settings.assumptionStrength !== undefined) {
+                const validAssumptionStrength = ['weak', 'medium', 'strong'];
+                if (validAssumptionStrength.includes(settings.assumptionStrength)) {
+                    validatedSettings.assumptionStrength = settings.assumptionStrength;
+                }
+                else {
+                    errors.push(`Invalid assumption strength: ${settings.assumptionStrength}. Must be one of: ${validAssumptionStrength.join(', ')}`);
+                }
+            }
+            // Check for logical consistency
+            this.validateLogicalConsistency(validatedSettings, warnings);
+            // Check for completeness
+            const missingFields = this.checkCompleteness(validatedSettings);
+            if (missingFields.length > 0) {
+                warnings.push(`Missing fields: ${missingFields.join(', ')}`);
+            }
+            const isValid = errors.length === 0;
+            this.logger.info(`Settings validation completed`, 'ConfigurationValidator', {
+                source,
+                isValid,
+                errorCount: errors.length,
+                warningCount: warnings.length,
+                validatedFields: Object.keys(validatedSettings).length
+            });
+            return {
+                isValid,
+                errors,
+                warnings,
+                settings: isValid ? validatedSettings : undefined
+            };
+        }
+        catch (error) {
+            const context = {
+                operation: 'validate_settings',
+                component: 'ConfigurationValidator',
+                context: { source, settings }
+            };
+            this.errorHandler.handleError(error, context);
+            return {
+                isValid: false,
+                errors: [`Validation failed: ${error.message}`],
+                warnings: [],
+                settings: undefined
+            };
+        }
+    }
+    /**
+     * Validate logical consistency of settings
+     * @param settings - Settings to validate
+     * @param warnings - Warnings array to populate
+     */
+    validateLogicalConsistency(settings, warnings) {
+        // Check for conflicting settings
+        if (settings.bluntness === 'absolute' && settings.personality === 'charming') {
+            warnings.push('Absolute bluntness may conflict with charming personality');
+        }
+        if (settings.toneNeutrality === 'full' && settings.sentimentBoost === 'enabled') {
+            warnings.push('Full tone neutrality may conflict with enabled sentiment boost');
+        }
+        if (settings.mirrorAvoidance === 'strict' && settings.personality === 'empathetic') {
+            warnings.push('Strict mirror avoidance may conflict with empathetic personality');
+        }
+        if (settings.elementElimination === 'strict' && settings.personality === 'witty') {
+            warnings.push('Strict element elimination may conflict with witty personality');
+        }
+        if (settings.questions === 'prohibited' && settings.personality === 'socratic') {
+            warnings.push('Prohibited questions may conflict with Socratic personality');
+        }
+        if (settings.suggestions === 'prohibited' && settings.selfSufficiency === 'collaborative') {
+            warnings.push('Prohibited suggestions may conflict with collaborative self-sufficiency');
+        }
+        if (settings.motivational === 'prohibited' && settings.personality === 'sympathetic') {
+            warnings.push('Prohibited motivational content may conflict with sympathetic personality');
+        }
+        // Check for optimal combinations
+        if (settings.bluntness === 'low' && settings.termination === 'abrupt') {
+            warnings.push('Low bluntness with abrupt termination may create inconsistent tone');
+        }
+        if (settings.cognitiveTier === 'surface' && settings.assumptionStrength === 'strong') {
+            warnings.push('Surface cognitive tier with strong assumptions may be contradictory');
+        }
+    }
+    /**
+     * Check for missing required fields
+     * @param settings - Settings to check
+     * @returns Array of missing field names
+     */
+    checkCompleteness(settings) {
+        const requiredFields = [
+            'personality', 'bluntness', 'termination', 'cognitiveTier', 'toneNeutrality',
+            'sentimentBoost', 'mirrorAvoidance', 'elementElimination', 'transitions',
+            'callToAction', 'questions', 'suggestions', 'motivational', 'continuationBias',
+            'selfSufficiency', 'assumptionStrength'
+        ];
+        return requiredFields.filter(field => settings[field] === undefined);
+    }
+    /**
+     * Sanitize user input to prevent injection attacks
+     * @param input - User input to sanitize
+     * @returns Sanitized input
+     */
+    sanitizeInput(input) {
+        if (typeof input !== 'string') {
+            return '';
+        }
+        return input
+            .replace(/[<>]/g, '') // Remove potential HTML tags
+            .replace(/javascript:/gi, '') // Remove javascript: protocol
+            .replace(/on\w+=/gi, '') // Remove event handlers
+            .replace(/script/gi, '') // Remove script tags
+            .trim()
+            .substring(0, 1000); // Limit length
+    }
+    /**
+     * Validate preset configuration
+     * @param preset - Preset to validate
+     * @returns Validation result
+     */
+    validatePreset(preset) {
+        const errors = [];
+        const warnings = [];
+        // Validate preset name
+        if (!preset.name || typeof preset.name !== 'string') {
+            errors.push('Preset name is required and must be a string');
+        }
+        else {
+            const sanitizedName = this.sanitizeInput(preset.name);
+            if (sanitizedName.length < 1 || sanitizedName.length > 50) {
+                errors.push('Preset name must be between 1 and 50 characters');
+            }
+        }
+        // Validate preset description
+        if (preset.description && typeof preset.description !== 'string') {
+            errors.push('Preset description must be a string');
+        }
+        else if (preset.description) {
+            const sanitizedDescription = this.sanitizeInput(preset.description);
+            if (sanitizedDescription.length > 200) {
+                warnings.push('Preset description is very long');
+            }
+        }
+        // Validate preset settings
+        if (preset.settings) {
+            const settingsValidation = this.validateSettings(preset.settings, 'preset');
+            errors.push(...settingsValidation.errors);
+            warnings.push(...settingsValidation.warnings);
+        }
+        else {
+            errors.push('Preset settings are required');
+        }
+        // Validate timestamps
+        if (preset.createdAt && !(preset.createdAt instanceof Date)) {
+            errors.push('Created at timestamp must be a valid Date');
+        }
+        if (preset.modifiedAt && !(preset.modifiedAt instanceof Date)) {
+            errors.push('Modified at timestamp must be a valid Date');
+        }
+        return {
+            isValid: errors.length === 0,
+            errors,
+            warnings,
+            settings: errors.length === 0 ? preset : undefined
+        };
+    }
+    /**
+     * Validate extension configuration
+     * @param config - Extension configuration to validate
+     * @returns Validation result
+     */
+    validateExtensionConfig(config) {
+        const errors = [];
+        const warnings = [];
+        const validatedConfig = {};
+        // Validate boolean flags
+        if (config.enablePerformanceMonitoring !== undefined) {
+            if (typeof config.enablePerformanceMonitoring === 'boolean') {
+                validatedConfig.enablePerformanceMonitoring = config.enablePerformanceMonitoring;
+            }
+            else {
+                errors.push('Enable performance monitoring must be a boolean');
+            }
+        }
+        if (config.enableDetailedLogging !== undefined) {
+            if (typeof config.enableDetailedLogging === 'boolean') {
+                validatedConfig.enableDetailedLogging = config.enableDetailedLogging;
+            }
+            else {
+                errors.push('Enable detailed logging must be a boolean');
+            }
+        }
+        if (config.enableErrorReporting !== undefined) {
+            if (typeof config.enableErrorReporting === 'boolean') {
+                validatedConfig.enableErrorReporting = config.enableErrorReporting;
+            }
+            else {
+                errors.push('Enable error reporting must be a boolean');
+            }
+        }
+        if (config.enableMemoryMonitoring !== undefined) {
+            if (typeof config.enableMemoryMonitoring === 'boolean') {
+                validatedConfig.enableMemoryMonitoring = config.enableMemoryMonitoring;
+            }
+            else {
+                errors.push('Enable memory monitoring must be a boolean');
+            }
+        }
+        // Validate numeric values
+        if (config.maxLogEntries !== undefined) {
+            if (typeof config.maxLogEntries === 'number' && config.maxLogEntries > 0 && config.maxLogEntries <= 10000) {
+                validatedConfig.maxLogEntries = config.maxLogEntries;
+            }
+            else {
+                errors.push('Max log entries must be a number between 1 and 10000');
+            }
+        }
+        // Validate log level
+        if (config.logLevel !== undefined) {
+            if (typeof config.logLevel === 'number' && config.logLevel >= 0 && config.logLevel <= 4) {
+                validatedConfig.logLevel = config.logLevel;
+            }
+            else {
+                errors.push('Log level must be a number between 0 and 4');
+            }
+        }
+        return {
+            isValid: errors.length === 0,
+            errors,
+            warnings,
+            settings: errors.length === 0 ? validatedConfig : undefined
+        };
+    }
+    /**
+     * Get default settings with validation
+     * @returns Default validated settings
+     */
+    getDefaultSettings() {
+        const defaultSettings = {
+            personality: 'neutral',
+            bluntness: 'medium',
+            termination: 'natural',
+            cognitiveTier: 'surface',
+            toneNeutrality: 'partial',
+            sentimentBoost: 'selective',
+            mirrorAvoidance: 'selective',
+            elementElimination: 'minimal',
+            transitions: 'allowed',
+            callToAction: 'allowed',
+            questions: 'allowed',
+            suggestions: 'allowed',
+            motivational: 'minimal',
+            continuationBias: 'allowed',
+            selfSufficiency: 'collaborative',
+            assumptionStrength: 'medium'
+        };
+        const validation = this.validateSettings(defaultSettings, 'default');
+        if (!validation.isValid) {
+            this.logger.error('Default settings validation failed', 'ConfigurationValidator', undefined, {
+                errors: validation.errors
+            });
+            throw new errorHandler_1.ConfigurationError('Default settings are invalid', {
+                operation: 'get_default_settings',
+                component: 'ConfigurationValidator',
+                context: { errors: validation.errors }
+            });
+        }
+        return defaultSettings;
+    }
+    /**
+     * Dispose of configuration validator resources
+     */
+    dispose() {
+        this.logger.info('Configuration validator disposed', 'ConfigurationValidator');
+    }
+}
+exports.ConfigurationValidator = ConfigurationValidator;
+//# sourceMappingURL=configurationValidator.js.map
