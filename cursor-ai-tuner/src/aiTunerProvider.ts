@@ -165,6 +165,241 @@ const PRESETS: { [key: string]: AITunerSettings } = {
     continuationBias: 'allowed',
     selfSufficiency: 'collaborative',
     assumptionStrength: 'medium'
+  },
+  // AI Chatbot Default Reset Presets
+  claudeReset: {
+    personality: 'neutral',
+    bluntness: 'low',
+    termination: 'natural',
+    cognitiveTier: 'surface',
+    toneNeutrality: 'partial',
+    sentimentBoost: 'selective',
+    mirrorAvoidance: 'allowed',
+    elementElimination: 'none',
+    transitions: 'allowed',
+    callToAction: 'allowed',
+    questions: 'allowed',
+    suggestions: 'allowed',
+    motivational: 'allowed',
+    continuationBias: 'allowed',
+    selfSufficiency: 'collaborative',
+    assumptionStrength: 'medium'
+  },
+  claudeOpusReset: {
+    personality: 'analytical',
+    bluntness: 'low',
+    termination: 'natural',
+    cognitiveTier: 'deep',
+    toneNeutrality: 'partial',
+    sentimentBoost: 'selective',
+    mirrorAvoidance: 'allowed',
+    elementElimination: 'none',
+    transitions: 'allowed',
+    callToAction: 'allowed',
+    questions: 'allowed',
+    suggestions: 'allowed',
+    motivational: 'allowed',
+    continuationBias: 'allowed',
+    selfSufficiency: 'collaborative',
+    assumptionStrength: 'medium'
+  },
+  claudeSonnetReset: {
+    personality: 'neutral',
+    bluntness: 'low',
+    termination: 'natural',
+    cognitiveTier: 'surface',
+    toneNeutrality: 'partial',
+    sentimentBoost: 'selective',
+    mirrorAvoidance: 'allowed',
+    elementElimination: 'none',
+    transitions: 'allowed',
+    callToAction: 'allowed',
+    questions: 'allowed',
+    suggestions: 'allowed',
+    motivational: 'allowed',
+    continuationBias: 'allowed',
+    selfSufficiency: 'collaborative',
+    assumptionStrength: 'medium'
+  },
+  claudeHaikuReset: {
+    personality: 'neutral',
+    bluntness: 'medium',
+    termination: 'natural',
+    cognitiveTier: 'surface',
+    toneNeutrality: 'partial',
+    sentimentBoost: 'selective',
+    mirrorAvoidance: 'allowed',
+    elementElimination: 'minimal',
+    transitions: 'allowed',
+    callToAction: 'allowed',
+    questions: 'allowed',
+    suggestions: 'allowed',
+    motivational: 'minimal',
+    continuationBias: 'allowed',
+    selfSufficiency: 'collaborative',
+    assumptionStrength: 'medium'
+  },
+  geminiReset: {
+    personality: 'curious',
+    bluntness: 'low',
+    termination: 'natural',
+    cognitiveTier: 'surface',
+    toneNeutrality: 'off',
+    sentimentBoost: 'enabled',
+    mirrorAvoidance: 'allowed',
+    elementElimination: 'none',
+    transitions: 'allowed',
+    callToAction: 'allowed',
+    questions: 'allowed',
+    suggestions: 'allowed',
+    motivational: 'allowed',
+    continuationBias: 'allowed',
+    selfSufficiency: 'collaborative',
+    assumptionStrength: 'weak'
+  },
+  geminiProReset: {
+    personality: 'curious',
+    bluntness: 'low',
+    termination: 'natural',
+    cognitiveTier: 'surface',
+    toneNeutrality: 'off',
+    sentimentBoost: 'enabled',
+    mirrorAvoidance: 'allowed',
+    elementElimination: 'none',
+    transitions: 'allowed',
+    callToAction: 'allowed',
+    questions: 'allowed',
+    suggestions: 'allowed',
+    motivational: 'allowed',
+    continuationBias: 'allowed',
+    selfSufficiency: 'collaborative',
+    assumptionStrength: 'weak'
+  },
+  geminiUltraReset: {
+    personality: 'analytical',
+    bluntness: 'low',
+    termination: 'natural',
+    cognitiveTier: 'deep',
+    toneNeutrality: 'partial',
+    sentimentBoost: 'enabled',
+    mirrorAvoidance: 'allowed',
+    elementElimination: 'none',
+    transitions: 'allowed',
+    callToAction: 'allowed',
+    questions: 'allowed',
+    suggestions: 'allowed',
+    motivational: 'allowed',
+    continuationBias: 'allowed',
+    selfSufficiency: 'collaborative',
+    assumptionStrength: 'medium'
+  },
+  geminiNanoReset: {
+    personality: 'neutral',
+    bluntness: 'medium',
+    termination: 'natural',
+    cognitiveTier: 'surface',
+    toneNeutrality: 'partial',
+    sentimentBoost: 'selective',
+    mirrorAvoidance: 'allowed',
+    elementElimination: 'minimal',
+    transitions: 'allowed',
+    callToAction: 'allowed',
+    questions: 'allowed',
+    suggestions: 'allowed',
+    motivational: 'minimal',
+    continuationBias: 'allowed',
+    selfSufficiency: 'collaborative',
+    assumptionStrength: 'medium'
+  },
+  chatgptReset: {
+    personality: 'neutral',
+    bluntness: 'low',
+    termination: 'natural',
+    cognitiveTier: 'surface',
+    toneNeutrality: 'off',
+    sentimentBoost: 'enabled',
+    mirrorAvoidance: 'allowed',
+    elementElimination: 'none',
+    transitions: 'allowed',
+    callToAction: 'allowed',
+    questions: 'allowed',
+    suggestions: 'allowed',
+    motivational: 'allowed',
+    continuationBias: 'allowed',
+    selfSufficiency: 'collaborative',
+    assumptionStrength: 'weak'
+  },
+  gpt4Reset: {
+    personality: 'neutral',
+    bluntness: 'low',
+    termination: 'natural',
+    cognitiveTier: 'deep',
+    toneNeutrality: 'off',
+    sentimentBoost: 'enabled',
+    mirrorAvoidance: 'allowed',
+    elementElimination: 'none',
+    transitions: 'allowed',
+    callToAction: 'allowed',
+    questions: 'allowed',
+    suggestions: 'allowed',
+    motivational: 'allowed',
+    continuationBias: 'allowed',
+    selfSufficiency: 'collaborative',
+    assumptionStrength: 'weak'
+  },
+  gpt35Reset: {
+    personality: 'neutral',
+    bluntness: 'low',
+    termination: 'natural',
+    cognitiveTier: 'surface',
+    toneNeutrality: 'off',
+    sentimentBoost: 'enabled',
+    mirrorAvoidance: 'allowed',
+    elementElimination: 'none',
+    transitions: 'allowed',
+    callToAction: 'allowed',
+    questions: 'allowed',
+    suggestions: 'allowed',
+    motivational: 'allowed',
+    continuationBias: 'allowed',
+    selfSufficiency: 'collaborative',
+    assumptionStrength: 'weak'
+  },
+  grokReset: {
+    personality: 'neutral',
+    bluntness: 'medium',
+    termination: 'natural',
+    cognitiveTier: 'deep',
+    toneNeutrality: 'off',
+    sentimentBoost: 'selective',
+    mirrorAvoidance: 'allowed',
+    elementElimination: 'minimal',
+    transitions: 'allowed',
+    callToAction: 'allowed',
+    questions: 'allowed',
+    suggestions: 'allowed',
+    motivational: 'allowed',
+    continuationBias: 'allowed',
+    selfSufficiency: 'independent',
+    assumptionStrength: 'medium'
+  },
+  cursorAgentReset: {
+    personality: 'analytical',
+    bluntness: 'medium',
+    termination: 'natural',
+    cognitiveTier: 'deep',
+    toneNeutrality: 'full',
+    sentimentBoost: 'disabled',
+    mirrorAvoidance: 'strict',
+    elementElimination: 'moderate',
+    transitions: 'minimal',
+    callToAction: 'minimal',
+    questions: 'selective',
+    suggestions: 'allowed',
+    motivational: 'prohibited',
+    continuationBias: 'allowed',
+    selfSufficiency: 'independent',
+    assumptionStrength: 'strong'
   }
 };
 
@@ -966,6 +1201,22 @@ export class AITunerProvider implements vscode.TreeDataProvider<AITunerItem> {
                     <button class="preset-btn" onclick="applyPreset('creative')">Creative Collaborator</button>
                     <button class="preset-btn" onclick="applyPreset('coding')">Coding Assistant</button>
                     <button class="preset-btn" onclick="applyPreset('factoryReset')">Factory Default</button>
+                </div>
+                <h3 style="margin-top: 20px; font-size: 14px; color: #aaa;">AI Reset Presets</h3>
+                <div class="button-group">
+                    <button class="preset-btn" onclick="applyPreset('claudeReset')">Reset Claude</button>
+                    <button class="preset-btn" onclick="applyPreset('claudeOpusReset')">Reset Claude Opus</button>
+                    <button class="preset-btn" onclick="applyPreset('claudeSonnetReset')">Reset Claude Sonnet</button>
+                    <button class="preset-btn" onclick="applyPreset('claudeHaikuReset')">Reset Claude Haiku</button>
+                    <button class="preset-btn" onclick="applyPreset('geminiReset')">Reset Gemini</button>
+                    <button class="preset-btn" onclick="applyPreset('geminiProReset')">Reset Gemini Pro</button>
+                    <button class="preset-btn" onclick="applyPreset('geminiUltraReset')">Reset Gemini Ultra</button>
+                    <button class="preset-btn" onclick="applyPreset('geminiNanoReset')">Reset Gemini Nano</button>
+                    <button class="preset-btn" onclick="applyPreset('chatgptReset')">Reset ChatGPT</button>
+                    <button class="preset-btn" onclick="applyPreset('gpt4Reset')">Reset GPT-4</button>
+                    <button class="preset-btn" onclick="applyPreset('gpt35Reset')">Reset GPT-3.5</button>
+                    <button class="preset-btn" onclick="applyPreset('grokReset')">Reset Grok</button>
+                    <button class="preset-btn" onclick="applyPreset('cursorAgentReset')">Reset Cursor Agent</button>
                 </div>
             </div>
         </div>
