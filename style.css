@@ -75,7 +75,7 @@ main {
 
 .main-content {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 1fr 2fr;
     gap: 60px;
     align-items: start;
     min-height: calc(100vh - 200px);
@@ -346,9 +346,15 @@ select:hover {
         gap: 40px;
     }
     
+    /* Put radar/preview on top in single column mode */
+    .controls-section {
+        order: 2;
+    }
+    
     .preview-section {
         position: static;
         max-height: none;
+        order: 1;
     }
     
     h1 {
