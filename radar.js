@@ -3,34 +3,47 @@
 let radarChart = null;
 
 function valueToNum(v) {
+    if (v === null || v === undefined || v === '') return 0;
+    
+    // Convert to string and lowercase for consistent mapping
+    const normalized = String(v).toLowerCase();
+    
     const map = {
-        Low: 0, Medium: 1, High: 2, Absolute: 3,
-        Surface: 0, Deep: 1,
-        Natural: 0, Abrupt: 1,
-        Disabled: 0, Selective: 1, Enabled: 2,
-        Prohibited: 0, "On-Request": 1, Proactive: 2,
-        None: 0, Minimal: 1, Moderate: 2, Strict: 3,
-        Full: 0, Partial: 1, Off: 2,
-        Weak: 0, Medium: 1, Strong: 2,
-        Suppressed: 0, Allowed: 1,
-        Collaborative: 0, Independent: 1, Obsolescence: 2,
-        Disabled: 0, Subtle: 1, Overt: 2,
-        // Lowercase variants
+        // Bluntness
         low: 0, medium: 1, high: 2, absolute: 3,
+        // Cognitive Tier / Targeting
         surface: 0, deep: 1,
+        // Termination
         natural: 0, abrupt: 1,
+        // Sentiment Boost / Sentiment Boosting
         disabled: 0, selective: 1, enabled: 2,
-        prohibited: 0, "on-request": 1, proactive: 2,
+        // Tool Invocation
+        prohibited: 0, 'on-request': 1, 'onrequest': 1, proactive: 2,
+        // Element Elimination
         none: 0, minimal: 1, moderate: 2, strict: 3,
+        // Tone Neutrality
         full: 0, partial: 1, off: 2,
+        // Assumption Strength
         weak: 0, strong: 2,
+        // Continuation Bias
         suppressed: 0, allowed: 1,
+        // Self Sufficiency
         collaborative: 0, independent: 1, obsolescence: 2,
-        subtle: 1, overt: 2,
+        // Cosmic Perspective
+        disabled: 0, subtle: 1, overt: 2,
+        // Uncertainty Admission
         required: 2,
-        'comfort-first': 0, balanced: 1, 'truth-first': 2, absolute: 3
+        // Truth Prioritization
+        'comfort-first': 0, 'comfortfirst': 0, balanced: 1, 'truth-first': 2, 'truthfirst': 2, absolute: 3,
+        // Self Referential Humor
+        // (already covered by disabled/selective/enabled)
+        // Absurdism Injection
+        // (already covered by disabled/selective/enabled)
+        // Real-Time Data Bias
+        'static-cutoff': 1, 'staticcutoff': 1
     };
-    return map[v] ?? 0;
+    
+    return map[normalized] ?? 0;
 }
 
 function numToValue(n, fieldType) {
@@ -100,14 +113,31 @@ function drawRadar(preset) {
         return;
     }
     
+    // Normalize field names to handle Grok's variations (targeting→cognitiveTier, sentimentBoosting→sentimentBoost, etc.)
+    const normalizedPreset = {
+        bluntness: preset.bluntness || 'medium',
+        cognitiveTier: preset.cognitiveTier || preset.targeting || 'surface',
+        sentimentBoost: preset.sentimentBoost || preset.sentimentBoosting || 'selective',
+        truthPrioritization: preset.truthPrioritization || 'balanced',
+        selfReferentialHumor: preset.selfReferentialHumor || 'disabled',
+        cosmicPerspective: preset.cosmicPerspective || 'disabled'
+    };
+    
+    // Normalize values to lowercase for consistent mapping
+    const normalizeValue = (val) => {
+        if (!val || val === null || val === undefined) return '';
+        if (typeof val !== 'string') return String(val).toLowerCase();
+        return val.toLowerCase();
+    };
+    
     // Use fallback values for optional fields
     const data = [
-        valueToNum(preset.bluntness || 'medium'),
-        valueToNum(preset.cognitiveTier || 'surface'),
-        valueToNum(preset.sentimentBoost || 'selective'),
-        valueToNum(preset.truthPrioritization || 'balanced'),
-        valueToNum(preset.selfReferentialHumor || 'selective'),
-        valueToNum(preset.cosmicPerspective || 'disabled')
+        valueToNum(normalizeValue(normalizedPreset.bluntness) || 'medium'),
+        valueToNum(normalizeValue(normalizedPreset.cognitiveTier) || 'surface'),
+        valueToNum(normalizeValue(normalizedPreset.sentimentBoost) || 'selective'),
+        valueToNum(normalizeValue(normalizedPreset.truthPrioritization) || 'balanced'),
+        valueToNum(normalizeValue(normalizedPreset.selfReferentialHumor) || 'disabled'),
+        valueToNum(normalizeValue(normalizedPreset.cosmicPerspective) || 'disabled')
     ];
     
     if (radarChart) {

@@ -189,7 +189,7 @@
                 </div>
 
                 <div class="category-group">
-                    <h2>Truth & Epistemology</h2>
+                    <h2>Truth & Epistemology <span class="info-btn" data-category="truth">ℹ</span></h2>
                     <div class="control-item">
                         <label for="truth-prioritization">Truth Prioritization</label>
                         <select id="truth-prioritization">
@@ -220,7 +220,7 @@
                 </div>
 
                 <div class="category-group">
-                    <h2>Humor & Meta</h2>
+                    <h2>Humor & Meta <span class="info-btn" data-category="humor">ℹ</span></h2>
                     <div class="control-item">
                         <label for="self-referential-humor">Self-Referential Humor</label>
                         <select id="self-referential-humor">
@@ -241,7 +241,7 @@
                 </div>
 
                 <div class="category-group">
-                    <h2>Knowledge & Tool Use</h2>
+                    <h2>Knowledge & Tool Use <span class="info-btn" data-category="knowledge">ℹ</span></h2>
                     <div class="control-item">
                         <label for="tool-invocation">Tool Invocation</label>
                         <select id="tool-invocation">
@@ -368,6 +368,11 @@
                     </div>
                     <button class="preset-btn" data-preset="grokReset">Reset Grok</button>
                     <button class="preset-btn" data-preset="cursorAgentReset">Reset Cursor Agent</button>
+                </div>
+                
+                <h2 style="margin-top: 30px; font-size: 18px; color: #666;">Saved Presets</h2>
+                <div id="saved-presets-container" class="preset-buttons">
+                    <p style="color: #999; font-style: italic; margin: 10px 0;">No saved presets yet. Use "Save Preset" to create one.</p>
                 </div>
             </div>
         </main>

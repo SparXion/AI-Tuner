@@ -97,12 +97,15 @@ class AITuner {
         this.saveBtn.addEventListener('click', () => this.savePreset());
         this.loadBtn.addEventListener('click', () => this.loadPreset());
 
-        // Preset button listeners
-        document.querySelectorAll('.preset-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                this.applyPreset(e.target.dataset.preset);
-                if (window.aiTunerAnalytics) window.aiTunerAnalytics.trackPresetUsed(e.target.dataset.preset);
-            });
+        // Preset button listeners - use event delegation to handle dynamically added buttons
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('preset-btn')) {
+                const presetName = e.target.dataset.preset;
+                if (presetName) {
+                    this.applyPreset(presetName);
+                    if (window.aiTunerAnalytics) window.aiTunerAnalytics.trackPresetUsed(presetName);
+                }
+            }
         });
 
         // Info button listeners
@@ -954,6 +957,55 @@ ${this.generateSettingsTable(settings)}
                     <h4>Best Use Cases:</h4>
                     <p>Suppress continuation bias for efficiency, aim for obsolescence in educational contexts, assume high capability for expert users.</p>
                 `
+            },
+            truth: {
+                title: "Truth & Epistemology",
+                content: `
+                    <h4>What is Truth & Epistemology?</h4>
+                    <p>This category controls how the AI prioritizes truth, transparency, and acknowledges uncertainty. It determines the epistemological approach to knowledge and information.</p>
+                    
+                    <h4>Key Controls:</h4>
+                    <ul>
+                        <li><strong>Truth Prioritization:</strong> Whether to prioritize truth over comfort, or balance both concerns. Absolute prioritization means truth takes precedence even when uncomfortable.</li>
+                        <li><strong>Source Transparency:</strong> Whether the AI shows its reasoning chains, evidence sources, and how it arrived at conclusions. Enabled means full transparency of sources.</li>
+                        <li><strong>Uncertainty Admission:</strong> Whether the AI must flag unknowns, speculation, or uncertain information. Required means the AI must explicitly state when it doesn't know something.</li>
+                    </ul>
+                    
+                    <h4>Best Use Cases:</h4>
+                    <p>Absolute truth prioritization for critical research, enabled source transparency for academic work, required uncertainty admission for medical or legal contexts where accuracy is paramount.</p>
+                `
+            },
+            humor: {
+                title: "Humor & Meta",
+                content: `
+                    <h4>What is Humor & Meta?</h4>
+                    <p>This category controls meta-level humor and absurdism in AI responses. It determines whether the AI can break the fourth wall, reference itself, or use cosmic irony.</p>
+                    
+                    <h4>Key Controls:</h4>
+                    <ul>
+                        <li><strong>Self-Referential Humor:</strong> Whether the AI can break the fourth wall and make jokes about being an AI. Allowed means the AI can use self-aware humor sparingly.</li>
+                        <li><strong>Absurdism Injection:</strong> Whether the AI can inject rare cosmic irony or absurdist observations when they amplify insight. Enabled allows the AI to use absurdism to highlight deeper truths.</li>
+                    </ul>
+                    
+                    <h4>Best Use Cases:</h4>
+                    <p>Allowed self-referential humor for engaging, human-like interactions (like Grok). Selective absurdism for creative problem-solving. Disabled for formal or professional contexts.</p>
+                `
+            },
+            knowledge: {
+                title: "Knowledge & Tool Use",
+                content: `
+                    <h4>What is Knowledge & Tool Use?</h4>
+                    <p>This category controls how the AI uses tools, searches, and approaches knowledge. It determines whether the AI proactively seeks information or treats knowledge as static.</p>
+                    
+                    <h4>Key Controls:</h4>
+                    <ul>
+                        <li><strong>Tool Invocation:</strong> Whether the AI can automatically use search, code analysis, or other tools. Proactive means the AI will automatically use tools when helpful without being asked.</li>
+                        <li><strong>Real-Time Data Bias:</strong> Whether the AI prefers the latest information and treats knowledge as live/evolving. Enabled means the AI prioritizes up-to-date information and acknowledges that knowledge changes.</li>
+                    </ul>
+                    
+                    <h4>Best Use Cases:</h4>
+                    <p>Proactive tool invocation for research assistants or coding helpers. Enabled real-time data bias for current events, news, or rapidly changing information. Prohibited tool invocation for controlled environments.</p>
+                `
             }
         };
 
@@ -1447,8 +1499,8 @@ ${this.generateSettingsTable(settings)}
     }
     
     renderCustomPresets() {
-        const presetButtonsContainer = document.querySelector('.preset-buttons');
-        if (!presetButtonsContainer) return;
+        const savedPresetsContainer = document.getElementById('saved-presets-container');
+        if (!savedPresetsContainer) return;
         
         // Get all custom preset names (exclude built-in presets)
         const builtInPresets = ['absolute', 'friendly', 'analytical', 'minimal', 'creative', 'coding', 'standard', 'factoryReset',
@@ -1458,26 +1510,66 @@ ${this.generateSettingsTable(settings)}
         
         const customPresetNames = Object.keys(this.presets).filter(name => !builtInPresets.includes(name));
         
-        // Remove existing custom preset buttons
-        const existingCustomButtons = presetButtonsContainer.querySelectorAll('.preset-btn.custom');
-        existingCustomButtons.forEach(btn => btn.remove());
+        // Clear container
+        savedPresetsContainer.innerHTML = '';
         
-        // Add custom preset buttons
+        // Show message if no custom presets
+        if (customPresetNames.length === 0) {
+            const message = document.createElement('p');
+            message.style.cssText = 'color: #999; font-style: italic; margin: 10px 0;';
+            message.textContent = 'No saved presets yet. Use "Save Preset" to create one.';
+            savedPresetsContainer.appendChild(message);
+            return;
+        }
+        
+        // Add custom preset buttons with delete functionality
         customPresetNames.forEach(presetName => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'preset-item-wrapper';
+            wrapper.style.cssText = 'display: inline-flex; align-items: center; gap: 5px; margin: 5px;';
+            
             const button = document.createElement('button');
             button.className = 'preset-btn custom';
             button.textContent = presetName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
             button.setAttribute('data-preset', presetName);
-            presetButtonsContainer.appendChild(button);
-        });
-        
-        // Reattach event listeners to all preset buttons
-        document.querySelectorAll('.preset-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                this.applyPreset(e.target.dataset.preset);
-                if (window.aiTunerAnalytics) window.aiTunerAnalytics.trackPresetUsed(e.target.dataset.preset);
+            
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'preset-delete-btn';
+            deleteBtn.innerHTML = '×';
+            deleteBtn.title = 'Delete preset';
+            deleteBtn.style.cssText = 'background: #ff4444; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 18px; line-height: 1; padding: 0; display: flex; align-items: center; justify-content: center; flex-shrink: 0;';
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.deletePreset(presetName);
             });
+            
+            wrapper.appendChild(button);
+            wrapper.appendChild(deleteBtn);
+            savedPresetsContainer.appendChild(wrapper);
         });
+    }
+    
+    deletePreset(presetName) {
+        if (!presetName) return;
+        
+        const confirmDelete = confirm(`Are you sure you want to delete the preset "${presetName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}"?`);
+        if (!confirmDelete) return;
+        
+        // Remove from presets object
+        delete this.presets[presetName];
+        
+        // Update localStorage
+        localStorage.setItem('ai_tuner_presets', JSON.stringify(this.presets));
+        
+        // Re-render custom presets
+        this.renderCustomPresets();
+        
+        // Show feedback
+        const message = document.createElement('div');
+        message.textContent = 'Preset deleted';
+        message.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #333; color: white; padding: 10px 20px; border-radius: 4px; z-index: 10000;';
+        document.body.appendChild(message);
+        setTimeout(() => message.remove(), 2000);
     }
 
     applyPreset(presetName) {
@@ -1693,7 +1785,9 @@ function loadModelPersona() {
         // Generate prompt and update radar
         window.aiTuner.generatePrompt();
         if (typeof drawRadar === 'function') {
-            drawRadar(preset);
+            // Use getCurrentSettings to get normalized field names
+            const currentSettings = window.aiTuner.getCurrentSettings();
+            drawRadar(currentSettings);
         }
     } else {
         console.error('AITuner not initialized');
@@ -1803,7 +1897,9 @@ function blendWithModel() {
         // Generate prompt and update radar
         window.aiTuner.generatePrompt();
         if (typeof drawRadar === 'function') {
-            drawRadar(blended);
+            // Use getCurrentSettings to get normalized field names after blending
+            const currentSettings = window.aiTuner.getCurrentSettings();
+            drawRadar(currentSettings);
         }
     } else {
         console.error('AITuner not initialized');
