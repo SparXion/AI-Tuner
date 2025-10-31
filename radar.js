@@ -94,25 +94,11 @@ function drawRadar(preset) {
     const canvas = document.getElementById("radarCanvas");
     if (!canvas) return;
     
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    
-    // Get container width for responsive sizing
-    const container = canvas.parentElement || document.querySelector('.main-content');
-    const containerWidth = container ? container.clientWidth : window.innerWidth;
-    
-    // Calculate responsive size (between 150px and 400px based on container width)
-    const minSize = 150;
-    const maxSize = 400;
-    const preferredSize = Math.min(maxSize, Math.max(minSize, containerWidth * 0.25));
-    
-    // Set canvas dimensions for high DPI displays
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width = preferredSize * dpr;
-    canvas.height = preferredSize * dpr;
-    canvas.style.width = preferredSize + 'px';
-    canvas.style.height = preferredSize + 'px';
-    ctx.scale(dpr, dpr);
+    // Check if Chart is available
+    if (typeof Chart === 'undefined') {
+        console.warn('Chart.js not loaded');
+        return;
+    }
     
     // Use fallback values for optional fields
     const data = [
@@ -128,13 +114,7 @@ function drawRadar(preset) {
         radarChart.destroy();
     }
     
-    // Check if Chart is available
-    if (typeof Chart === 'undefined') {
-        console.warn('Chart.js not loaded');
-        return;
-    }
-    
-    radarChart = new Chart(ctx, {
+    radarChart = new Chart(canvas, {
         type: "radar",
         data: {
             labels: ["Bluntness", "Depth", "Positivity", "Truth", "Self-Humor", "Cosmic"],
@@ -149,27 +129,45 @@ function drawRadar(preset) {
         options: {
             responsive: true,
             maintainAspectRatio: true,
+            aspectRatio: 1,
+            resizeDelay: 100,
             scales: {
                 r: {
                     beginAtZero: true,
-                    max: 3
+                    max: 3,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
                 }
             }
         }
     });
 }
 
-// Redraw radar chart on window resize
+// Redraw radar chart on window resize with debouncing
 let resizeTimeout;
-window.addEventListener('resize', () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-        if (window.aiTuner && typeof window.aiTuner.getCurrentSettings === 'function') {
-            const currentSettings = window.aiTuner.getCurrentSettings();
-            if (currentSettings && typeof drawRadar === 'function') {
-                drawRadar(currentSettings);
+let isResizing = false;
+
+function handleResize() {
+    if (!isResizing) {
+        isResizing = true;
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            if (window.aiTuner && typeof window.aiTuner.getCurrentSettings === 'function') {
+                const currentSettings = window.aiTuner.getCurrentSettings();
+                if (currentSettings && typeof drawRadar === 'function') {
+                    drawRadar(currentSettings);
+                }
             }
-        }
-    }, 250); // Debounce resize events
-});
+            isResizing = false;
+        }, 300);
+    }
+}
+
+window.addEventListener('resize', handleResize);
 
