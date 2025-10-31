@@ -97,6 +97,23 @@ function drawRadar(preset) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     
+    // Get container width for responsive sizing
+    const container = canvas.parentElement || document.querySelector('.main-content');
+    const containerWidth = container ? container.clientWidth : window.innerWidth;
+    
+    // Calculate responsive size (between 150px and 400px based on container width)
+    const minSize = 150;
+    const maxSize = 400;
+    const preferredSize = Math.min(maxSize, Math.max(minSize, containerWidth * 0.25));
+    
+    // Set canvas dimensions for high DPI displays
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = preferredSize * dpr;
+    canvas.height = preferredSize * dpr;
+    canvas.style.width = preferredSize + 'px';
+    canvas.style.height = preferredSize + 'px';
+    ctx.scale(dpr, dpr);
+    
     // Use fallback values for optional fields
     const data = [
         valueToNum(preset.bluntness || 'medium'),
@@ -130,6 +147,8 @@ function drawRadar(preset) {
             }]
         },
         options: {
+            responsive: true,
+            maintainAspectRatio: true,
             scales: {
                 r: {
                     beginAtZero: true,
@@ -139,4 +158,18 @@ function drawRadar(preset) {
         }
     });
 }
+
+// Redraw radar chart on window resize
+let resizeTimeout;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+        if (window.aiTuner && typeof window.aiTuner.getCurrentSettings === 'function') {
+            const currentSettings = window.aiTuner.getCurrentSettings();
+            if (currentSettings && typeof drawRadar === 'function') {
+                drawRadar(currentSettings);
+            }
+        }
+    }, 250); // Debounce resize events
+});
 
