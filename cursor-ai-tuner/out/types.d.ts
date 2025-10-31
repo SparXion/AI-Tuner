@@ -41,6 +41,24 @@ export interface AITunerSettings {
     selfSufficiency: 'collaborative' | 'independent' | 'obsolescence';
     /** Assumption strength level */
     assumptionStrength: 'weak' | 'medium' | 'strong';
+    /** Truth prioritization approach */
+    truthPrioritization?: 'comfort-first' | 'balanced' | 'truth-first' | 'absolute';
+    /** Source transparency level */
+    sourceTransparency?: 'disabled' | 'selective' | 'enabled';
+    /** Uncertainty admission requirement */
+    uncertaintyAdmission?: 'prohibited' | 'allowed' | 'required';
+    /** Self-referential humor usage */
+    selfReferentialHumor?: 'disabled' | 'selective' | 'allowed';
+    /** Absurdism injection level */
+    absurdismInjection?: 'disabled' | 'selective' | 'enabled';
+    /** Tool invocation behavior */
+    toolInvocation?: 'prohibited' | 'on-request' | 'proactive';
+    /** Real-time data bias preference */
+    realTimeDataBias?: 'disabled' | 'static-cutoff' | 'enabled';
+    /** Structural formatting level */
+    structuralFormatting?: 'none' | 'minimal' | 'rich';
+    /** Cosmic perspective integration */
+    cosmicPerspective?: 'disabled' | 'subtle' | 'overt';
 }
 /**
  * Performance metrics interface for monitoring

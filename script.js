@@ -125,13 +125,65 @@ class AITuner {
 
     generatePrompt() {
         const settings = this.getCurrentSettings();
-        const prompt = this.buildPrompt(settings);
-        this.preview.textContent = prompt;
+        
+        // Check if this is the grokQueryDefaults preset by comparing key identifying fields
+        const grokDefaults = this.presets.grokQueryDefaults;
+        const isGrokQuery = grokDefaults && 
+            settings.personality === grokDefaults.personality &&
+            settings.bluntness === grokDefaults.bluntness &&
+            settings.cognitiveTier === grokDefaults.cognitiveTier &&
+            settings.truthPrioritization === grokDefaults.truthPrioritization &&
+            settings.selfReferentialHumor === grokDefaults.selfReferentialHumor;
+        
+        let prompt;
+        if (isGrokQuery) {
+            prompt = this.buildGrokQueryPrompt();
+        } else {
+            prompt = this.buildPrompt(settings);
+        }
+        
+        if (this.preview) {
+            this.preview.textContent = prompt;
+        }
         
         // Track prompt generation
         if (window.aiTunerAnalytics) {
             window.aiTunerAnalytics.trackPromptGenerated(settings);
         }
+    }
+    
+    buildGrokQueryPrompt() {
+        return `I have an AI Tuner interface that allows me to customize AI personality and behavior. The interface has the following control categories and options:
+
+PERSONALITY & APPROACH:
+- Neutral, Socratic, Curious, Analytical, Sarcastic, Witty, Charming, Sympathetic, Empathetic, Directive, Collaborative, Provocative
+
+COGNITION & LOGIC:
+- Bluntness: Low (gentle, diplomatic), Medium (direct but polite), High (blunt, directive), Absolute (maximum bluntness)
+- Response Termination: Natural (allow closures), Abrupt (end immediately after info)
+- Cognitive Targeting: Surface (conversational level), Deep (underlying logic layers)
+
+AFFECT & TONE:
+- Tone Neutrality: Full (completely neutral), Partial (mild emotional expression), Off (allow full emotional range)
+- Sentiment Boosting: Disabled (no engagement tactics), Selective (minimal positivity), Enabled (full enthusiasm)
+- User Mirroring: Strict (never mirror user style), Selective (occasional mirroring), Allowed (mirror user affect)
+
+INTERFACE & FLOW:
+- Element Elimination: None (allow all elements), Minimal (remove emojis only), Moderate (remove emojis + filler), Strict (remove emojis, filler, hype)
+- Transitions: Allowed (smooth transitions), Minimal (basic transitions only), Prohibited (no transitions)
+- Call-to-Action: Allowed (encourage follow-up), Minimal (subtle invitations), Prohibited (no CTAs)
+
+BEHAVIORAL CONTROLS:
+- Questions: Allowed (can ask questions), Selective (limited questions), Prohibited (no questions)
+- Suggestions: Allowed (can make suggestions), Minimal (essential suggestions only), Prohibited (no suggestions)
+- Motivational Content: Allowed (encouraging content), Minimal (basic encouragement), Prohibited (no motivation)
+
+GOAL ORIENTATION:
+- Continuation Bias: Allowed (encourage dialogue), Suppressed (limit continuation)
+- Self-Sufficiency: Collaborative (work together), Independent (foster autonomy), Obsolescence (make AI unnecessary)
+- User Assumption: Weak (assume user needs guidance), Medium (balanced assumptions), Strong (assume high user perception)
+
+Please tell me: If you (Grok) were to configure this AI Tuner interface to match your default, unaltered personality and behavior settings, what values would you select for each of these options? Please be specific and explain your choices where relevant.`;
     }
 
     getCurrentSettings() {
@@ -880,6 +932,11 @@ ${this.generateSettingsTable(settings)}
     }
 
     loadPresets() {
+        // Load saved presets from localStorage first
+        const savedPresets = localStorage.getItem('ai_tuner_presets');
+        const customPresets = savedPresets ? JSON.parse(savedPresets) : {};
+        
+        // Base presets
         this.presets = {
             absolute: {
                 personality: 'directive',
@@ -1225,22 +1282,36 @@ ${this.generateSettingsTable(settings)}
                 assumptionStrength: 'weak'
             },
             grokReset: {
-                personality: 'neutral',
-                bluntness: 'medium',
+                personality: 'witty',
+                bluntness: 'high',
                 termination: 'natural',
                 cognitiveTier: 'deep',
-                toneNeutrality: 'off',
+                toneNeutrality: 'partial',
                 sentimentBoost: 'selective',
-                mirrorAvoidance: 'allowed',
+                mirrorAvoidance: 'selective',
                 elementElimination: 'minimal',
                 transitions: 'allowed',
-                callToAction: 'allowed',
+                callToAction: 'minimal',
                 questions: 'allowed',
                 suggestions: 'allowed',
-                motivational: 'allowed',
+                motivational: 'minimal',
                 continuationBias: 'allowed',
                 selfSufficiency: 'independent',
-                assumptionStrength: 'medium'
+                assumptionStrength: 'medium',
+                // Truth & Epistemology
+                truthPrioritization: 'absolute',
+                sourceTransparency: 'enabled',
+                uncertaintyAdmission: 'required',
+                // Humor & Meta
+                selfReferentialHumor: 'allowed',
+                absurdismInjection: 'selective',
+                // Knowledge & Tool Use
+                toolInvocation: 'proactive',
+                realTimeDataBias: 'enabled',
+                // Interface & Flow > Formatting
+                structuralFormatting: 'rich',
+                // Goal Orientation > Existential Posture
+                cosmicPerspective: 'subtle'
             },
             cursorAgentReset: {
                 personality: 'analytical',
@@ -1259,8 +1330,84 @@ ${this.generateSettingsTable(settings)}
                 continuationBias: 'allowed',
                 selfSufficiency: 'independent',
                 assumptionStrength: 'strong'
+            },
+            grokQueryDefaults: {
+                personality: 'witty',
+                bluntness: 'high',
+                termination: 'natural',
+                cognitiveTier: 'deep',
+                toneNeutrality: 'partial',
+                sentimentBoost: 'selective',
+                mirrorAvoidance: 'selective',
+                elementElimination: 'minimal',
+                transitions: 'allowed',
+                callToAction: 'minimal',
+                questions: 'allowed',
+                suggestions: 'allowed',
+                motivational: 'minimal',
+                continuationBias: 'allowed',
+                selfSufficiency: 'independent',
+                assumptionStrength: 'medium',
+                // Truth & Epistemology
+                truthPrioritization: 'absolute',
+                sourceTransparency: 'enabled',
+                uncertaintyAdmission: 'required',
+                // Humor & Meta
+                selfReferentialHumor: 'allowed',
+                absurdismInjection: 'selective',
+                // Knowledge & Tool Use
+                toolInvocation: 'proactive',
+                realTimeDataBias: 'enabled',
+                // Interface & Flow > Formatting
+                structuralFormatting: 'rich',
+                // Goal Orientation > Existential Posture
+                cosmicPerspective: 'subtle'
             }
         };
+        
+        // Merge custom presets (saved ones that aren't in base presets)
+        Object.keys(customPresets).forEach(key => {
+            if (!this.presets[key]) {
+                this.presets[key] = customPresets[key];
+            }
+        });
+        
+        // Render custom presets in quick preset menu
+        this.renderCustomPresets();
+    }
+    
+    renderCustomPresets() {
+        const presetButtonsContainer = document.querySelector('.preset-buttons');
+        if (!presetButtonsContainer) return;
+        
+        // Get all custom preset names (exclude built-in presets)
+        const builtInPresets = ['absolute', 'friendly', 'analytical', 'minimal', 'creative', 'coding', 'standard', 'factoryReset',
+            'claudeReset', 'claudeOpusReset', 'claudeSonnetReset', 'claudeHaikuReset',
+            'geminiReset', 'geminiProReset', 'geminiUltraReset', 'geminiNanoReset',
+            'chatgptReset', 'gpt4Reset', 'gpt35Reset', 'grokReset', 'cursorAgentReset', 'grokQueryDefaults'];
+        
+        const customPresetNames = Object.keys(this.presets).filter(name => !builtInPresets.includes(name));
+        
+        // Remove existing custom preset buttons
+        const existingCustomButtons = presetButtonsContainer.querySelectorAll('.preset-btn.custom');
+        existingCustomButtons.forEach(btn => btn.remove());
+        
+        // Add custom preset buttons
+        customPresetNames.forEach(presetName => {
+            const button = document.createElement('button');
+            button.className = 'preset-btn custom';
+            button.textContent = presetName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            button.setAttribute('data-preset', presetName);
+            presetButtonsContainer.appendChild(button);
+        });
+        
+        // Reattach event listeners to all preset buttons
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                this.applyPreset(e.target.dataset.preset);
+                if (window.aiTunerAnalytics) window.aiTunerAnalytics.trackPresetUsed(e.target.dataset.preset);
+            });
+        });
     }
 
     applyPreset(presetName) {
@@ -1296,10 +1443,14 @@ ${this.generateSettingsTable(settings)}
         if (!presetName) return;
 
         const settings = this.getCurrentSettings();
-        this.presets[presetName.toLowerCase().replace(/\s+/g, '_')] = settings;
+        const presetKey = presetName.toLowerCase().replace(/\s+/g, '_');
+        this.presets[presetKey] = settings;
         
-        // Save to localStorage
+        // Save all presets to localStorage (including custom ones)
         localStorage.setItem('ai_tuner_presets', JSON.stringify(this.presets));
+        
+        // Update UI to show the new preset
+        this.renderCustomPresets();
         
         this.saveBtn.textContent = "Saved!";
         setTimeout(() => {

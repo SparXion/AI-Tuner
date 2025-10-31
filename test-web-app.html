@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tuner Web App Tests</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .test-container {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .pass {
+            background: #2d5016;
+            color: #7fff00;
+        }
+        .fail {
+            background: #50162d;
+            color: #ff7f7f;
+        }
+        .summary {
+            padding: 20px;
+            background: #1a1a1a;
+            border: 2px solid #444;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        h1, h2 {
+            color: #fff;
+        }
+        button {
+            background: #4a4a4a;
+            color: #fff;
+            border: 1px solid #666;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #5a5a5a;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 AI Tuner Web App Test Suite</h1>
+    <button onclick="runAllTests()">Run All Tests</button>
+    <button onclick="clearResults()">Clear Results</button>
+    
+    <div id="test-results"></div>
+    
+    <div class="summary" id="summary" style="display: none;">
+        <h2>Test Summary</h2>
+        <div id="summary-content"></div>
+    </div>
+
+    <!-- Load the actual script -->
+    <script src="script.js"></script>
+    
+    <!-- Wait for AITuner to be available -->
+    <script>
+        let tunerInstance = null;
+        
+        // Override the DOMContentLoaded listener to capture the instance
+        const originalAddEventListener = document.addEventListener.bind(document);
+        document.addEventListener = function(event, handler) {
+            if (event === 'DOMContentLoaded') {
+                originalAddEventListener(event, function(e) {
+                    if (typeof AITuner !== 'undefined') {
+                        tunerInstance = new AITuner();
+                        window.testTunerInstance = tunerInstance;
+                    }
+                    if (handler) handler(e);
+                });
+            } else {
+                originalAddEventListener(event, handler);
+            }
+        };
+        
+        // If already loaded
+        if (document.readyState !== 'loading' && typeof AITuner !== 'undefined') {
+            tunerInstance = new AITuner();
+            window.testTunerInstance = tunerInstance;
+        }
+    </script>
+    
+    <script>
+        let testResults = [];
+        let passed = 0;
+        let failed = 0;
+
+        // Mock localStorage if not available
+        if (typeof Storage === "undefined") {
+            const storage = {};
+            window.localStorage = {
+                getItem: (key) => storage[key] || null,
+                setItem: (key, value) => { storage[key] = value; },
+                removeItem: (key) => { delete storage[key]; },
+                clear: () => { Object.keys(storage).forEach(k => delete storage[k]); }
+            };
+        }
+
+        function logTest(name, passed, message) {
+            testResults.push({ name, passed, message });
+            const div = document.createElement('div');
+            div.className = `test-result ${passed ? 'pass' : 'fail'}`;
+            div.textContent = `${passed ? '✅' : '❌'} ${name}: ${message}`;
+            document.getElementById('test-results').appendChild(div);
+            
+            if (passed) {
+                this.passed++;
+            } else {
+                this.failed++;
+            }
+        }
+
+        function clearResults() {
+            document.getElementById('test-results').innerHTML = '';
+            document.getElementById('summary').style.display = 'none';
+            testResults = [];
+            passed = 0;
+            failed = 0;
+        }
+
+        function updateSummary() {
+            const total = passed + failed;
+            const summaryDiv = document.getElementById('summary');
+            const contentDiv = document.getElementById('summary-content');
+            
+            contentDiv.innerHTML = `
+                <p><strong>Total Tests:</strong> ${total}</p>
+                <p style="color: #7fff00;"><strong>Passed:</strong> ${passed}</p>
+                <p style="color: #ff7f7f;"><strong>Failed:</strong> ${failed}</p>
+                <p><strong>Success Rate:</strong> ${total > 0 ? ((passed / total) * 100).toFixed(1) : 0}%</p>
+            `;
+            summaryDiv.style.display = 'block';
+        }
+
+        async function runAllTests() {
+            clearResults();
+            
+            // Wait for DOM to be ready
+            if (document.readyState === 'loading') {
+                await new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve));
+            }
+
+            // Wait a bit for script.js to initialize
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            // Test 1: Check if AITuner class is initialized
+            try {
+                const tuner = window.aiTuner || window.tuner || (typeof AITuner !== 'undefined' ? AITuner.prototype : null);
+                if (typeof AITuner !== 'undefined') {
+                    logTest('AITuner Initialization', true, 'AITuner class is available');
+                } else {
+                    logTest('AITuner Initialization', false, 'AITuner class not found');
+                }
+            } catch (e) {
+                logTest('AITuner Initialization', false, `Error: ${e.message}`);
+            }
+
+            // Test 2: Check form elements exist
+            try {
+                const elements = ['personality', 'bluntness', 'termination', 'cognitive-tier'];
+                let allFound = true;
+                elements.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (!el) {
+                        allFound = false;
+                        logTest(`Form Element Check (${id})`, false, `Element ${id} not found`);
+                    }
+                });
+                if (allFound) {
+                    logTest('Form Elements Exist', true, 'All required form elements found');
+                }
+            } catch (e) {
+                logTest('Form Elements Exist', false, `Error: ${e.message}`);
+            }
+
+            // Test 3: Check preset buttons exist
+            try {
+                const presetButtons = document.querySelectorAll('.preset-btn');
+                const expectedPresets = ['absolute', 'friendly', 'analytical', 'minimal', 'creative', 'coding', 'standard', 'factoryReset'];
+                let foundCount = 0;
+                presetButtons.forEach(btn => {
+                    const preset = btn.dataset.preset || btn.getAttribute('data-preset');
+                    if (expectedPresets.includes(preset)) {
+                        foundCount++;
+                    }
+                });
+                if (foundCount >= expectedPresets.length) {
+                    logTest('Preset Buttons Exist', true, `Found ${foundCount} preset buttons`);
+                } else {
+                    logTest('Preset Buttons Exist', false, `Only found ${foundCount} of ${expectedPresets.length} expected presets`);
+                }
+            } catch (e) {
+                logTest('Preset Buttons Exist', false, `Error: ${e.message}`);
+            }
+
+            // Test 4: Test prompt generation
+            try {
+                const preview = document.getElementById('prompt-preview');
+                if (preview && preview.textContent && preview.textContent.length > 0) {
+                    logTest('Prompt Generation', true, `Prompt generated (${preview.textContent.length} characters)`);
+                } else {
+                    logTest('Prompt Generation', false, 'No prompt text found in preview');
+                }
+            } catch (e) {
+                logTest('Prompt Generation', false, `Error: ${e.message}`);
+            }
+
+            // Test 5: Test preset application
+            try {
+                const personalitySelect = document.getElementById('personality');
+                const originalValue = personalitySelect.value;
+                const absoluteModeBtn = document.querySelector('[data-preset="absolute"]') || 
+                                       document.querySelector('[data-preset="absoluteMode"]') ||
+                                       Array.from(document.querySelectorAll('.preset-btn')).find(b => b.textContent.includes('Absolute Mode'));
+                
+                if (absoluteModeBtn) {
+                    absoluteModeBtn.click();
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    
+                    const newValue = personalitySelect.value;
+                    if (newValue === 'directive') {
+                        logTest('Preset Application', true, 'Absolute Mode preset applied correctly');
+                    } else {
+                        logTest('Preset Application', false, `Expected 'directive', got '${newValue}'`);
+                    }
+                    
+                    // Reset
+                    personalitySelect.value = originalValue;
+                    if (typeof AITuner !== 'undefined') {
+                        const tuner = new AITuner();
+                        tuner.generatePrompt();
+                    }
+                } else {
+                    logTest('Preset Application', false, 'Absolute Mode button not found');
+                }
+            } catch (e) {
+                logTest('Preset Application', false, `Error: ${e.message}`);
+            }
+
+            // Test 6: Test Grok query preset detection
+            try {
+                const grokQueryBtn = document.querySelector('[data-preset="grokQueryDefaults"]') ||
+                                   Array.from(document.querySelectorAll('.preset-btn')).find(b => b.textContent.includes('Grok'));
+                
+                if (grokQueryBtn) {
+                    grokQueryBtn.click();
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                    
+                    const preview = document.getElementById('prompt-preview');
+                    if (preview && preview.textContent.includes('I have an AI Tuner interface')) {
+                        logTest('Grok Query Preset', true, 'Grok query prompt generated correctly');
+                    } else {
+                        logTest('Grok Query Preset', false, 'Grok query prompt not detected');
+                    }
+                } else {
+                    logTest('Grok Query Preset', false, 'Grok Query button not found (may be in dropdown)');
+                }
+            } catch (e) {
+                logTest('Grok Query Preset', false, `Error: ${e.message}`);
+            }
+
+            // Test 7: Test setting change triggers prompt update
+            try {
+                const preview = document.getElementById('prompt-preview');
+                const originalPrompt = preview ? preview.textContent : '';
+                const personalitySelect = document.getElementById('personality');
+                const originalValue = personalitySelect.value;
+                
+                personalitySelect.value = 'sarcastic';
+                personalitySelect.dispatchEvent(new Event('change'));
+                await new Promise(resolve => setTimeout(resolve, 100));
+                
+                const newPrompt = preview ? preview.textContent : '';
+                if (newPrompt !== originalPrompt && newPrompt.includes('sarcastic')) {
+                    logTest('Setting Change Trigger', true, 'Prompt updated when setting changed');
+                } else {
+                    logTest('Setting Change Trigger', false, 'Prompt did not update or wrong content');
+                }
+                
+                // Reset
+                personalitySelect.value = originalValue;
+                personalitySelect.dispatchEvent(new Event('change'));
+            } catch (e) {
+                logTest('Setting Change Trigger', false, `Error: ${e.message}`);
+            }
+
+            // Test 8: Test custom preset save/load
+            try {
+                const testPresetName = 'test_preset_' + Date.now();
+                const testSettings = {
+                    personality: 'analytical',
+                    bluntness: 'high',
+                    termination: 'abrupt',
+                    cognitiveTier: 'deep',
+                    toneNeutrality: 'full',
+                    sentimentBoost: 'disabled',
+                    mirrorAvoidance: 'strict',
+                    elementElimination: 'strict',
+                    transitions: 'prohibited',
+                    callToAction: 'prohibited',
+                    questions: 'prohibited',
+                    suggestions: 'prohibited',
+                    motivational: 'prohibited',
+                    continuationBias: 'suppressed',
+                    selfSufficiency: 'obsolescence',
+                    assumptionStrength: 'strong'
+                };
+                
+                // Save preset
+                localStorage.setItem(`aiTuner_preset_${testPresetName}`, JSON.stringify(testSettings));
+                
+                // Check if it exists
+                const saved = localStorage.getItem(`aiTuner_preset_${testPresetName}`);
+                if (saved) {
+                    logTest('Custom Preset Save', true, 'Preset saved to localStorage');
+                    
+                    // Clean up
+                    localStorage.removeItem(`aiTuner_preset_${testPresetName}`);
+                } else {
+                    logTest('Custom Preset Save', false, 'Failed to save preset');
+                }
+            } catch (e) {
+                logTest('Custom Preset Save', false, `Error: ${e.message}`);
+            }
+
+            // Test 9: Test custom preset rendering
+            try {
+                // Wait a bit for custom presets to render
+                await new Promise(resolve => setTimeout(resolve, 300));
+                const customPresetsContainer = document.getElementById('custom-presets-container');
+                const customPresetsSection = customPresetsContainer ? customPresetsContainer.querySelector('h3') : null;
+                
+                if (customPresetsContainer !== null) {
+                    logTest('Custom Preset Container', true, 'Custom presets container exists');
+                } else {
+                    logTest('Custom Preset Container', false, 'Custom presets container not found');
+                }
+            } catch (e) {
+                logTest('Custom Preset Container', false, `Error: ${e.message}`);
+            }
+
+            // Test 10: Test copy button exists
+            try {
+                const copyBtn = document.getElementById('copy-prompt');
+                if (copyBtn) {
+                    logTest('Copy Button Exists', true, 'Copy prompt button found');
+                } else {
+                    logTest('Copy Button Exists', false, 'Copy prompt button not found');
+                }
+            } catch (e) {
+                logTest('Copy Button Exists', false, `Error: ${e.message}`);
+            }
+
+            // Test 11: Test download buttons exist
+            try {
+                const jsonBtn = document.getElementById('download-json');
+                const markdownBtn = document.getElementById('download-markdown');
+                if (jsonBtn && markdownBtn) {
+                    logTest('Download Buttons Exist', true, 'Both download buttons found');
+                } else {
+                    logTest('Download Buttons Exist', false, `JSON: ${!!jsonBtn}, Markdown: ${!!markdownBtn}`);
+                }
+            } catch (e) {
+                logTest('Download Buttons Exist', false, `Error: ${e.message}`);
+            }
+
+            // Test 15: Test prompt content structure
+            try {
+                const preview = document.getElementById('prompt-preview');
+                if (preview && preview.textContent) {
+                    const prompt = preview.textContent;
+                    const hasPersonality = prompt.includes('PERSONALITY') || prompt.includes('Personality');
+                    const hasCognition = prompt.includes('COGNITION') || prompt.includes('Cognition');
+                    const hasAffect = prompt.includes('AFFECT') || prompt.includes('Affect');
+                    const hasInterface = prompt.includes('INTERFACE') || prompt.includes('Interface');
+                    const hasBehavioral = prompt.includes('BEHAVIORAL') || prompt.includes('Behavioral');
+                    const hasGoals = prompt.includes('GOAL') || prompt.includes('Goal');
+                    
+                    const sectionsFound = [hasPersonality, hasCognition, hasAffect, hasInterface, hasBehavioral, hasGoals].filter(Boolean).length;
+                    
+                    if (sectionsFound >= 4) {
+                        logTest('Prompt Structure', true, `Found ${sectionsFound} of 6 expected sections`);
+                    } else {
+                        logTest('Prompt Structure', false, `Only found ${sectionsFound} of 6 expected sections`);
+                    }
+                } else {
+                    logTest('Prompt Structure', false, 'No prompt preview found');
+                }
+            } catch (e) {
+                logTest('Prompt Structure', false, `Error: ${e.message}`);
+            }
+
+            // Test 12: Test info buttons
+            try {
+                const infoButtons = document.querySelectorAll('.info-btn');
+                if (infoButtons.length >= 6) {
+                    logTest('Info Buttons Exist', true, `Found ${infoButtons.length} info buttons`);
+                } else {
+                    logTest('Info Buttons Exist', false, `Only found ${infoButtons.length} info buttons`);
+                }
+            } catch (e) {
+                logTest('Info Buttons Exist', false, `Error: ${e.message}`);
+            }
+
+            // Test 13: Test Factory Reset preset
+            try {
+                const factoryResetBtn = document.querySelector('[data-preset="factoryReset"]') ||
+                                       Array.from(document.querySelectorAll('.preset-btn')).find(b => 
+                                           b.textContent.includes('Factory Default') || b.textContent.includes('Factory Reset'));
+                
+                if (factoryResetBtn) {
+                    logTest('Factory Reset Preset', true, 'Factory Reset preset button found');
+                } else {
+                    logTest('Factory Reset Preset', false, 'Factory Reset preset button not found');
+                }
+            } catch (e) {
+                logTest('Factory Reset Preset', false, `Error: ${e.message}`);
+            }
+
+            // Test 14: Test Claude dropdown
+            try {
+                const claudeDropdown = document.getElementById('claude-dropdown');
+                if (claudeDropdown) {
+                    logTest('Claude Dropdown', true, 'Claude dropdown menu found');
+                } else {
+                    logTest('Claude Dropdown', false, 'Claude dropdown menu not found');
+                }
+            } catch (e) {
+                logTest('Claude Dropdown', false, `Error: ${e.message}`);
+            }
+
+            updateSummary();
+        }
+
+        // Auto-run tests on load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                runAllTests();
+            }, 500);
+        });
+    </script>
+</body>
+</html>

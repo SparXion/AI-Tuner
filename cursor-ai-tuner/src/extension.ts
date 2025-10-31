@@ -94,7 +94,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
           if (args.length === 0) {
             await (callback as () => Promise<void>)();
           } else {
-            await (callback as (...args: any[]) => Promise<void>)(...args);
+            await (callback as (...args: unknown[]) => Promise<void>)(...args);
           }
           logger.debug(`Command executed successfully: ${command}`, 'Extension', {
             command,
@@ -203,8 +203,23 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     });
 
   } catch (error) {
-    // Use console.error as fallback if logger is not available
-    console.error('Failed to activate AI Tuner Extension:', error);
+    // Try to use logger if available, otherwise log to output channel
+    let logger: Logger | undefined;
+    try {
+      logger = Logger.getInstance();
+      logger.error('Failed to activate AI Tuner Extension', 'Extension', error as Error, {
+        activationTime: new Date().toISOString(),
+        errorDetails: error instanceof Error ? error.message : String(error)
+      });
+    } catch {
+      // Logger not available - create output channel as fallback
+      const outputChannel = vscode.window.createOutputChannel('AI Tuner');
+      outputChannel.appendLine(`[ERROR] Failed to activate AI Tuner Extension: ${error instanceof Error ? error.message : String(error)}`);
+      if (error instanceof Error && error.stack) {
+        outputChannel.appendLine(error.stack);
+      }
+      outputChannel.show(true);
+    }
     
     await vscode.window.showErrorMessage(
       'Failed to activate AI Tuner Extension. Please check the output panel for details.',
@@ -214,7 +229,10 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       if (selection === 'Show Output') {
         vscode.commands.executeCommand('workbench.action.output.show');
       } else if (selection === 'Report Issue') {
-        const issueUrl = `https://github.com/SparXion/AI-Tuner/issues/new?title=Activation Error&body=${encodeURIComponent(JSON.stringify(error, null, 2))}`;
+        const errorDetails = error instanceof Error 
+          ? { message: error.message, stack: error.stack } 
+          : { error: String(error) };
+        const issueUrl = `https://github.com/SparXion/AI-Tuner/issues/new?title=Activation Error&body=${encodeURIComponent(JSON.stringify(errorDetails, null, 2))}`;
         vscode.env.openExternal(vscode.Uri.parse(issueUrl));
       }
     });
@@ -255,7 +273,23 @@ export async function deactivate(): Promise<void> {
     }
 
   } catch (error) {
-    console.error('Error during extension deactivation:', error);
+    // Try to use logger if available, otherwise log to output channel
+    let logger: Logger | undefined;
+    try {
+      logger = Logger.getInstance();
+      logger.error('Error during extension deactivation', 'Extension', error as Error, {
+        deactivationTime: new Date().toISOString(),
+        errorDetails: error instanceof Error ? error.message : String(error)
+      });
+    } catch {
+      // Logger not available - create output channel as fallback
+      const outputChannel = vscode.window.createOutputChannel('AI Tuner');
+      outputChannel.appendLine(`[ERROR] Error during extension deactivation: ${error instanceof Error ? error.message : String(error)}`);
+      if (error instanceof Error && error.stack) {
+        outputChannel.appendLine(error.stack);
+      }
+      outputChannel.show(true);
+    }
   }
 }
 

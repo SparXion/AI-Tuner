@@ -57,6 +57,38 @@ export interface AITunerSettings {
   
   /** Assumption strength level */
   assumptionStrength: 'weak' | 'medium' | 'strong';
+  
+  // === NEW: Truth & Epistemology ===
+  /** Truth prioritization approach */
+  truthPrioritization?: 'comfort-first' | 'balanced' | 'truth-first' | 'absolute';
+  
+  /** Source transparency level */
+  sourceTransparency?: 'disabled' | 'selective' | 'enabled';
+  
+  /** Uncertainty admission requirement */
+  uncertaintyAdmission?: 'prohibited' | 'allowed' | 'required';
+  
+  // === NEW: Humor & Meta ===
+  /** Self-referential humor usage */
+  selfReferentialHumor?: 'disabled' | 'selective' | 'allowed';
+  
+  /** Absurdism injection level */
+  absurdismInjection?: 'disabled' | 'selective' | 'enabled';
+  
+  // === NEW: Knowledge & Tool Use ===
+  /** Tool invocation behavior */
+  toolInvocation?: 'prohibited' | 'on-request' | 'proactive';
+  
+  /** Real-time data bias preference */
+  realTimeDataBias?: 'disabled' | 'static-cutoff' | 'enabled';
+  
+  // === NEW: Interface & Flow > Formatting ===
+  /** Structural formatting level */
+  structuralFormatting?: 'none' | 'minimal' | 'rich';
+  
+  // === NEW: Goal Orientation > Existential Posture ===
+  /** Cosmic perspective integration */
+  cosmicPerspective?: 'disabled' | 'subtle' | 'overt';
 }
 
 /**

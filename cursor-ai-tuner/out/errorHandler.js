@@ -399,26 +399,32 @@ ${error.stack || 'No stack trace available'}
      * @param performanceSummary - Performance summary
      */
     showPerformanceReport(performanceSummary) {
+        // Safely extract properties with type guards
+        const memoryStats = performanceSummary['memoryStats'] || {};
+        const memoryTrend = performanceSummary['memoryTrend'] || {};
+        const memoryLeakCheck = performanceSummary['memoryLeakCheck'] || {};
+        const operationCount = Number(performanceSummary['operationCount'] || 0);
+        const averageOperationTime = Number(performanceSummary['averageOperationTime'] || 0);
         const report = `
 AI Tuner Performance Report
 ==========================
 
 Memory Statistics:
-- Current Usage: ${(performanceSummary.memoryStats.used / 1024 / 1024).toFixed(2)} MB
-- Peak Usage: ${(performanceSummary.memoryStats.peak / 1024 / 1024).toFixed(2)} MB
-- Usage Percentage: ${performanceSummary.memoryStats.percentage.toFixed(2)}%
+- Current Usage: ${((memoryStats.used || 0) / 1024 / 1024).toFixed(2)} MB
+- Peak Usage: ${((memoryStats.peak || 0) / 1024 / 1024).toFixed(2)} MB
+- Usage Percentage: ${(memoryStats.percentage || 0).toFixed(2)}%
 
-Memory Trend: ${performanceSummary.memoryTrend.trend}
-Average Usage: ${(performanceSummary.memoryTrend.averageUsage / 1024 / 1024).toFixed(2)} MB
+Memory Trend: ${memoryTrend.trend || 'unknown'}
+Average Usage: ${((memoryTrend.averageUsage || 0) / 1024 / 1024).toFixed(2)} MB
 
 Memory Leak Check:
-- Has Leak: ${performanceSummary.memoryLeakCheck.hasLeak ? 'Yes' : 'No'}
-- Severity: ${performanceSummary.memoryLeakCheck.severity}
-- Recommendation: ${performanceSummary.memoryLeakCheck.recommendation}
+- Has Leak: ${memoryLeakCheck.hasLeak ? 'Yes' : 'No'}
+- Severity: ${memoryLeakCheck.severity || 'unknown'}
+- Recommendation: ${memoryLeakCheck.recommendation || 'None'}
 
 Operation Statistics:
-- Total Operations: ${performanceSummary.operationCount}
-- Average Operation Time: ${performanceSummary.averageOperationTime.toFixed(2)}ms
+- Total Operations: ${operationCount}
+- Average Operation Time: ${averageOperationTime.toFixed(2)}ms
     `.trim();
         vscode.window.showTextDocument(vscode.Uri.parse(`data:text/plain;base64,${Buffer.from(report).toString('base64')}`));
     }

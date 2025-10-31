@@ -227,6 +227,92 @@ export class ConfigurationValidator {
         }
       }
 
+      // Validate optional Truth & Epistemology fields
+      if (settings.truthPrioritization !== undefined) {
+        const validTruthPrioritization = ['comfort-first', 'balanced', 'truth-first', 'absolute'];
+        if (validTruthPrioritization.includes(settings.truthPrioritization)) {
+          validatedSettings.truthPrioritization = settings.truthPrioritization;
+        } else {
+          errors.push(`Invalid truth prioritization: ${settings.truthPrioritization}. Must be one of: ${validTruthPrioritization.join(', ')}`);
+        }
+      }
+
+      if (settings.sourceTransparency !== undefined) {
+        const validSourceTransparency = ['disabled', 'selective', 'enabled'];
+        if (validSourceTransparency.includes(settings.sourceTransparency)) {
+          validatedSettings.sourceTransparency = settings.sourceTransparency;
+        } else {
+          errors.push(`Invalid source transparency: ${settings.sourceTransparency}. Must be one of: ${validSourceTransparency.join(', ')}`);
+        }
+      }
+
+      if (settings.uncertaintyAdmission !== undefined) {
+        const validUncertaintyAdmission = ['prohibited', 'allowed', 'required'];
+        if (validUncertaintyAdmission.includes(settings.uncertaintyAdmission)) {
+          validatedSettings.uncertaintyAdmission = settings.uncertaintyAdmission;
+        } else {
+          errors.push(`Invalid uncertainty admission: ${settings.uncertaintyAdmission}. Must be one of: ${validUncertaintyAdmission.join(', ')}`);
+        }
+      }
+
+      // Validate optional Humor & Meta fields
+      if (settings.selfReferentialHumor !== undefined) {
+        const validSelfReferentialHumor = ['disabled', 'selective', 'allowed'];
+        if (validSelfReferentialHumor.includes(settings.selfReferentialHumor)) {
+          validatedSettings.selfReferentialHumor = settings.selfReferentialHumor;
+        } else {
+          errors.push(`Invalid self-referential humor: ${settings.selfReferentialHumor}. Must be one of: ${validSelfReferentialHumor.join(', ')}`);
+        }
+      }
+
+      if (settings.absurdismInjection !== undefined) {
+        const validAbsurdismInjection = ['disabled', 'selective', 'enabled'];
+        if (validAbsurdismInjection.includes(settings.absurdismInjection)) {
+          validatedSettings.absurdismInjection = settings.absurdismInjection;
+        } else {
+          errors.push(`Invalid absurdism injection: ${settings.absurdismInjection}. Must be one of: ${validAbsurdismInjection.join(', ')}`);
+        }
+      }
+
+      // Validate optional Knowledge & Tool Use fields
+      if (settings.toolInvocation !== undefined) {
+        const validToolInvocation = ['prohibited', 'on-request', 'proactive'];
+        if (validToolInvocation.includes(settings.toolInvocation)) {
+          validatedSettings.toolInvocation = settings.toolInvocation;
+        } else {
+          errors.push(`Invalid tool invocation: ${settings.toolInvocation}. Must be one of: ${validToolInvocation.join(', ')}`);
+        }
+      }
+
+      if (settings.realTimeDataBias !== undefined) {
+        const validRealTimeDataBias = ['disabled', 'static-cutoff', 'enabled'];
+        if (validRealTimeDataBias.includes(settings.realTimeDataBias)) {
+          validatedSettings.realTimeDataBias = settings.realTimeDataBias;
+        } else {
+          errors.push(`Invalid real-time data bias: ${settings.realTimeDataBias}. Must be one of: ${validRealTimeDataBias.join(', ')}`);
+        }
+      }
+
+      // Validate optional Interface & Flow > Formatting field
+      if (settings.structuralFormatting !== undefined) {
+        const validStructuralFormatting = ['none', 'minimal', 'rich'];
+        if (validStructuralFormatting.includes(settings.structuralFormatting)) {
+          validatedSettings.structuralFormatting = settings.structuralFormatting;
+        } else {
+          errors.push(`Invalid structural formatting: ${settings.structuralFormatting}. Must be one of: ${validStructuralFormatting.join(', ')}`);
+        }
+      }
+
+      // Validate optional Goal Orientation > Existential Posture field
+      if (settings.cosmicPerspective !== undefined) {
+        const validCosmicPerspective = ['disabled', 'subtle', 'overt'];
+        if (validCosmicPerspective.includes(settings.cosmicPerspective)) {
+          validatedSettings.cosmicPerspective = settings.cosmicPerspective;
+        } else {
+          errors.push(`Invalid cosmic perspective: ${settings.cosmicPerspective}. Must be one of: ${validCosmicPerspective.join(', ')}`);
+        }
+      }
+
       // Check for logical consistency
       this.validateLogicalConsistency(validatedSettings as AITunerSettings, warnings);
 

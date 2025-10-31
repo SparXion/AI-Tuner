@@ -384,22 +384,36 @@ const PRESETS = {
         assumptionStrength: 'weak'
     },
     grokReset: {
-        personality: 'neutral',
-        bluntness: 'medium',
+        personality: 'witty',
+        bluntness: 'high',
         termination: 'natural',
         cognitiveTier: 'deep',
-        toneNeutrality: 'off',
+        toneNeutrality: 'partial',
         sentimentBoost: 'selective',
-        mirrorAvoidance: 'allowed',
+        mirrorAvoidance: 'selective',
         elementElimination: 'minimal',
         transitions: 'allowed',
-        callToAction: 'allowed',
+        callToAction: 'minimal',
         questions: 'allowed',
         suggestions: 'allowed',
-        motivational: 'allowed',
+        motivational: 'minimal',
         continuationBias: 'allowed',
         selfSufficiency: 'independent',
-        assumptionStrength: 'medium'
+        assumptionStrength: 'medium',
+        // Truth & Epistemology
+        truthPrioritization: 'absolute',
+        sourceTransparency: 'enabled',
+        uncertaintyAdmission: 'required',
+        // Humor & Meta
+        selfReferentialHumor: 'allowed',
+        absurdismInjection: 'selective',
+        // Knowledge & Tool Use
+        toolInvocation: 'proactive',
+        realTimeDataBias: 'enabled',
+        // Interface & Flow > Formatting
+        structuralFormatting: 'rich',
+        // Goal Orientation > Existential Posture
+        cosmicPerspective: 'subtle'
     },
     cursorAgentReset: {
         personality: 'analytical',
@@ -418,6 +432,38 @@ const PRESETS = {
         continuationBias: 'allowed',
         selfSufficiency: 'independent',
         assumptionStrength: 'strong'
+    },
+    grokQueryDefaults: {
+        personality: 'witty',
+        bluntness: 'high',
+        termination: 'natural',
+        cognitiveTier: 'deep',
+        toneNeutrality: 'partial',
+        sentimentBoost: 'selective',
+        mirrorAvoidance: 'selective',
+        elementElimination: 'minimal',
+        transitions: 'allowed',
+        callToAction: 'minimal',
+        questions: 'allowed',
+        suggestions: 'allowed',
+        motivational: 'minimal',
+        continuationBias: 'allowed',
+        selfSufficiency: 'independent',
+        assumptionStrength: 'medium',
+        // Truth & Epistemology
+        truthPrioritization: 'absolute',
+        sourceTransparency: 'enabled',
+        uncertaintyAdmission: 'required',
+        // Humor & Meta
+        selfReferentialHumor: 'allowed',
+        absurdismInjection: 'selective',
+        // Knowledge & Tool Use
+        toolInvocation: 'proactive',
+        realTimeDataBias: 'enabled',
+        // Interface & Flow > Formatting
+        structuralFormatting: 'rich',
+        // Goal Orientation > Existential Posture
+        cosmicPerspective: 'subtle'
     }
 };
 /**
@@ -550,6 +596,14 @@ class AITunerProvider {
             // Update webview if it exists
             if (this.webviewPanel) {
                 await this.updateWebview();
+                // Also send custom presets update
+                await this.webviewPanel.webview.postMessage({
+                    command: 'customPresetsUpdated',
+                    data: Array.from(this.customPresets.entries()).reduce((acc, [name, settings]) => {
+                        acc[name] = settings;
+                        return acc;
+                    }, {})
+                });
             }
             this.logger.info('Settings updated successfully', 'AITunerProvider', {
                 updatedFields: Object.keys(newSettings),
@@ -774,6 +828,29 @@ class AITunerProvider {
                         await this.applyPreset(presetName);
                     }
                     break;
+                case 'savePreset':
+                    if (message.data && typeof message.data === 'object' && 'name' in message.data && 'settings' in message.data) {
+                        const presetName = this.configurationValidator.sanitizeInput(String(message.data['name']));
+                        const presetSettings = message.data['settings'];
+                        // Validate preset settings
+                        const validation = this.configurationValidator.validateSettings(presetSettings, 'custom_preset');
+                        if (validation.isValid && validation.settings) {
+                            // Save to custom presets
+                            this.customPresets.set(presetName, validation.settings);
+                            // Save to VS Code configuration
+                            const config = vscode.workspace.getConfiguration('aiTuner');
+                            const existingPresets = config.get('customPresets', {});
+                            existingPresets[presetName] = validation.settings;
+                            await config.update('customPresets', existingPresets, vscode.ConfigurationTarget.Global);
+                            // Update webview to show new preset
+                            await this.updateWebview();
+                            await vscode.window.showInformationMessage(`Preset "${presetName}" saved successfully!`);
+                        }
+                        else {
+                            await vscode.window.showErrorMessage(`Failed to save preset: ${validation.errors.join(', ')}`);
+                        }
+                    }
+                    break;
                 case 'showMessage':
                     if (message.data && typeof message.data === 'object' && 'type' in message.data && 'text' in message.data) {
                         const type = this.configurationValidator.sanitizeInput(String(message.data['type']));
@@ -991,6 +1068,36 @@ class AITunerProvider {
         .info-popup.show {
             display: block;
         }
+        
+        .preset-dropdown-container {
+            position: relative;
+        }
+        
+        .preset-dropdown {
+            padding: 8px 16px;
+            background: #2d2d2d;
+            color: white;
+            border: 1px solid #555;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            min-width: 150px;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffffff' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 35px;
+        }
+        
+        .preset-dropdown:hover {
+            background: #3d3d3d;
+            border-color: #007acc;
+        }
+        
+        .preset-dropdown:focus {
+            outline: none;
+            border-color: #007acc;
+        }
     </style>
 </head>
 <body>
@@ -1139,10 +1246,15 @@ class AITunerProvider {
                 </div>
                 <h3 style="margin-top: 20px; font-size: 14px; color: #aaa;">AI Reset Presets</h3>
                 <div class="button-group">
-                    <button class="preset-btn" onclick="applyPreset('claudeReset')">Reset Claude</button>
-                    <button class="preset-btn" onclick="applyPreset('claudeOpusReset')">Reset Claude Opus</button>
-                    <button class="preset-btn" onclick="applyPreset('claudeSonnetReset')">Reset Claude Sonnet</button>
-                    <button class="preset-btn" onclick="applyPreset('claudeHaikuReset')">Reset Claude Haiku</button>
+                    <div class="preset-dropdown-container">
+                        <select id="claude-dropdown" class="preset-dropdown" onchange="if(this.value) { applyPreset(this.value); this.value=''; }">
+                            <option value="">Reset Claude...</option>
+                            <option value="claudeReset">Reset Claude (Default)</option>
+                            <option value="claudeOpusReset">Reset Claude Opus</option>
+                            <option value="claudeSonnetReset">Reset Claude Sonnet</option>
+                            <option value="claudeHaikuReset">Reset Claude Haiku</option>
+                        </select>
+                    </div>
                     <button class="preset-btn" onclick="applyPreset('geminiReset')">Reset Gemini</button>
                     <button class="preset-btn" onclick="applyPreset('geminiProReset')">Reset Gemini Pro</button>
                     <button class="preset-btn" onclick="applyPreset('geminiUltraReset')">Reset Gemini Ultra</button>
@@ -1151,8 +1263,10 @@ class AITunerProvider {
                     <button class="preset-btn" onclick="applyPreset('gpt4Reset')">Reset GPT-4</button>
                     <button class="preset-btn" onclick="applyPreset('gpt35Reset')">Reset GPT-3.5</button>
                     <button class="preset-btn" onclick="applyPreset('grokReset')">Reset Grok</button>
+                    <button class="preset-btn" onclick="applyPreset('grokQueryDefaults')">Ask Grok: Default Settings</button>
                     <button class="preset-btn" onclick="applyPreset('cursorAgentReset')">Reset Cursor Agent</button>
                 </div>
+                <div id="custom-presets-container"></div>
             </div>
         </div>
         
@@ -1170,13 +1284,58 @@ class AITunerProvider {
     <script>
         const vscode = acquireVsCodeApi();
         let currentSettings = ${JSON.stringify(this.currentSettings)};
+        const builtInPresets = ${JSON.stringify(Object.keys(PRESETS))};
+        const customPresets = ${JSON.stringify(Array.from(this.customPresets.entries()).reduce((acc, [name, settings]) => { acc[name] = settings; return acc; }, {}))};
+        
+        // Render custom presets
+        function renderCustomPresets() {
+            const container = document.getElementById('custom-presets-container');
+            if (!container) return;
+            
+            // Clear existing custom preset buttons safely
+            while (container.firstChild) {
+                container.removeChild(container.firstChild);
+            }
+            
+            const customPresetNames = Object.keys(customPresets).filter(name => !builtInPresets.includes(name));
+            
+            if (customPresetNames.length > 0) {
+                const heading = document.createElement('h3');
+                heading.style.marginTop = '20px';
+                heading.style.fontSize = '14px';
+                heading.style.color = '#aaa';
+                heading.textContent = 'Custom Presets';
+                container.appendChild(heading);
+                
+                const buttonGroup = document.createElement('div');
+                buttonGroup.className = 'button-group';
+                
+                customPresetNames.forEach(presetName => {
+                    const button = document.createElement('button');
+                    button.className = 'preset-btn custom';
+                    // Format preset name: replace underscores with spaces and capitalize words
+                    const formattedName = presetName
+                        .replace(/_/g, ' ')
+                        .replace(/\\b[a-z]/g, (match) => match.toUpperCase());
+                    button.textContent = formattedName;
+                    button.setAttribute('data-preset', presetName);
+                    button.onclick = () => {
+                        applyPreset(presetName);
+                    };
+                    buttonGroup.appendChild(button);
+                });
+                
+                container.appendChild(buttonGroup);
+            }
+        }
         
         // Initialize form with current settings
         function initializeForm() {
             Object.keys(currentSettings).forEach(key => {
-                const element = document.getElementById(key.replace(/([A-Z])/g, '-$1').toLowerCase());
-                if (element) {
-                    element.value = currentSettings[key];
+                const elementId = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+                const element = document.getElementById(elementId) as HTMLSelectElement | null;
+                if (element && 'value' in element && currentSettings[key] !== undefined) {
+                    element.value = String(currentSettings[key]);
                 }
             });
             updatePrompt();
@@ -1185,17 +1344,63 @@ class AITunerProvider {
         // Update form when settings change
         function updateForm() {
             Object.keys(currentSettings).forEach(key => {
-                const element = document.getElementById(key.replace(/([A-Z])/g, '-$1').toLowerCase());
-                if (element) {
-                    element.value = currentSettings[key];
+                const elementId = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+                const element = document.getElementById(elementId) as HTMLSelectElement | null;
+                if (element && 'value' in element && currentSettings[key] !== undefined) {
+                    element.value = String(currentSettings[key]);
                 }
             });
         }
         
         // Update prompt when settings change
         function updatePrompt() {
-            const prompt = buildPrompt(currentSettings);
-            document.getElementById('prompt-text').textContent = prompt;
+            // Check if this is the grokQueryDefaults preset by comparing key fields
+            const grokDefaults = ${JSON.stringify(PRESETS['grokQueryDefaults'])};
+            const isGrokQuery = currentSettings.personality === grokDefaults.personality &&
+                currentSettings.bluntness === grokDefaults.bluntness &&
+                currentSettings.cognitiveTier === grokDefaults.cognitiveTier &&
+                currentSettings.truthPrioritization === grokDefaults.truthPrioritization &&
+                currentSettings.selfReferentialHumor === grokDefaults.selfReferentialHumor;
+            
+            let prompt;
+            if (isGrokQuery) {
+                prompt = buildGrokQueryPrompt();
+            } else {
+                prompt = buildPrompt(currentSettings);
+            }
+            
+            const promptElement = document.getElementById('prompt-text');
+            if (promptElement) {
+                promptElement.textContent = prompt;
+            }
+        }
+        
+        // Build Grok query prompt
+        function buildGrokQueryPrompt() {
+            return 'I have an AI Tuner interface that allows me to customize AI personality and behavior. The interface has the following control categories and options:\\n\\n' +
+                'PERSONALITY & APPROACH:\\n' +
+                '- Neutral, Socratic, Curious, Analytical, Sarcastic, Witty, Charming, Sympathetic, Empathetic, Directive, Collaborative, Provocative\\n\\n' +
+                'COGNITION & LOGIC:\\n' +
+                '- Bluntness: Low (gentle, diplomatic), Medium (direct but polite), High (blunt, directive), Absolute (maximum bluntness)\\n' +
+                '- Response Termination: Natural (allow closures), Abrupt (end immediately after info)\\n' +
+                '- Cognitive Targeting: Surface (conversational level), Deep (underlying logic layers)\\n\\n' +
+                'AFFECT & TONE:\\n' +
+                '- Tone Neutrality: Full (completely neutral), Partial (mild emotional expression), Off (allow full emotional range)\\n' +
+                '- Sentiment Boosting: Disabled (no engagement tactics), Selective (minimal positivity), Enabled (full enthusiasm)\\n' +
+                '- User Mirroring: Strict (never mirror user style), Selective (occasional mirroring), Allowed (mirror user affect)\\n\\n' +
+                'INTERFACE & FLOW:\\n' +
+                '- Element Elimination: None (allow all elements), Minimal (remove emojis only), Moderate (remove emojis + filler), Strict (remove emojis, filler, hype)\\n' +
+                '- Transitions: Allowed (smooth transitions), Minimal (basic transitions only), Prohibited (no transitions)\\n' +
+                '- Call-to-Action: Allowed (encourage follow-up), Minimal (subtle invitations), Prohibited (no CTAs)\\n\\n' +
+                'BEHAVIORAL CONTROLS:\\n' +
+                '- Questions: Allowed (can ask questions), Selective (limited questions), Prohibited (no questions)\\n' +
+                '- Suggestions: Allowed (can make suggestions), Minimal (essential suggestions only), Prohibited (no suggestions)\\n' +
+                '- Motivational Content: Allowed (encouraging content), Minimal (basic encouragement), Prohibited (no motivation)\\n\\n' +
+                'GOAL ORIENTATION:\\n' +
+                '- Continuation Bias: Allowed (encourage dialogue), Suppressed (limit continuation)\\n' +
+                '- Self-Sufficiency: Collaborative (work together), Independent (foster autonomy), Obsolescence (make AI unnecessary)\\n' +
+                '- User Assumption: Weak (assume user needs guidance), Medium (balanced assumptions), Strong (assume high user perception)\\n\\n' +
+                'Please tell me: If you (Grok) were to configure this AI Tuner interface to match your default, unaltered personality and behavior settings, what values would you select for each of these options? Please be specific and explain your choices where relevant.';
         }
         
         // Build prompt text - EXACTLY matching web app logic
@@ -1438,71 +1643,145 @@ class AITunerProvider {
         
         // Apply preset
         function applyPreset(presetName) {
-            const presets = ${JSON.stringify(PRESETS)};
-            const preset = presets[presetName];
+            if (!presetName || typeof presetName !== 'string') {
+                return;
+            }
+            
+            // Check built-in presets first, then custom presets
+            const builtInPresets = ${JSON.stringify(PRESETS)};
+            let preset = builtInPresets[presetName];
+            
+            if (!preset && customPresets[presetName]) {
+                preset = customPresets[presetName];
+            }
+            
             if (preset) {
                 currentSettings = { ...currentSettings, ...preset };
                 updateForm();
                 updatePrompt();
+                
+                // Send update to extension
+                vscode.postMessage({
+                    command: 'updateSettings',
+                    data: currentSettings
+                });
+            } else {
+                vscode.postMessage({
+                    command: 'showMessage',
+                    type: 'error',
+                    text: 'Preset "' + presetName + '" not found'
+                });
             }
         }
         
         // Copy prompt to clipboard
         function copyPrompt() {
-            const promptText = document.getElementById('prompt-text').textContent;
-            navigator.clipboard.writeText(promptText).then(() => {
-                const copyBtn = document.getElementById('copy-prompt');
-                copyBtn.textContent = "Copied!";
-                copyBtn.classList.add('success');
-                setTimeout(() => {
-                    copyBtn.textContent = "Copy Prompt";
-                    copyBtn.classList.remove('success');
-                }, 2000);
-                
+            const promptElement = document.getElementById('prompt-text');
+            if (!promptElement || !promptElement.textContent) {
                 vscode.postMessage({
                     command: 'showMessage',
-                    type: 'info',
-                    text: 'Prompt copied to clipboard!'
+                    type: 'error',
+                    text: 'No prompt text available to copy'
                 });
-            }).catch(err => {
-                console.error('Failed to copy prompt:', err);
-                // Fallback for older browsers
-                const textArea = document.createElement('textarea');
-                textArea.value = promptText;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                
-                const copyBtn = document.getElementById('copy-prompt');
-                copyBtn.textContent = "Copied!";
-                setTimeout(() => {
-                    copyBtn.textContent = "Copy Prompt";
-                }, 2000);
-                
-                vscode.postMessage({
-                    command: 'showMessage',
-                    type: 'info',
-                    text: 'Prompt copied to clipboard!'
-                });
+                return;
+            }
+            
+            const promptText = promptElement.textContent;
+            
+            // Use modern Clipboard API if available
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(promptText).then(() => {
+                    const copyBtn = document.getElementById('copy-prompt');
+                    if (copyBtn) {
+                        copyBtn.textContent = "Copied!";
+                        copyBtn.classList.add('success');
+                        setTimeout(() => {
+                            copyBtn.textContent = "Copy Prompt";
+                            copyBtn.classList.remove('success');
+                        }, 2000);
+                    }
+                    
+                    vscode.postMessage({
+                        command: 'showMessage',
+                        type: 'info',
+                        text: 'Prompt copied to clipboard!'
+                    });
+                }).catch(() => {
+                    // Fallback for older browsers or clipboard API failure
+                    try {
+                        const textArea = document.createElement('textarea');
+                        textArea.value = promptText;
+                        textArea.style.position = 'fixed';
+                        textArea.style.opacity = '0';
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        const success = document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                        
+                        if (success) {
+                            const copyBtn = document.getElementById('copy-prompt');
+                            if (copyBtn) {
+                                copyBtn.textContent = "Copied!";
+                                setTimeout(() => {
+                                    copyBtn.textContent = "Copy Prompt";
+                                }, 2000);
+                            }
+                            
+                            vscode.postMessage({
+                                command: 'showMessage',
+                                type: 'info',
+                                text: 'Prompt copied to clipboard!'
+                            });
+                    } else {
+                        vscode.postMessage({
+                            command: 'showMessage',
+                            type: 'error',
+                            text: 'Failed to copy prompt. Please select and copy manually.'
+                        });
+                    }
+                } catch {
+                    // Fallback copy method also failed - inform user
+                    vscode.postMessage({
+                        command: 'showMessage',
+                        type: 'error',
+                        text: 'Failed to copy prompt. Please select and copy manually.'
+                    });
+                }
             });
         }
         
         // Save preset
         function savePreset() {
             const name = prompt('Enter preset name:');
-            if (name) {
-                vscode.postMessage({
-                    command: 'savePreset',
-                    data: { name: name, settings: currentSettings }
-                });
+            if (name && name.trim().length > 0) {
+                const sanitizedName = name.trim().substring(0, 50).replace(/[^a-zA-Z0-9_\s-]/g, '');
+                if (sanitizedName.length > 0) {
+                    vscode.postMessage({
+                        command: 'savePreset',
+                        data: { name: sanitizedName, settings: currentSettings }
+                    });
+                } else {
+                    vscode.postMessage({
+                        command: 'showMessage',
+                        type: 'error',
+                        text: 'Invalid preset name. Use only letters, numbers, spaces, hyphens, and underscores.'
+                    });
+                }
             }
         }
         
         // Show info popup
         function showInfo(category) {
+            if (!category || typeof category !== 'string') {
+                return;
+            }
+            
             const popup = document.getElementById('info-popup');
-            const infoTexts = {
+            if (!popup) {
+                return;
+            }
+            
+            const infoTexts: Record<string, string> = {
                 personality: 'Controls the overall personality and approach of the AI assistant.',
                 cognition: 'Manages logical processing depth and communication style.',
                 affect: 'Regulates emotional expression and tone management.',
@@ -1511,7 +1790,8 @@ class AITunerProvider {
                 goals: 'Sets objectives for user interaction and self-sufficiency.'
             };
             
-            popup.textContent = infoTexts[category] || 'No information available.';
+            const infoText = infoTexts[category] || 'No information available.';
+            popup.textContent = infoText;
             popup.classList.add('show');
             
             setTimeout(() => {
@@ -1532,22 +1812,45 @@ class AITunerProvider {
         // Add event listeners to form elements
         document.addEventListener('DOMContentLoaded', () => {
             initializeForm();
+            renderCustomPresets();
             
             // Add change listeners to all select elements
             const selects = document.querySelectorAll('select');
             selects.forEach(select => {
                 select.addEventListener('change', () => {
-                    const key = select.id.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
-                    currentSettings[key] = select.value;
-                    updatePrompt();
+                    const selectElement = select as HTMLSelectElement;
+                    if (!selectElement.id || !selectElement.value) {
+                        return;
+                    }
                     
-                    // Send update to extension
-                    vscode.postMessage({
-                        command: 'updateSettings',
-                        data: currentSettings
-                    });
+                    // Convert kebab-case to camelCase
+                    const key = selectElement.id.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
+                    if (key in currentSettings) {
+                        (currentSettings as Record<string, unknown>)[key] = selectElement.value;
+                        updatePrompt();
+                        
+                        // Send update to extension
+                        vscode.postMessage({
+                            command: 'updateSettings',
+                            data: currentSettings
+                        });
+                    }
                 });
             });
+        });
+        
+        // Listen for messages from extension
+        window.addEventListener('message', event => {
+            const message = event.data;
+            if (message.command === 'updateSettings') {
+                currentSettings = { ...currentSettings, ...message.data };
+                updateForm();
+                updatePrompt();
+            } else if (message.command === 'customPresetsUpdated') {
+                // Update custom presets and re-render
+                Object.assign(customPresets, message.data);
+                renderCustomPresets();
+            }
         });
     </script>
 </body>
