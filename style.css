@@ -425,6 +425,16 @@ select:hover {
         order: 1;
     }
     
+    .model-control-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .model-control-row select,
+    .model-control-row button {
+        width: 100%;
+    }
+    
     h1 {
         font-size: 2.2rem;
     }
