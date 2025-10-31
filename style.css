@@ -31,9 +31,18 @@ body {
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 40px 20px;
+}
+
+/* Reduce left margin on very wide screens */
+@media (min-width: 1600px) {
+    .container {
+        max-width: 1500px;
+        margin-left: 60px;
+        margin-right: auto;
+    }
 }
 
 /* Header */
