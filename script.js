@@ -125,6 +125,11 @@ class AITuner {
 
     generatePrompt() {
         const settings = this.getCurrentSettings();
+        
+        // Update radar chart if available
+        if (typeof drawRadar === 'function') {
+            drawRadar(settings);
+        }
         const prompt = this.buildPrompt(settings);
         
         if (this.preview) {
@@ -1353,8 +1358,13 @@ ${this.generateSettingsTable(settings)}
             activeBtn.classList.add('active');
         }
 
-        // Regenerate prompt
+        // Regenerate prompt (which will also update radar)
         this.generatePrompt();
+        
+        // Also update radar directly with preset
+        if (typeof drawRadar === 'function') {
+            drawRadar(preset);
+        }
     }
 
     savePreset() {
@@ -1405,6 +1415,155 @@ ${this.generateSettingsTable(settings)}
     }
 }
 
+// Model Persona Loader Functions (global scope for onclick handlers)
+function loadModelPersona() {
+    const name = document.getElementById("modelSelect").value;
+    if (!name || !window.MODEL_PERSONAS || !window.MODEL_PERSONAS[name]) {
+        alert('Please select a model persona.');
+        return;
+    }
+    
+    if (window.aiTuner) {
+        // Apply the model persona preset directly
+        const preset = window.MODEL_PERSONAS[name];
+        
+        // Map camelCase keys to element IDs (kebab-case)
+        const keyToElementId = {
+            personality: 'personality',
+            bluntness: 'bluntness',
+            termination: 'termination',
+            cognitiveTier: 'cognitive-tier',
+            toneNeutrality: 'tone-neutrality',
+            sentimentBoost: 'sentiment-boost',
+            mirrorAvoidance: 'mirror-avoidance',
+            elementElimination: 'element-elimination',
+            transitions: 'transitions',
+            callToAction: 'call-to-action',
+            questions: 'questions',
+            suggestions: 'suggestions',
+            motivational: 'motivational',
+            continuationBias: 'continuation-bias',
+            selfSufficiency: 'self-sufficiency',
+            assumptionStrength: 'assumption-strength',
+            truthPrioritization: 'truth-prioritization',
+            sourceTransparency: 'source-transparency',
+            uncertaintyAdmission: 'uncertainty-admission',
+            selfReferentialHumor: 'self-referential-humor',
+            absurdismInjection: 'absurdism-injection',
+            toolInvocation: 'tool-invocation',
+            realTimeDataBias: 'real-time-data-bias',
+            structuralFormatting: 'structural-formatting',
+            cosmicPerspective: 'cosmic-perspective'
+        };
+        
+        // Update all dropdowns
+        Object.keys(preset).forEach(key => {
+            const elementId = keyToElementId[key] || key.replace(/([A-Z])/g, '-$1').toLowerCase();
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.value = preset[key];
+            }
+        });
+        
+        // Generate prompt and update radar
+        window.aiTuner.generatePrompt();
+        if (typeof drawRadar === 'function') {
+            drawRadar(preset);
+        }
+    } else {
+        console.error('AITuner not initialized');
+    }
+}
+
+function blendWithModel() {
+    const modelSelect = document.getElementById("modelSelect");
+    const blendSelect = document.getElementById("blendSelect");
+    const blendSlider = document.getElementById("blendSlider");
+    
+    if (!modelSelect || !blendSelect || !blendSlider) {
+        alert('Blend controls not found.');
+        return;
+    }
+    
+    const p1Name = modelSelect.value;
+    const p2Name = blendSelect.value;
+    const ratio = parseFloat(blendSlider.value) / 100;
+    
+    if (!p1Name || !p2Name) {
+        alert('Please select both models to blend.');
+        return;
+    }
+    
+    if (!window.MODEL_PERSONAS) {
+        alert('Model personas not loaded.');
+        return;
+    }
+    
+    const p1 = window.MODEL_PERSONAS[p1Name];
+    const p2 = window.MODEL_PERSONAS[p2Name];
+    
+    if (!p1 || !p2) {
+        alert('Selected model personas not found.');
+        return;
+    }
+    
+    if (typeof blendPresets !== 'function') {
+        alert('Blend function not available.');
+        return;
+    }
+    
+    const blended = blendPresets(p1, p2, ratio);
+    
+    // Apply the blended preset
+    if (window.aiTuner) {
+        // Map camelCase keys to element IDs (kebab-case)
+        const keyToElementId = {
+            personality: 'personality',
+            bluntness: 'bluntness',
+            termination: 'termination',
+            cognitiveTier: 'cognitive-tier',
+            toneNeutrality: 'tone-neutrality',
+            sentimentBoost: 'sentiment-boost',
+            mirrorAvoidance: 'mirror-avoidance',
+            elementElimination: 'element-elimination',
+            transitions: 'transitions',
+            callToAction: 'call-to-action',
+            questions: 'questions',
+            suggestions: 'suggestions',
+            motivational: 'motivational',
+            continuationBias: 'continuation-bias',
+            selfSufficiency: 'self-sufficiency',
+            assumptionStrength: 'assumption-strength',
+            truthPrioritization: 'truth-prioritization',
+            sourceTransparency: 'source-transparency',
+            uncertaintyAdmission: 'uncertainty-admission',
+            selfReferentialHumor: 'self-referential-humor',
+            absurdismInjection: 'absurdism-injection',
+            toolInvocation: 'tool-invocation',
+            realTimeDataBias: 'real-time-data-bias',
+            structuralFormatting: 'structural-formatting',
+            cosmicPerspective: 'cosmic-perspective'
+        };
+        
+        // Update all dropdowns
+        Object.keys(blended).forEach(key => {
+            const elementId = keyToElementId[key] || key.replace(/([A-Z])/g, '-$1').toLowerCase();
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.value = blended[key];
+            }
+        });
+        
+        // Generate prompt and update radar
+        window.aiTuner.generatePrompt();
+        if (typeof drawRadar === 'function') {
+            drawRadar(blended);
+        }
+    } else {
+        console.error('AITuner not initialized');
+    }
+}
+
 // Initialize the app when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize Lucide icons
@@ -1412,5 +1571,13 @@ document.addEventListener('DOMContentLoaded', () => {
         lucide.createIcons();
     }
     
-    new AITuner();
+    window.aiTuner = new AITuner();
+    
+    // Draw initial radar chart if preset exists
+    if (window.aiTuner && typeof drawRadar === 'function') {
+        const currentSettings = window.aiTuner.getCurrentSettings();
+        if (currentSettings) {
+            drawRadar(currentSettings);
+        }
+    }
 });

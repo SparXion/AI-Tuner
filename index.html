@@ -188,6 +188,27 @@
                     </div>
                 </div>
 
+                <!-- Radar Canvas (place under preview or controls) -->
+                <canvas id="radarCanvas" width="350" height="350" style="margin:20px auto;display:block;"></canvas>
+                
+                <!-- Model loader UI (place near preset selector) -->
+                <div style="margin:15px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; background: #f9f9f9;">
+                    <label style="display: block; margin-bottom: 10px; font-weight: bold;">Load Model Persona:</label>
+                    <select id="modelSelect" style="padding: 8px; margin-right: 10px; width: 200px;">
+                        <option value="">— Select Model —</option>
+                    </select>
+                    <button onclick="loadModelPersona()" class="btn btn-secondary" style="padding: 8px 16px;">Load</button>
+                </div>
+                <div style="margin:15px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; background: #f9f9f9;">
+                    <label style="display: block; margin-bottom: 10px; font-weight: bold;">Blend Models:</label>
+                    <select id="blendSelect" style="padding: 8px; margin-right: 10px; width: 200px;">
+                        <option value="">— Select Model —</option>
+                    </select>
+                    <input type="range" id="blendSlider" min="0" max="100" value="50" style="width: 150px; margin: 0 10px;">
+                    <span id="blendPct">50%</span>
+                    <button onclick="blendWithModel()" class="btn btn-secondary" style="padding: 8px 16px; margin-left: 10px;">Blend</button>
+                </div>
+
                 <div class="preview-section">
                 <h2>Generated Prompt</h2>
                 <div class="prompt-preview" id="prompt-preview">
@@ -275,7 +296,32 @@
         <button onclick="document.getElementById('analytics-dashboard').style.display='none'" class="btn btn-secondary">Close</button>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="presets.js"></script>
+    <script src="radar.js"></script>
     <script src="analytics.js"></script>
     <script src="script.js"></script>
+    <script>
+        // Initialize model selectors
+        document.addEventListener("DOMContentLoaded", () => {
+            const sel1 = document.getElementById("modelSelect");
+            const sel2 = document.getElementById("blendSelect");
+            
+            if (sel1 && sel2 && window.MODEL_PERSONAS) {
+                Object.keys(window.MODEL_PERSONAS).forEach(m => {
+                    sel1.add(new Option(m, m));
+                    sel2.add(new Option(m, m));
+                });
+            }
+            
+            const blendSlider = document.getElementById("blendSlider");
+            const blendPct = document.getElementById("blendPct");
+            if (blendSlider && blendPct) {
+                blendSlider.addEventListener("input", e => {
+                    blendPct.textContent = e.target.value + "%";
+                });
+            }
+        });
+    </script>
 </body>
 </html>
