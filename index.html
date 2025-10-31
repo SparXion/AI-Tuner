@@ -189,16 +189,22 @@
                 </div>
 
                 <div class="preview-section">
-                <!-- Radar Canvas and Model Controls -->
-                <div class="radar-container">
+                <!-- Radar Container with Model Controls -->
+                <div class="radar-container-box">
+                    <h3 class="radar-header">
+                        Model Persona & Visualization
+                        <span class="info-btn" data-category="model-blend" title="Click for info">ℹ</span>
+                    </h3>
+                    
+                    <!-- Radar Chart -->
                     <div class="radar-wrapper">
                         <canvas id="radarCanvas"></canvas>
                     </div>
                     
-                    <!-- Model loader UI -->
-                    <div class="model-loader-controls">
+                    <!-- Model Controls -->
+                    <div class="model-controls-stacked">
                         <div class="model-control-item">
-                            <label>Load Model Persona:</label>
+                            <label for="modelSelect">Load Model Persona:</label>
                             <div class="model-control-row">
                                 <select id="modelSelect">
                                     <option value="">— Select Model —</option>
@@ -206,8 +212,9 @@
                                 <button onclick="loadModelPersona()" class="btn btn-secondary">Load</button>
                             </div>
                         </div>
+                        
                         <div class="model-control-item">
-                            <label>Blend Models:</label>
+                            <label for="blendSelect">Blend Models:</label>
                             <div class="model-control-row">
                                 <select id="blendSelect">
                                     <option value="">— Select Model —</option>

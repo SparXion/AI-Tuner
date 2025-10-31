@@ -744,6 +744,27 @@ ${this.generateSettingsTable(settings)}
     }
 
     getCategoryInfo(category) {
+        // Model Blend info
+        if (category === 'model-blend') {
+            return {
+                title: 'Model Persona & Blend',
+                content: `
+                    <h4>Load Model Persona</h4>
+                    <p>Select a pre-configured AI model persona to instantly apply its default settings. Each model has a unique personality profile based on its documented behavior.</p>
+                    
+                    <h4>Blend Models</h4>
+                    <p>Create a hybrid persona by blending two different model configurations:</p>
+                    <ol>
+                        <li><strong>Select First Model:</strong> Choose a model persona from the "Load Model Persona" dropdown and click "Load" to apply it</li>
+                        <li><strong>Select Second Model:</strong> Choose a different model from the "Blend Models" dropdown</li>
+                        <li><strong>Adjust Ratio:</strong> Use the slider to control the blend (0% = all first model, 100% = all second model)</li>
+                        <li><strong>Blend:</strong> Click "Blend" to create and apply the hybrid configuration</li>
+                    </ol>
+                    
+                    <p>The radar chart above visualizes the current persona profile in real-time.</p>
+                `
+            };
+        }
         const categories = {
             personality: {
                 title: "Personality & Approach",
