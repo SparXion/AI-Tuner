@@ -16,6 +16,7 @@
 
         <main>
             <div class="main-content">
+                <!-- Left Column: Controls -->
                 <div class="controls-section">
                     <div class="category-group">
                         <h2>Personality & Approach <span class="info-btn" data-category="personality">ℹ</span></h2>
@@ -188,60 +189,65 @@
                     </div>
                 </div>
 
+                <!-- Right Column: Radar & Prompt -->
                 <div class="preview-section">
-                <!-- Radar Container with Model Controls -->
-                <div class="radar-container-box">
-                    <h3 class="radar-header">
-                        Model Persona & Visualization
-                        <span class="info-btn" data-category="model-blend" title="Click for info">ℹ</span>
-                    </h3>
-                    
-                    <!-- Radar Chart -->
-                    <div class="radar-wrapper">
-                        <canvas id="radarCanvas"></canvas>
-                    </div>
-                    
-                    <!-- Model Controls -->
-                    <div class="model-controls-stacked">
-                        <div class="model-control-item">
-                            <label for="modelSelect">Load Model Persona:</label>
-                            <div class="model-control-row">
-                                <select id="modelSelect">
-                                    <option value="">— Select Model —</option>
-                                </select>
-                                <button onclick="loadModelPersona()" class="btn btn-secondary">Load</button>
-                            </div>
+                    <!-- Radar Container Box -->
+                    <div class="radar-container-box">
+                        <!-- Radar Chart -->
+                        <div class="radar-wrapper">
+                            <canvas id="radarCanvas"></canvas>
                         </div>
                         
-                        <div class="model-control-item">
-                            <label for="blendSelect">Blend Models:</label>
-                            <div class="model-control-row">
-                                <select id="blendSelect">
-                                    <option value="">— Select Model —</option>
-                                </select>
-                                <input type="range" id="blendSlider" min="0" max="100" value="50">
-                                <span id="blendPct">50%</span>
-                                <button onclick="blendWithModel()" class="btn btn-secondary">Blend</button>
+                        <!-- Model Controls Stacked -->
+                        <div class="model-controls-stacked">
+                            <div class="model-control-item">
+                                <label for="modelSelect">
+                                    Load Model Persona:
+                                    <span class="info-btn" data-category="load-model" title="Click for info">ℹ</span>
+                                </label>
+                                <div class="model-control-row">
+                                    <select id="modelSelect">
+                                        <option value="">— Select Model —</option>
+                                    </select>
+                                    <button onclick="loadModelPersona()" class="btn btn-secondary">Load</button>
+                                </div>
+                            </div>
+                            
+                            <div class="model-control-item">
+                                <label for="blendSelect">
+                                    Blend Model Personas:
+                                    <span class="info-btn" data-category="blend-models" title="Click for info">ℹ</span>
+                                </label>
+                                <div class="model-control-row">
+                                    <select id="blendSelect">
+                                        <option value="">— Select Model —</option>
+                                    </select>
+                                    <input type="range" id="blendSlider" min="0" max="100" value="50">
+                                    <span id="blendPct">50%</span>
+                                    <button onclick="blendWithModel()" class="btn btn-secondary">Blend</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                
-                <h2>Generated Prompt</h2>
-                <div class="prompt-preview" id="prompt-preview">
-                    Select options above to generate your custom AI prompt...
-                </div>
-                <div class="actions">
-                    <button id="copy-prompt" class="btn btn-primary">Copy Prompt</button>
-                    <button id="download-json" class="btn btn-secondary">Download Config</button>
-                    <button id="download-markdown" class="btn btn-secondary">Download Doc</button>
-                    <button id="upload-config" class="btn btn-secondary">Upload Config</button>
-                    <button id="save-preset" class="btn btn-secondary">Save Preset</button>
-                    <button id="load-preset" class="btn btn-secondary">Load Preset</button>
-                    <button id="analytics-btn" class="btn btn-analytics" onclick="document.getElementById('analytics-dashboard').style.display='block'"><i data-lucide="bar-chart-3"></i> Analytics</button>
-                </div>
-                
-                <input type="file" id="file-input" accept=".json" style="display: none;">
+                    
+                    <!-- Prompt Container Box -->
+                    <div class="prompt-container-box">
+                        <h2>Generated Prompt</h2>
+                        <div class="prompt-preview" id="prompt-preview">
+                            Select options above to generate your custom AI prompt...
+                        </div>
+                        <div class="actions">
+                            <button id="copy-prompt" class="btn btn-primary">Copy Prompt</button>
+                            <button id="download-json" class="btn btn-secondary">Download Config</button>
+                            <button id="download-markdown" class="btn btn-secondary">Download Doc</button>
+                            <button id="upload-config" class="btn btn-secondary">Upload Config</button>
+                            <button id="save-preset" class="btn btn-secondary">Save Preset</button>
+                            <button id="load-preset" class="btn btn-secondary">Load Preset</button>
+                            <button id="analytics-btn" class="btn btn-analytics" onclick="document.getElementById('analytics-dashboard').style.display='block'"><i data-lucide="bar-chart-3"></i> Analytics</button>
+                        </div>
+                        
+                        <input type="file" id="file-input" accept=".json" style="display: none;">
+                    </div>
                 </div>
             </div>
 

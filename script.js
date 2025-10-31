@@ -744,24 +744,48 @@ ${this.generateSettingsTable(settings)}
     }
 
     getCategoryInfo(category) {
-        // Model Blend info
-        if (category === 'model-blend') {
+        // Load Model Persona info
+        if (category === 'load-model') {
             return {
-                title: 'Model Persona & Blend',
+                title: 'Load Model Persona',
                 content: `
-                    <h4>Load Model Persona</h4>
+                    <h4>What is Load Model Persona?</h4>
                     <p>Select a pre-configured AI model persona to instantly apply its default settings. Each model has a unique personality profile based on its documented behavior.</p>
                     
-                    <h4>Blend Models</h4>
-                    <p>Create a hybrid persona by blending two different model configurations:</p>
+                    <h4>Available Models:</h4>
+                    <ul>
+                        <li><strong>Claude Models:</strong> Default, Opus, Sonnet, Haiku</li>
+                        <li><strong>Gemini Models:</strong> Default, Pro, Ultra, Nano</li>
+                        <li><strong>ChatGPT Models:</strong> Default, GPT-4, GPT-3.5</li>
+                        <li><strong>Grok:</strong> Witty, direct personality with enhanced features</li>
+                        <li><strong>Cursor Agent:</strong> Analytical coding assistant</li>
+                    </ul>
+                    
+                    <p>Click "Load" after selecting a model to apply all its default settings. The radar chart will update to show the model's personality profile.</p>
+                `
+            };
+        }
+        
+        // Blend Model Personas info
+        if (category === 'blend-models') {
+            return {
+                title: 'Blend Model Personas',
+                content: `
+                    <h4>What is Blending?</h4>
+                    <p>Create a hybrid persona by blending two different model configurations. This allows you to combine the best traits of different AI models.</p>
+                    
+                    <h4>How to Blend:</h4>
                     <ol>
                         <li><strong>Select First Model:</strong> Choose a model persona from the "Load Model Persona" dropdown and click "Load" to apply it</li>
-                        <li><strong>Select Second Model:</strong> Choose a different model from the "Blend Models" dropdown</li>
+                        <li><strong>Select Second Model:</strong> Choose a different model from the "Blend Model Personas" dropdown</li>
                         <li><strong>Adjust Ratio:</strong> Use the slider to control the blend (0% = all first model, 100% = all second model)</li>
                         <li><strong>Blend:</strong> Click "Blend" to create and apply the hybrid configuration</li>
                     </ol>
                     
-                    <p>The radar chart above visualizes the current persona profile in real-time.</p>
+                    <h4>Example:</h4>
+                    <p>Blend Claude (analytical) at 70% with Grok (witty) at 30% to get an analytical personality with a touch of humor.</p>
+                    
+                    <p>The radar chart updates in real-time to show the blended persona profile.</p>
                 `
             };
         }

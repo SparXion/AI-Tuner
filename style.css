@@ -75,8 +75,8 @@ main {
 
 .main-content {
     display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 60px;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
     align-items: start;
     min-height: calc(100vh - 200px);
 }
@@ -167,31 +167,12 @@ select:hover {
     border-color: #333333;
 }
 
-/* Preview Section */
+/* Preview Section (Right Column) */
 .preview-section {
-    position: sticky;
-    top: 40px;
-    background-color: #ffffff;
-    border: 2px solid #000000;
-    border-radius: 8px;
-    padding: 20px;
-    max-height: calc(100vh - 200px);
     display: flex;
     flex-direction: column;
+    gap: 30px;
     align-self: start;
-    overflow-y: auto;
-}
-
-.preview-section h2 {
-    font-size: 1.4rem;
-    font-weight: 500;
-    margin-top: 30px;
-    margin-bottom: 20px;
-    color: #000000;
-}
-
-.preview-section h2:first-of-type {
-    margin-top: 0;
 }
 
 /* Radar Container Box */
@@ -199,19 +180,8 @@ select:hover {
     border: 2px solid #000000;
     border-radius: 8px;
     padding: 20px;
-    margin-bottom: 30px;
     background-color: #ffffff;
     flex-shrink: 0;
-}
-
-.radar-header {
-    font-size: 1.2rem;
-    font-weight: 500;
-    margin-bottom: 20px;
-    color: #000000;
-    display: flex;
-    align-items: center;
-    gap: 10px;
 }
 
 /* Radar Wrapper */
@@ -239,6 +209,9 @@ select:hover {
     font-weight: 600;
     font-size: 0.95rem;
     color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .model-control-row {
@@ -285,6 +258,25 @@ select:hover {
     font-size: 0.9rem;
 }
 
+/* Prompt Container Box */
+.prompt-container-box {
+    border: 2px solid #000000;
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    min-height: 400px;
+    max-height: calc(100vh - 300px);
+}
+
+.prompt-container-box h2 {
+    font-size: 1.4rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+    color: #000000;
+}
+
 .prompt-preview {
     background-color: #f8f8f8;
     border: 1px solid #e0e0e0;
@@ -292,6 +284,7 @@ select:hover {
     padding: 20px;
     flex-grow: 1;
     min-height: 200px;
+    max-height: 500px;
     font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
     font-size: 0.9rem;
     line-height: 1.5;
