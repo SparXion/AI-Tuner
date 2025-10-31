@@ -903,27 +903,67 @@ ${this.generateSettingsTable(settings)}
     }
 
     toggleAnalyticsDashboard() {
+        // Check admin access before showing dashboard
+        if (window.aiTunerAnalytics && !window.aiTunerAnalytics.isAdminMode()) {
+            if (!window.aiTunerAnalytics.checkAdminAccess()) {
+                return; // User is not admin, don't show dashboard
+            }
+        }
+        
         const dashboard = document.getElementById('analytics-dashboard');
         const summary = document.getElementById('analytics-summary');
         
-        if (dashboard.style.display === 'none') {
+        if (dashboard && dashboard.style.display === 'none') {
             // Show dashboard
             dashboard.style.display = 'block';
             
-            // Populate summary
+            // Populate summary with enhanced stats
             if (window.aiTunerAnalytics) {
                 const data = window.aiTunerAnalytics.getSummary();
+                
+                const presetList = Object.keys(data.presetUsage).length > 0
+                    ? Object.entries(data.presetUsage)
+                        .sort(([,a], [,b]) => b - a)
+                        .slice(0, 10)
+                        .map(([preset, count]) => `<li>${preset}: <strong>${count}</strong> uses</li>`)
+                        .join('')
+                    : '<li><em>No preset usage data yet</em></li>';
+                
+                const personalityList = Object.keys(data.topPersonalities).length > 0
+                    ? Object.entries(data.topPersonalities)
+                        .slice(0, 5)
+                        .map(([personality, count]) => `<li>${personality}: <strong>${count}</strong> uses</li>`)
+                        .join('')
+                    : '<li><em>No personality data yet</em></li>';
+                
                 summary.innerHTML = `
-                    <p><strong>Total Events:</strong> ${data.totalEvents}</p>
-                    <p><strong>Unique Sessions:</strong> ${data.uniqueSessions}</p>
-                    <p><strong>Downloads:</strong> ${data.downloads}</p>
-                    <p><strong>Uploads:</strong> ${data.uploads}</p>
-                    <h4>Most Popular Presets:</h4>
-                    <ul>
-                        ${Object.entries(data.presetUsage).map(([preset, count]) => 
-                            `<li>${preset}: ${count} uses</li>`
-                        ).join('')}
-                    </ul>
+                    <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #ddd;">
+                        <h4 style="margin-top: 0;">Overview</h4>
+                        <p><strong>Total Events:</strong> ${data.totalEvents.toLocaleString()}</p>
+                        <p><strong>Unique Sessions:</strong> ${data.uniqueSessions.toLocaleString()}</p>
+                        <p><strong>Unique Visitors:</strong> ${data.uniqueVisitors.toLocaleString()}</p>
+                        <p><strong>Avg Session Duration:</strong> ${data.averageSessionDuration > 0 ? data.averageSessionDuration + ' min' : 'N/A'}</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #ddd;">
+                        <h4>Activity</h4>
+                        <p><strong>Downloads:</strong> ${data.downloads.toLocaleString()}</p>
+                        <p><strong>Uploads:</strong> ${data.uploads.toLocaleString()}</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #ddd;">
+                        <h4>Top Presets</h4>
+                        <ul style="margin: 5px 0; padding-left: 20px;">${presetList}</ul>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <h4>Top Personalities</h4>
+                        <ul style="margin: 5px 0; padding-left: 20px;">${personalityList}</ul>
+                    </div>
+                    
+                    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd; font-size: 0.85em; color: #666;">
+                        <p><em>Data stored locally in browser. Export to share/backup.</em></p>
+                    </div>
                 `;
             }
         } else {

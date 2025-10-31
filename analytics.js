@@ -189,24 +189,139 @@ class AITunerAnalytics {
 
     // Check if current user is admin
     checkAdminAccess() {
-        // Simple admin check - you can customize this
+        // Check URL parameter for admin key
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlKey = urlParams.get('admin');
+        
+        // Check localStorage for persistent admin session
+        const storedKey = localStorage.getItem('ai_tuner_admin_key');
+        const sessionKey = localStorage.getItem('ai_tuner_admin_session');
+        
+        // Admin secret key (change this to your preferred key)
+        const ADMIN_SECRET = 'sparxion2025';
+        
+        // Check if admin key matches from URL
+        if (urlKey === ADMIN_SECRET) {
+            // Store admin session (valid for 24 hours)
+            localStorage.setItem('ai_tuner_admin_session', Date.now().toString());
+            return true;
+        }
+        
+        // Check if admin session is still valid (24 hours)
+        if (sessionKey) {
+            const sessionTime = parseInt(sessionKey);
+            const hoursSinceLogin = (Date.now() - sessionTime) / (1000 * 60 * 60);
+            if (hoursSinceLogin < 24) {
+                return true;
+            } else {
+                // Session expired, clear it
+                localStorage.removeItem('ai_tuner_admin_session');
+            }
+        }
+        
+        // If neither URL param nor valid session, prompt for key
         const adminKey = prompt('Enter admin key to access analytics:');
-        return adminKey === 'sparxion2025'; // Change this to your secret key
+        if (adminKey === ADMIN_SECRET) {
+            localStorage.setItem('ai_tuner_admin_session', Date.now().toString());
+            return true;
+        }
+        
+        return false;
+    }
+    
+    // Check if admin UI should be visible
+    isAdminMode() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlKey = urlParams.get('admin');
+        const sessionKey = localStorage.getItem('ai_tuner_admin_session');
+        
+        const ADMIN_SECRET = 'sparxion2025';
+        
+        // Check URL parameter
+        if (urlKey === ADMIN_SECRET) {
+            localStorage.setItem('ai_tuner_admin_session', Date.now().toString());
+            return true;
+        }
+        
+        // Check if admin session is valid (24 hours)
+        if (sessionKey) {
+            const sessionTime = parseInt(sessionKey);
+            const hoursSinceLogin = (Date.now() - sessionTime) / (1000 * 60 * 60);
+            if (hoursSinceLogin < 24) {
+                return true;
+            } else {
+                localStorage.removeItem('ai_tuner_admin_session');
+            }
+        }
+        
+        return false;
     }
 
-    // Get analytics summary
+    // Get analytics summary with enhanced stats
     getSummary() {
         const events = JSON.parse(localStorage.getItem('ai_tuner_events') || '[]');
+        
+        if (events.length === 0) {
+            return {
+                totalEvents: 0,
+                uniqueSessions: 0,
+                totalVisitors: 0,
+                presetUsage: {},
+                settingChanges: {},
+                downloads: 0,
+                uploads: 0,
+                dailyActivity: {},
+                hourlyActivity: {},
+                topPersonalities: {},
+                topSettings: {},
+                averageSessionDuration: 0,
+                eventsByType: {}
+            };
+        }
+        
         const summary = {
             totalEvents: events.length,
             uniqueSessions: new Set(events.map(e => e.sessionId)).size,
+            uniqueVisitors: new Set(events.map(e => e.userAgent)).size,
             presetUsage: {},
             settingChanges: {},
             downloads: 0,
-            uploads: 0
+            uploads: 0,
+            dailyActivity: {},
+            hourlyActivity: {},
+            topPersonalities: {},
+            topSettings: {},
+            eventsByType: {},
+            sessionDurations: []
         };
-
+        
+        // Track session start/end times
+        const sessionTimestamps = {};
+        
         events.forEach(event => {
+            // Track event types
+            summary.eventsByType[event.event] = (summary.eventsByType[event.event] || 0) + 1;
+            
+            // Track daily activity
+            const date = event.timestamp.split('T')[0];
+            summary.dailyActivity[date] = (summary.dailyActivity[date] || 0) + 1;
+            
+            // Track hourly activity
+            const hour = new Date(event.timestamp).getHours();
+            summary.hourlyActivity[hour] = (summary.hourlyActivity[hour] || 0) + 1;
+            
+            // Track session timestamps
+            if (!sessionTimestamps[event.sessionId]) {
+                sessionTimestamps[event.sessionId] = { start: event.timestamp, end: event.timestamp };
+            } else {
+                if (new Date(event.timestamp) < new Date(sessionTimestamps[event.sessionId].start)) {
+                    sessionTimestamps[event.sessionId].start = event.timestamp;
+                }
+                if (new Date(event.timestamp) > new Date(sessionTimestamps[event.sessionId].end)) {
+                    sessionTimestamps[event.sessionId].end = event.timestamp;
+                }
+            }
+            
             switch (event.event) {
                 case 'preset_used':
                     summary.presetUsage[event.data.preset] = (summary.presetUsage[event.data.preset] || 0) + 1;
@@ -214,6 +329,11 @@ class AITunerAnalytics {
                 case 'setting_changed':
                     const key = `${event.data.category}.${event.data.setting}`;
                     summary.settingChanges[key] = (summary.settingChanges[key] || 0) + 1;
+                    
+                    // Track most popular settings
+                    if (event.data.setting === 'personality') {
+                        summary.topPersonalities[event.data.value] = (summary.topPersonalities[event.data.value] || 0) + 1;
+                    }
                     break;
                 case 'download':
                     summary.downloads++;
@@ -221,10 +341,82 @@ class AITunerAnalytics {
                 case 'upload':
                     summary.uploads++;
                     break;
+                case 'prompt_generated':
+                    // Track personality usage from prompts
+                    if (event.data.personality) {
+                        summary.topPersonalities[event.data.personality] = (summary.topPersonalities[event.data.personality] || 0) + 1;
+                    }
+                    break;
             }
         });
-
+        
+        // Calculate average session duration
+        Object.values(sessionTimestamps).forEach(session => {
+            const duration = (new Date(session.end) - new Date(session.start)) / 1000 / 60; // minutes
+            summary.sessionDurations.push(duration);
+        });
+        
+        if (summary.sessionDurations.length > 0) {
+            summary.averageSessionDuration = Math.round(
+                summary.sessionDurations.reduce((a, b) => a + b, 0) / summary.sessionDurations.length
+            );
+        }
+        
+        // Sort top personalities and settings
+        summary.topPersonalities = Object.fromEntries(
+            Object.entries(summary.topPersonalities)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 10)
+        );
+        
+        summary.topSettings = Object.fromEntries(
+            Object.entries(summary.settingChanges)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 10)
+        );
+        
         return summary;
+    }
+    
+    // Export data as CSV
+    exportCSV() {
+        const isAdmin = this.checkAdminAccess();
+        if (!isAdmin) {
+            alert('Analytics access restricted to admin only.');
+            return;
+        }
+        
+        const events = JSON.parse(localStorage.getItem('ai_tuner_events') || '[]');
+        if (events.length === 0) {
+            alert('No analytics data to export.');
+            return;
+        }
+        
+        // Convert events to CSV
+        const headers = ['Timestamp', 'Session ID', 'Event', 'Category', 'Setting', 'Value', 'URL', 'User Agent'];
+        const rows = events.map(event => {
+            return [
+                event.timestamp,
+                event.sessionId,
+                event.event,
+                event.data?.category || '',
+                event.data?.setting || '',
+                event.data?.value || event.data?.preset || event.data?.type || '',
+                event.url || '',
+                event.userAgent || ''
+            ].map(val => `"${String(val).replace(/"/g, '""')}"`).join(',');
+        });
+        
+        const csv = [headers.join(','), ...rows].join('\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `ai_tuner_analytics_${new Date().toISOString().split('T')[0]}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     }
 }
 
