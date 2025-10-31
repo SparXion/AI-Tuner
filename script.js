@@ -42,7 +42,14 @@ class AITuner {
             motivational: document.getElementById('motivational'),
             continuationBias: document.getElementById('continuation-bias'),
             selfSufficiency: document.getElementById('self-sufficiency'),
-            assumptionStrength: document.getElementById('assumption-strength')
+            assumptionStrength: document.getElementById('assumption-strength'),
+            truthPrioritization: document.getElementById('truth-prioritization'),
+            sourceTransparency: document.getElementById('source-transparency'),
+            uncertaintyAdmission: document.getElementById('uncertainty-admission'),
+            selfReferentialHumor: document.getElementById('self-referential-humor'),
+            absurdismInjection: document.getElementById('absurdism-injection'),
+            toolInvocation: document.getElementById('tool-invocation'),
+            realTimeDataBias: document.getElementById('real-time-data-bias')
         };
 
         this.preview = document.getElementById('prompt-preview');
@@ -143,23 +150,33 @@ class AITuner {
     }
 
     getCurrentSettings() {
+        // Safely get values with null checks to prevent errors
+        const getValue = (element) => (element && element.value) ? element.value : '';
+        
         return {
-            personality: this.elements.personality.value,
-            bluntness: this.elements.bluntness.value,
-            termination: this.elements.termination.value,
-            cognitiveTier: this.elements.cognitiveTier.value,
-            toneNeutrality: this.elements.toneNeutrality.value,
-            sentimentBoost: this.elements.sentimentBoost.value,
-            mirrorAvoidance: this.elements.mirrorAvoidance.value,
-            elementElimination: this.elements.elementElimination.value,
-            transitions: this.elements.transitions.value,
-            callToAction: this.elements.callToAction.value,
-            questions: this.elements.questions.value,
-            suggestions: this.elements.suggestions.value,
-            motivational: this.elements.motivational.value,
-            continuationBias: this.elements.continuationBias.value,
-            selfSufficiency: this.elements.selfSufficiency.value,
-            assumptionStrength: this.elements.assumptionStrength.value
+            personality: getValue(this.elements.personality),
+            bluntness: getValue(this.elements.bluntness),
+            termination: getValue(this.elements.termination),
+            cognitiveTier: getValue(this.elements.cognitiveTier),
+            toneNeutrality: getValue(this.elements.toneNeutrality),
+            sentimentBoost: getValue(this.elements.sentimentBoost),
+            mirrorAvoidance: getValue(this.elements.mirrorAvoidance),
+            elementElimination: getValue(this.elements.elementElimination),
+            transitions: getValue(this.elements.transitions),
+            callToAction: getValue(this.elements.callToAction),
+            questions: getValue(this.elements.questions),
+            suggestions: getValue(this.elements.suggestions),
+            motivational: getValue(this.elements.motivational),
+            continuationBias: getValue(this.elements.continuationBias),
+            selfSufficiency: getValue(this.elements.selfSufficiency),
+            assumptionStrength: getValue(this.elements.assumptionStrength),
+            truthPrioritization: getValue(this.elements.truthPrioritization),
+            sourceTransparency: getValue(this.elements.sourceTransparency),
+            uncertaintyAdmission: getValue(this.elements.uncertaintyAdmission),
+            selfReferentialHumor: getValue(this.elements.selfReferentialHumor),
+            absurdismInjection: getValue(this.elements.absurdismInjection),
+            toolInvocation: getValue(this.elements.toolInvocation),
+            realTimeDataBias: getValue(this.elements.realTimeDataBias)
         };
     }
 
@@ -183,6 +200,15 @@ class AITuner {
         
         // Goal Orientation
         prompt += this.buildGoalSection(settings);
+        
+        // Truth & Epistemology
+        prompt += this.buildTruthSection(settings);
+        
+        // Humor & Meta
+        prompt += this.buildHumorSection(settings);
+        
+        // Knowledge & Tool Use
+        prompt += this.buildKnowledgeSection(settings);
 
         return prompt.trim();
     }
@@ -204,7 +230,14 @@ class AITuner {
             'motivational': 'Behavioral',
             'continuation-bias': 'Goals',
             'self-sufficiency': 'Goals',
-            'assumption-strength': 'Goals'
+            'assumption-strength': 'Goals',
+            'truth-prioritization': 'Truth',
+            'source-transparency': 'Truth',
+            'uncertainty-admission': 'Truth',
+            'self-referential-humor': 'Humor',
+            'absurdism-injection': 'Humor',
+            'tool-invocation': 'Knowledge',
+            'real-time-data-bias': 'Knowledge'
         };
         return categoryMap[element.id] || 'Unknown';
     }
@@ -515,7 +548,25 @@ class AITuner {
                 break;
         }
 
-        return section;
+        return section + "\n";
+    }
+
+    buildTruthSection(settings) {
+        let section = "TRUTH & EPISTEMOLOGY:\n";
+        section += `Truth: ${settings.truthPrioritization}, sources: ${settings.sourceTransparency}, unknowns: ${settings.uncertaintyAdmission}. `;
+        return section + "\n";
+    }
+
+    buildHumorSection(settings) {
+        let section = "HUMOR & META:\n";
+        section += `Self-humor: ${settings.selfReferentialHumor}, absurdism: ${settings.absurdismInjection}. `;
+        return section + "\n";
+    }
+
+    buildKnowledgeSection(settings) {
+        let section = "KNOWLEDGE & TOOL USE:\n";
+        section += `Tools: ${settings.toolInvocation}, live data: ${settings.realTimeDataBias}. `;
+        return section + "\n";
     }
 
     copyPrompt() {
@@ -650,11 +701,21 @@ ${this.generateSettingsTable(settings)}
                     throw new Error('Invalid configuration file format');
                 }
 
-                // Load settings into form
+                // Load settings into form with validation
                 Object.keys(config.settings).forEach(key => {
                     const element = this.elements[key];
-                    if (element && config.settings[key]) {
-                        element.value = config.settings[key];
+                    if (element && config.settings[key] !== null && config.settings[key] !== undefined) {
+                        if (element.tagName === 'SELECT') {
+                            const normalizedValue = this.normalizeValue(config.settings[key], key);
+                            const validOptions = Array.from(element.options).map(opt => opt.value);
+                            if (validOptions.includes(normalizedValue)) {
+                                element.value = normalizedValue;
+                            } else {
+                                console.warn(`Value "${normalizedValue}" not found in select "${key}" when loading config, skipping`);
+                            }
+                        } else {
+                            element.value = this.normalizeValue(config.settings[key], key);
+                        }
                     }
                 });
 
@@ -1420,17 +1481,31 @@ ${this.generateSettingsTable(settings)}
     }
 
     applyPreset(presetName) {
+        if (!presetName || typeof presetName !== 'string') {
+            console.error('Invalid preset name:', presetName);
+            return;
+        }
+        
         const preset = this.presets[presetName];
-        if (!preset) {
-            console.error('Preset not found:', presetName);
+        if (!preset || typeof preset !== 'object') {
+            console.error(`Preset "${presetName}" not found`);
             return;
         }
 
-        // Update all dropdowns
+        // Normalize and apply all settings from preset
         Object.keys(preset).forEach(key => {
             const element = this.elements[key];
-            if (element) {
-                element.value = preset[key];
+            if (element && element.tagName === 'SELECT') {
+                const normalizedValue = this.normalizeValue(preset[key], key);
+                // Verify value exists in options before setting
+                const validOptions = Array.from(element.options).map(opt => opt.value);
+                if (validOptions.includes(normalizedValue)) {
+                    element.value = normalizedValue;
+                } else {
+                    console.warn(`Value "${normalizedValue}" not found in select "${key}", skipping`);
+                }
+            } else if (element) {
+                element.value = this.normalizeValue(preset[key], key);
             }
         });
 
@@ -1445,19 +1520,63 @@ ${this.generateSettingsTable(settings)}
 
         // Regenerate prompt (which will also update radar)
         this.generatePrompt();
-        
-        // Also update radar directly with preset
-        if (typeof drawRadar === 'function') {
-            drawRadar(preset);
+    }
+    
+    /**
+     * Normalize values from presets to match HTML form option values
+     * Handles capitalization, hyphenation, and special cases
+     * @param {string|number|null|undefined} value - The value to normalize
+     * @param {string} fieldName - The field name (for potential future context-specific normalization)
+     * @returns {string} Normalized value matching HTML form option values
+     */
+    normalizeValue(value, fieldName) {
+        if (value === null || value === undefined) {
+            return '';
         }
+        
+        if (typeof value !== 'string') {
+            return String(value).toLowerCase();
+        }
+        
+        // Convert to lowercase
+        let normalized = value.toLowerCase();
+        
+        // Handle special cases for hyphenated values
+        const hyphenMappings = {
+            'onrequest': 'on-request',
+            'on-request': 'on-request',
+            'comfortfirst': 'comfort-first',
+            'comfort-first': 'comfort-first',
+            'truthfirst': 'truth-first',
+            'truth-first': 'truth-first',
+            'staticcutoff': 'static-cutoff',
+            'static-cutoff': 'static-cutoff'
+        };
+        
+        const key = normalized.replace(/-/g, '');
+        if (hyphenMappings[key]) {
+            normalized = hyphenMappings[key];
+        }
+        
+        return normalized;
     }
 
     savePreset() {
         const presetName = prompt('Enter a name for your preset:');
-        if (!presetName) return;
+        if (!presetName || typeof presetName !== 'string' || presetName.trim() === '') {
+            return;
+        }
+        
+        // Sanitize preset name - remove dangerous characters
+        const sanitizedName = presetName.trim().replace(/[<>:"/\\|?*]/g, '');
+        if (sanitizedName !== presetName.trim()) {
+            alert('Preset name contains invalid characters. It has been sanitized.');
+        }
+        
+        const finalName = sanitizedName || presetName.trim();
 
         const settings = this.getCurrentSettings();
-        const presetKey = presetName.toLowerCase().replace(/\s+/g, '_');
+        const presetKey = finalName.toLowerCase().replace(/\s+/g, '_');
         this.presets[presetKey] = settings;
         
         // Save all presets to localStorage (including custom ones)
@@ -1512,6 +1631,15 @@ function loadModelPersona() {
         // Apply the model persona preset directly
         const preset = window.MODEL_PERSONAS[name];
         
+        // Normalize Grok's field names to our field names
+        const fieldNameMap = {
+            targeting: 'cognitiveTier',
+            sentimentBoosting: 'sentimentBoost',
+            userMirroring: 'mirrorAvoidance',
+            motivationalContent: 'motivational',
+            userAssumption: 'assumptionStrength'
+        };
+        
         // Map camelCase keys to element IDs (kebab-case)
         const keyToElementId = {
             personality: 'personality',
@@ -1541,12 +1669,24 @@ function loadModelPersona() {
             cosmicPerspective: 'cosmic-perspective'
         };
         
-        // Update all dropdowns
+        // Update all dropdowns - normalize field names first
         Object.keys(preset).forEach(key => {
-            const elementId = keyToElementId[key] || key.replace(/([A-Z])/g, '-$1').toLowerCase();
+            // Normalize field name if needed
+            const normalizedKey = fieldNameMap[key] || key;
+            const elementId = keyToElementId[normalizedKey] || normalizedKey.replace(/([A-Z])/g, '-$1').toLowerCase();
             const element = document.getElementById(elementId);
-            if (element) {
-                element.value = preset[key];
+            if (element && element.tagName === 'SELECT') {
+                // Normalize value using the same function as applyPreset
+                const normalizedValue = window.aiTuner.normalizeValue(preset[key], normalizedKey);
+                // Verify value exists in options before setting
+                const validOptions = Array.from(element.options).map(opt => opt.value);
+                if (validOptions.includes(normalizedValue)) {
+                    element.value = normalizedValue;
+                } else {
+                    console.warn(`Value "${normalizedValue}" not found in select "${elementId}" for key "${key}", skipping`);
+                }
+            } else if (element) {
+                element.value = window.aiTuner.normalizeValue(preset[key], normalizedKey);
             }
         });
         
@@ -1601,6 +1741,15 @@ function blendWithModel() {
     
     // Apply the blended preset
     if (window.aiTuner) {
+        // Normalize Grok's field names to our field names
+        const fieldNameMap = {
+            targeting: 'cognitiveTier',
+            sentimentBoosting: 'sentimentBoost',
+            userMirroring: 'mirrorAvoidance',
+            motivationalContent: 'motivational',
+            userAssumption: 'assumptionStrength'
+        };
+        
         // Map camelCase keys to element IDs (kebab-case)
         const keyToElementId = {
             personality: 'personality',
@@ -1630,12 +1779,24 @@ function blendWithModel() {
             cosmicPerspective: 'cosmic-perspective'
         };
         
-        // Update all dropdowns
+        // Update all dropdowns - normalize field names first
         Object.keys(blended).forEach(key => {
-            const elementId = keyToElementId[key] || key.replace(/([A-Z])/g, '-$1').toLowerCase();
+            // Normalize field name if needed
+            const normalizedKey = fieldNameMap[key] || key;
+            const elementId = keyToElementId[normalizedKey] || normalizedKey.replace(/([A-Z])/g, '-$1').toLowerCase();
             const element = document.getElementById(elementId);
-            if (element) {
-                element.value = blended[key];
+            if (element && element.tagName === 'SELECT') {
+                // Normalize value using the same function as applyPreset
+                const normalizedValue = window.aiTuner.normalizeValue(blended[key], normalizedKey);
+                // Verify value exists in options before setting
+                const validOptions = Array.from(element.options).map(opt => opt.value);
+                if (validOptions.includes(normalizedValue)) {
+                    element.value = normalizedValue;
+                } else {
+                    console.warn(`Value "${normalizedValue}" not found in select "${elementId}" for key "${key}", skipping`);
+                }
+            } else if (element) {
+                element.value = window.aiTuner.normalizeValue(blended[key], normalizedKey);
             }
         });
         

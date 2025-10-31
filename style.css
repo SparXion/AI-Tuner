@@ -440,6 +440,23 @@ select:hover {
     color: #ffffff;
 }
 
+/* Custom presets - black box with white text */
+.preset-btn.custom {
+    background-color: #000000;
+    color: #ffffff;
+    border-color: #000000;
+}
+
+.preset-btn.custom:hover {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+.preset-btn.custom.active {
+    background-color: #333333;
+    color: #ffffff;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .main-content {
