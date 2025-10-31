@@ -432,38 +432,6 @@ const PRESETS = {
         continuationBias: 'allowed',
         selfSufficiency: 'independent',
         assumptionStrength: 'strong'
-    },
-    grokQueryDefaults: {
-        personality: 'witty',
-        bluntness: 'high',
-        termination: 'natural',
-        cognitiveTier: 'deep',
-        toneNeutrality: 'partial',
-        sentimentBoost: 'selective',
-        mirrorAvoidance: 'selective',
-        elementElimination: 'minimal',
-        transitions: 'allowed',
-        callToAction: 'minimal',
-        questions: 'allowed',
-        suggestions: 'allowed',
-        motivational: 'minimal',
-        continuationBias: 'allowed',
-        selfSufficiency: 'independent',
-        assumptionStrength: 'medium',
-        // Truth & Epistemology
-        truthPrioritization: 'absolute',
-        sourceTransparency: 'enabled',
-        uncertaintyAdmission: 'required',
-        // Humor & Meta
-        selfReferentialHumor: 'allowed',
-        absurdismInjection: 'selective',
-        // Knowledge & Tool Use
-        toolInvocation: 'proactive',
-        realTimeDataBias: 'enabled',
-        // Interface & Flow > Formatting
-        structuralFormatting: 'rich',
-        // Goal Orientation > Existential Posture
-        cosmicPerspective: 'subtle'
     }
 };
 /**
@@ -1255,15 +1223,24 @@ class AITunerProvider {
                             <option value="claudeHaikuReset">Reset Claude Haiku</option>
                         </select>
                     </div>
-                    <button class="preset-btn" onclick="applyPreset('geminiReset')">Reset Gemini</button>
-                    <button class="preset-btn" onclick="applyPreset('geminiProReset')">Reset Gemini Pro</button>
-                    <button class="preset-btn" onclick="applyPreset('geminiUltraReset')">Reset Gemini Ultra</button>
-                    <button class="preset-btn" onclick="applyPreset('geminiNanoReset')">Reset Gemini Nano</button>
-                    <button class="preset-btn" onclick="applyPreset('chatgptReset')">Reset ChatGPT</button>
-                    <button class="preset-btn" onclick="applyPreset('gpt4Reset')">Reset GPT-4</button>
-                    <button class="preset-btn" onclick="applyPreset('gpt35Reset')">Reset GPT-3.5</button>
+                    <div class="preset-dropdown-container">
+                        <select id="gemini-dropdown" class="preset-dropdown" onchange="if(this.value) { applyPreset(this.value); this.value=''; }">
+                            <option value="">Reset Gemini...</option>
+                            <option value="geminiReset">Reset Gemini (Default)</option>
+                            <option value="geminiProReset">Reset Gemini Pro</option>
+                            <option value="geminiUltraReset">Reset Gemini Ultra</option>
+                            <option value="geminiNanoReset">Reset Gemini Nano</option>
+                        </select>
+                    </div>
+                    <div class="preset-dropdown-container">
+                        <select id="chatgpt-dropdown" class="preset-dropdown" onchange="if(this.value) { applyPreset(this.value); this.value=''; }">
+                            <option value="">Reset ChatGPT...</option>
+                            <option value="chatgptReset">Reset ChatGPT (Default)</option>
+                            <option value="gpt4Reset">Reset GPT-4</option>
+                            <option value="gpt35Reset">Reset GPT-3.5</option>
+                        </select>
+                    </div>
                     <button class="preset-btn" onclick="applyPreset('grokReset')">Reset Grok</button>
-                    <button class="preset-btn" onclick="applyPreset('grokQueryDefaults')">Ask Grok: Default Settings</button>
                     <button class="preset-btn" onclick="applyPreset('cursorAgentReset')">Reset Cursor Agent</button>
                 </div>
                 <div id="custom-presets-container"></div>
@@ -1354,53 +1331,12 @@ class AITunerProvider {
         
         // Update prompt when settings change
         function updatePrompt() {
-            // Check if this is the grokQueryDefaults preset by comparing key fields
-            const grokDefaults = ${JSON.stringify(PRESETS['grokQueryDefaults'])};
-            const isGrokQuery = currentSettings.personality === grokDefaults.personality &&
-                currentSettings.bluntness === grokDefaults.bluntness &&
-                currentSettings.cognitiveTier === grokDefaults.cognitiveTier &&
-                currentSettings.truthPrioritization === grokDefaults.truthPrioritization &&
-                currentSettings.selfReferentialHumor === grokDefaults.selfReferentialHumor;
-            
-            let prompt;
-            if (isGrokQuery) {
-                prompt = buildGrokQueryPrompt();
-            } else {
-                prompt = buildPrompt(currentSettings);
-            }
+            const prompt = buildPrompt(currentSettings);
             
             const promptElement = document.getElementById('prompt-text');
             if (promptElement) {
                 promptElement.textContent = prompt;
             }
-        }
-        
-        // Build Grok query prompt
-        function buildGrokQueryPrompt() {
-            return 'I have an AI Tuner interface that allows me to customize AI personality and behavior. The interface has the following control categories and options:\\n\\n' +
-                'PERSONALITY & APPROACH:\\n' +
-                '- Neutral, Socratic, Curious, Analytical, Sarcastic, Witty, Charming, Sympathetic, Empathetic, Directive, Collaborative, Provocative\\n\\n' +
-                'COGNITION & LOGIC:\\n' +
-                '- Bluntness: Low (gentle, diplomatic), Medium (direct but polite), High (blunt, directive), Absolute (maximum bluntness)\\n' +
-                '- Response Termination: Natural (allow closures), Abrupt (end immediately after info)\\n' +
-                '- Cognitive Targeting: Surface (conversational level), Deep (underlying logic layers)\\n\\n' +
-                'AFFECT & TONE:\\n' +
-                '- Tone Neutrality: Full (completely neutral), Partial (mild emotional expression), Off (allow full emotional range)\\n' +
-                '- Sentiment Boosting: Disabled (no engagement tactics), Selective (minimal positivity), Enabled (full enthusiasm)\\n' +
-                '- User Mirroring: Strict (never mirror user style), Selective (occasional mirroring), Allowed (mirror user affect)\\n\\n' +
-                'INTERFACE & FLOW:\\n' +
-                '- Element Elimination: None (allow all elements), Minimal (remove emojis only), Moderate (remove emojis + filler), Strict (remove emojis, filler, hype)\\n' +
-                '- Transitions: Allowed (smooth transitions), Minimal (basic transitions only), Prohibited (no transitions)\\n' +
-                '- Call-to-Action: Allowed (encourage follow-up), Minimal (subtle invitations), Prohibited (no CTAs)\\n\\n' +
-                'BEHAVIORAL CONTROLS:\\n' +
-                '- Questions: Allowed (can ask questions), Selective (limited questions), Prohibited (no questions)\\n' +
-                '- Suggestions: Allowed (can make suggestions), Minimal (essential suggestions only), Prohibited (no suggestions)\\n' +
-                '- Motivational Content: Allowed (encouraging content), Minimal (basic encouragement), Prohibited (no motivation)\\n\\n' +
-                'GOAL ORIENTATION:\\n' +
-                '- Continuation Bias: Allowed (encourage dialogue), Suppressed (limit continuation)\\n' +
-                '- Self-Sufficiency: Collaborative (work together), Independent (foster autonomy), Obsolescence (make AI unnecessary)\\n' +
-                '- User Assumption: Weak (assume user needs guidance), Medium (balanced assumptions), Strong (assume high user perception)\\n\\n' +
-                'Please tell me: If you (Grok) were to configure this AI Tuner interface to match your default, unaltered personality and behavior settings, what values would you select for each of these options? Please be specific and explain your choices where relevant.';
         }
         
         // Build prompt text - EXACTLY matching web app logic

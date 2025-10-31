@@ -230,15 +230,24 @@
                             <option value="claudeHaikuReset">Reset Claude Haiku</option>
                         </select>
                     </div>
-                    <button class="preset-btn" data-preset="geminiReset">Reset Gemini</button>
-                    <button class="preset-btn" data-preset="geminiProReset">Reset Gemini Pro</button>
-                    <button class="preset-btn" data-preset="geminiUltraReset">Reset Gemini Ultra</button>
-                    <button class="preset-btn" data-preset="geminiNanoReset">Reset Gemini Nano</button>
-                    <button class="preset-btn" data-preset="chatgptReset">Reset ChatGPT</button>
-                    <button class="preset-btn" data-preset="gpt4Reset">Reset GPT-4</button>
-                    <button class="preset-btn" data-preset="gpt35Reset">Reset GPT-3.5</button>
+                    <div class="preset-dropdown-container">
+                        <select id="gemini-dropdown" class="preset-dropdown" onchange="if(this.value) { window.aiTuner.applyPreset(this.value); this.value=''; }">
+                            <option value="">Reset Gemini...</option>
+                            <option value="geminiReset">Reset Gemini (Default)</option>
+                            <option value="geminiProReset">Reset Gemini Pro</option>
+                            <option value="geminiUltraReset">Reset Gemini Ultra</option>
+                            <option value="geminiNanoReset">Reset Gemini Nano</option>
+                        </select>
+                    </div>
+                    <div class="preset-dropdown-container">
+                        <select id="chatgpt-dropdown" class="preset-dropdown" onchange="if(this.value) { window.aiTuner.applyPreset(this.value); this.value=''; }">
+                            <option value="">Reset ChatGPT...</option>
+                            <option value="chatgptReset">Reset ChatGPT (Default)</option>
+                            <option value="gpt4Reset">Reset GPT-4</option>
+                            <option value="gpt35Reset">Reset GPT-3.5</option>
+                        </select>
+                    </div>
                     <button class="preset-btn" data-preset="grokReset">Reset Grok</button>
-                    <button class="preset-btn" data-preset="grokQueryDefaults">Ask Grok: Default Settings</button>
                     <button class="preset-btn" data-preset="cursorAgentReset">Reset Cursor Agent</button>
                 </div>
             </div>

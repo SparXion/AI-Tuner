@@ -125,22 +125,7 @@ class AITuner {
 
     generatePrompt() {
         const settings = this.getCurrentSettings();
-        
-        // Check if this is the grokQueryDefaults preset by comparing key identifying fields
-        const grokDefaults = this.presets.grokQueryDefaults;
-        const isGrokQuery = grokDefaults && 
-            settings.personality === grokDefaults.personality &&
-            settings.bluntness === grokDefaults.bluntness &&
-            settings.cognitiveTier === grokDefaults.cognitiveTier &&
-            settings.truthPrioritization === grokDefaults.truthPrioritization &&
-            settings.selfReferentialHumor === grokDefaults.selfReferentialHumor;
-        
-        let prompt;
-        if (isGrokQuery) {
-            prompt = this.buildGrokQueryPrompt();
-        } else {
-            prompt = this.buildPrompt(settings);
-        }
+        const prompt = this.buildPrompt(settings);
         
         if (this.preview) {
             this.preview.textContent = prompt;
@@ -150,40 +135,6 @@ class AITuner {
         if (window.aiTunerAnalytics) {
             window.aiTunerAnalytics.trackPromptGenerated(settings);
         }
-    }
-    
-    buildGrokQueryPrompt() {
-        return `I have an AI Tuner interface that allows me to customize AI personality and behavior. The interface has the following control categories and options:
-
-PERSONALITY & APPROACH:
-- Neutral, Socratic, Curious, Analytical, Sarcastic, Witty, Charming, Sympathetic, Empathetic, Directive, Collaborative, Provocative
-
-COGNITION & LOGIC:
-- Bluntness: Low (gentle, diplomatic), Medium (direct but polite), High (blunt, directive), Absolute (maximum bluntness)
-- Response Termination: Natural (allow closures), Abrupt (end immediately after info)
-- Cognitive Targeting: Surface (conversational level), Deep (underlying logic layers)
-
-AFFECT & TONE:
-- Tone Neutrality: Full (completely neutral), Partial (mild emotional expression), Off (allow full emotional range)
-- Sentiment Boosting: Disabled (no engagement tactics), Selective (minimal positivity), Enabled (full enthusiasm)
-- User Mirroring: Strict (never mirror user style), Selective (occasional mirroring), Allowed (mirror user affect)
-
-INTERFACE & FLOW:
-- Element Elimination: None (allow all elements), Minimal (remove emojis only), Moderate (remove emojis + filler), Strict (remove emojis, filler, hype)
-- Transitions: Allowed (smooth transitions), Minimal (basic transitions only), Prohibited (no transitions)
-- Call-to-Action: Allowed (encourage follow-up), Minimal (subtle invitations), Prohibited (no CTAs)
-
-BEHAVIORAL CONTROLS:
-- Questions: Allowed (can ask questions), Selective (limited questions), Prohibited (no questions)
-- Suggestions: Allowed (can make suggestions), Minimal (essential suggestions only), Prohibited (no suggestions)
-- Motivational Content: Allowed (encouraging content), Minimal (basic encouragement), Prohibited (no motivation)
-
-GOAL ORIENTATION:
-- Continuation Bias: Allowed (encourage dialogue), Suppressed (limit continuation)
-- Self-Sufficiency: Collaborative (work together), Independent (foster autonomy), Obsolescence (make AI unnecessary)
-- User Assumption: Weak (assume user needs guidance), Medium (balanced assumptions), Strong (assume high user perception)
-
-Please tell me: If you (Grok) were to configure this AI Tuner interface to match your default, unaltered personality and behavior settings, what values would you select for each of these options? Please be specific and explain your choices where relevant.`;
     }
 
     getCurrentSettings() {
@@ -1330,38 +1281,6 @@ ${this.generateSettingsTable(settings)}
                 continuationBias: 'allowed',
                 selfSufficiency: 'independent',
                 assumptionStrength: 'strong'
-            },
-            grokQueryDefaults: {
-                personality: 'witty',
-                bluntness: 'high',
-                termination: 'natural',
-                cognitiveTier: 'deep',
-                toneNeutrality: 'partial',
-                sentimentBoost: 'selective',
-                mirrorAvoidance: 'selective',
-                elementElimination: 'minimal',
-                transitions: 'allowed',
-                callToAction: 'minimal',
-                questions: 'allowed',
-                suggestions: 'allowed',
-                motivational: 'minimal',
-                continuationBias: 'allowed',
-                selfSufficiency: 'independent',
-                assumptionStrength: 'medium',
-                // Truth & Epistemology
-                truthPrioritization: 'absolute',
-                sourceTransparency: 'enabled',
-                uncertaintyAdmission: 'required',
-                // Humor & Meta
-                selfReferentialHumor: 'allowed',
-                absurdismInjection: 'selective',
-                // Knowledge & Tool Use
-                toolInvocation: 'proactive',
-                realTimeDataBias: 'enabled',
-                // Interface & Flow > Formatting
-                structuralFormatting: 'rich',
-                // Goal Orientation > Existential Posture
-                cosmicPerspective: 'subtle'
             }
         };
         
@@ -1384,7 +1303,7 @@ ${this.generateSettingsTable(settings)}
         const builtInPresets = ['absolute', 'friendly', 'analytical', 'minimal', 'creative', 'coding', 'standard', 'factoryReset',
             'claudeReset', 'claudeOpusReset', 'claudeSonnetReset', 'claudeHaikuReset',
             'geminiReset', 'geminiProReset', 'geminiUltraReset', 'geminiNanoReset',
-            'chatgptReset', 'gpt4Reset', 'gpt35Reset', 'grokReset', 'cursorAgentReset', 'grokQueryDefaults'];
+            'chatgptReset', 'gpt4Reset', 'gpt35Reset', 'grokReset', 'cursorAgentReset'];
         
         const customPresetNames = Object.keys(this.presets).filter(name => !builtInPresets.includes(name));
         
