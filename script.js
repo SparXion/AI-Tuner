@@ -108,12 +108,14 @@ class AITuner {
             }
         });
 
-        // Info button listeners
-        document.querySelectorAll('.info-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                this.showInfo(e.target.dataset.category);
-                if (window.aiTunerAnalytics) window.aiTunerAnalytics.trackInfoButtonClicked(e.target.dataset.category);
-            });
+        // Info button listeners - use event delegation to handle dynamically added buttons
+        document.addEventListener('click', (e) => {
+            const infoBtn = e.target.closest('.info-btn');
+            if (infoBtn && infoBtn.dataset.category) {
+                const category = infoBtn.dataset.category;
+                this.showInfo(category);
+                if (window.aiTunerAnalytics) window.aiTunerAnalytics.trackInfoButtonClicked(category);
+            }
         });
 
         // Info popup listeners
@@ -795,11 +797,23 @@ ${this.generateSettingsTable(settings)}
     }
 
     showInfo(category) {
+        if (!category || typeof category !== 'string') {
+            console.warn('Invalid category for info popup:', category);
+            return;
+        }
+        
         const infoData = this.getCategoryInfo(category);
-        this.infoTitle.textContent = infoData.title;
-        this.infoContent.innerHTML = infoData.content;
-        this.infoOverlay.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        if (!infoData || !infoData.title || !infoData.content) {
+            console.warn('Info data not found for category:', category);
+            return;
+        }
+        
+        if (this.infoTitle) this.infoTitle.textContent = infoData.title;
+        if (this.infoContent) this.infoContent.innerHTML = infoData.content;
+        if (this.infoOverlay) {
+            this.infoOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
     }
 
     hideInfo() {
