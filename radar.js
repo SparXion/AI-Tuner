@@ -113,6 +113,16 @@ function drawRadar(preset) {
         return;
     }
     
+    // Check if dark mode is active
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    
+    // Choose colors based on dark mode
+    const backgroundColor = isDarkMode ? "rgba(173,216,230,0.2)" : "rgba(54,162,235,0.2)";
+    const borderColor = isDarkMode ? "#ADD8E6" : "#36A2EB";
+    const pointColor = isDarkMode ? "#ADD8E6" : "#36A2EB";
+    const textColor = isDarkMode ? "#ffffff" : "#000000";
+    const gridColor = isDarkMode ? "#666666" : "#cccccc";
+    
     // Normalize field names to handle Grok's variations (targeting→cognitiveTier, sentimentBoosting→sentimentBoost, etc.)
     const normalizedPreset = {
         bluntness: preset.bluntness || 'medium',
@@ -151,9 +161,9 @@ function drawRadar(preset) {
             datasets: [{
                 label: "Current",
                 data: data,
-                backgroundColor: "rgba(54,162,235,0.2)",
-                borderColor: "#36A2EB",
-                pointBackgroundColor: "#36A2EB"
+                backgroundColor: backgroundColor,
+                borderColor: borderColor,
+                pointBackgroundColor: pointColor
             }]
         },
         options: {
@@ -166,7 +176,14 @@ function drawRadar(preset) {
                     beginAtZero: true,
                     max: 3,
                     ticks: {
-                        stepSize: 1
+                        stepSize: 1,
+                        color: textColor
+                    },
+                    grid: {
+                        color: gridColor
+                    },
+                    pointLabels: {
+                        color: textColor
                     }
                 }
             },
