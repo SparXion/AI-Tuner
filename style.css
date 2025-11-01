@@ -819,6 +819,10 @@ body.dark-mode .control-item label {
     color: #ffffff;
 }
 
+body.dark-mode .category-group h2 {
+    color: #ffffff;
+}
+
 body.dark-mode select,
 body.dark-mode .preset-dropdown {
     background-color: #1a1a1a;
@@ -847,10 +851,19 @@ body.dark-mode .prompt-container-box {
 body.dark-mode .prompt-preview {
     background-color: #000000;
     color: #ffffff;
+    border-color: #333333;
 }
 
 body.dark-mode .prompt-preview code {
     background-color: #333333;
+    color: #ffffff;
+}
+
+body.dark-mode .model-control-item label {
+    color: #ffffff;
+}
+
+body.dark-mode .blend-slider-container #blendPct {
     color: #ffffff;
 }
 
@@ -942,5 +955,33 @@ body.dark-mode .consent-banner {
 body.dark-mode .consent-banner p,
 body.dark-mode .consent-banner strong,
 body.dark-mode .consent-banner li {
+    color: #ffffff;
+}
+
+body.dark-mode .presets-section {
+    border-top-color: #333333;
+}
+
+body.dark-mode .presets-section h2 {
+    color: #ffffff;
+}
+
+body.dark-mode .btn-secondary {
+    background-color: #ffffff;
+    color: #000000;
+    border-color: #ffffff;
+}
+
+body.dark-mode .btn-secondary:hover {
+    background-color: #333333;
+    color: #ffffff;
+    border-color: #333333;
+}
+
+body.dark-mode canvas {
+    filter: invert(1) hue-rotate(180deg);
+}
+
+body.dark-mode .prompt-container-box h2 {
     color: #ffffff;
 }
