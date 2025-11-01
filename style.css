@@ -67,6 +67,16 @@ h1 {
     letter-spacing: 0.01em;
 }
 
+.tier-links a,
+.tier-links strong {
+    color: #000000;
+    font-weight: 500;
+}
+
+.tier-links span {
+    color: #666666;
+}
+
 /* Main Layout */
 main {
     display: flex;
