@@ -103,3 +103,42 @@ npm run test:all
 **Evaluation:**
 - Need: Root package.json with test dependencies and scripts
 - Need: Jest and Cypress configured
+
+## Task 9: Reset Blend Counter Command (EVALUATED)
+```js
+vscode.commands.registerCommand('aiTuner.resetBlends', () => {
+  localStorage.removeItem('blendCount');
+  localStorage.removeItem('blendDate');
+  vscode.window.showInformationMessage('Blend counter reset');
+});
+```
+
+**Evaluation:**
+- Issue: Uses `localStorage` which doesn't exist in VS Code extension context
+- Fix: Should use VS Code's globalState API
+- Also: Keys should match web app (`ai_tuner_blend_count`, `ai_tuner_blend_reset_date`)
+
+## Task 10: Toggle Elite Command (EVALUATED)
+```js
+vscode.commands.registerCommand('aiTuner.toggleElite', () => {
+  const config = vscode.workspace.getConfiguration('aiTuner');
+  const current = config.get('devElite', false);
+  config.update('devElite', !current, true);
+  vscode.window.showInformationMessage(`Elite mode: ${!current}`);
+});
+```
+
+**Evaluation:**
+- Logic: ✅ Good - Toggles devElite config
+- Need: Add to extension.ts command registration
+
+## Task 11: Workspace Settings (EVALUATED)
+```json
+{
+  "aiTuner.devElite": true
+}
+```
+
+**Evaluation:**
+- Perfect: VS Code workspace setting for local testing
+- Need: Create `.vscode/settings.json.example` with this

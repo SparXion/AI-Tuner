@@ -55,9 +55,18 @@ node_modules/
 # Testing
 cypress/videos/
 cypress/screenshots/
+cypress/downloads/
 .nyc_output/
 coverage/
 *.vsix
 .vscode-test/
 workspaceStorage/
 globalStorage/
+
+# Cypress
+cypress.env.json
+cypress/results/
+
+# Jest
+coverage/
+.nyc_output/
