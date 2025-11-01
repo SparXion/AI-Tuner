@@ -868,36 +868,38 @@ body.dark-mode .blend-slider-container #blendPct {
 }
 
 body.dark-mode .btn {
-    background-color: #ffffff;
-    color: #000000;
-    border-color: #ffffff;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    border-color: #333333;
 }
 
 body.dark-mode .btn:hover {
     background-color: #333333;
-    border-color: #333333;
+    border-color: #555555;
 }
 
 body.dark-mode .btn-primary {
-    background-color: #ffffff;
-    color: #000000;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    border-color: #333333;
 }
 
 body.dark-mode .btn-primary:hover {
-    background-color: #cccccc;
-    border-color: #cccccc;
+    background-color: #333333;
+    border-color: #555555;
 }
 
 body.dark-mode .preset-btn {
-    background-color: #ffffff;
-    color: #000000;
-    border-color: #ffffff;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    border-color: #333333;
 }
 
 body.dark-mode .preset-btn:hover,
 body.dark-mode .preset-btn.active {
     background-color: #333333;
     color: #ffffff;
+    border-color: #555555;
 }
 
 body.dark-mode .preset-btn.custom {
