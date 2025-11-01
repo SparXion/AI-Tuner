@@ -879,14 +879,14 @@ body.dark-mode .btn:hover {
 }
 
 body.dark-mode .btn-primary {
-    background-color: #1a1a1a;
-    color: #ffffff;
-    border-color: #333333;
+    background-color: #ffffff;
+    color: #000000;
+    border-color: #ffffff;
 }
 
 body.dark-mode .btn-primary:hover {
-    background-color: #333333;
-    border-color: #555555;
+    background-color: #cccccc;
+    border-color: #cccccc;
 }
 
 body.dark-mode .preset-btn {
