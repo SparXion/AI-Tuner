@@ -973,17 +973,7 @@ body.dark-mode .presets-section h2 {
     color: #ffffff;
 }
 
-body.dark-mode .btn-secondary {
-    background-color: #ffffff;
-    color: #000000;
-    border-color: #ffffff;
-}
-
-body.dark-mode .btn-secondary:hover {
-    background-color: #333333;
-    color: #ffffff;
-    border-color: #333333;
-}
+/* btn-secondary inherits from .btn in dark mode */
 
 body.dark-mode .prompt-container-box h2 {
     color: #ffffff;
