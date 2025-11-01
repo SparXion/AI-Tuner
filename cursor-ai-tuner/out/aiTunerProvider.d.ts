@@ -53,6 +53,11 @@ export declare class AITunerProvider implements vscode.TreeDataProvider<AITunerI
      */
     applyPreset(presetName: string): Promise<void>;
     /**
+     * Apply prompt to Cursor chat (Auto-Apply feature)
+     * @param promptText - The generated system prompt
+     */
+    applyPromptToCursor(promptText: string): Promise<void>;
+    /**
      * Update webview with current settings
      */
     private updateWebview;

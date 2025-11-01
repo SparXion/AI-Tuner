@@ -1,0 +1,1 @@
+{"version":3,"file":"panel.d.ts","sourceRoot":"","sources":["../src/panel.ts"],"names":[],"mappings":"AAEA,qBAAa,YAAY;IACvB,OAAc,YAAY,EAAE,YAAY,GAAG,SAAS,CAAC;IAErD,OAAO,CAAC,QAAQ,CAAC,MAAM,CAAsB;IAE7C,OAAO,CAAC,YAAY,CAA2B;IAE/C,OAAO;WAMO,YAAY;IAiB1B,OAAO,CAAC,QAAQ;IA4BT,OAAO;CAQf"}

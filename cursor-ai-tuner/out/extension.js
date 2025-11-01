@@ -32,6 +32,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deactivate = exports.activate = void 0;
 const vscode = __importStar(require("vscode"));
 const aiTunerProvider_1 = require("./aiTunerProvider");
+const panel_1 = require("./panel");
 const logger_1 = require("./logger");
 const performanceMonitor_1 = require("./performanceMonitor");
 const errorHandler_1 = require("./errorHandler");
@@ -100,6 +101,14 @@ async function activate(context) {
             {
                 command: 'aiTuner.resetConfiguration',
                 callback: () => resetConfiguration(configurationValidator, aiTunerProvider)
+            },
+            {
+                command: 'aiTuner.toggleElite',
+                callback: () => toggleEliteMode(logger)
+            },
+            {
+                command: 'aiTuner.resetBlends',
+                callback: () => resetBlendCounter(context)
             }
         ];
         // Register all commands
@@ -291,10 +300,9 @@ exports.deactivate = deactivate;
  * @param context - VS Code extension context
  * @param provider - AI Tuner provider instance
  */
-async function openAITunerPanel(context, provider) {
+async function openAITunerPanel(_context, _provider) {
     try {
-        const panel = provider.createWebviewPanel(context);
-        panel.reveal();
+        panel_1.AITunerPanel.createOrShow();
     }
     catch (error) {
         await vscode.window.showErrorMessage('Failed to open AI Tuner panel. Please try again.', 'Retry', 'Show Details').then(selection => {
@@ -483,6 +491,47 @@ async function reloadConfiguration(extensionConfig, logger, _performanceMonitor,
     catch (error) {
         logger.error('Failed to reload configuration', 'Extension', error);
         throw error;
+    }
+}
+/**
+ * Toggle Elite mode for development testing
+ * @param logger - Logger instance
+ */
+async function toggleEliteMode(logger) {
+    try {
+        const config = vscode.workspace.getConfiguration('aiTuner');
+        const current = config.get('devElite', false);
+        await config.update('devElite', !current, true);
+        const status = !current ? 'enabled' : 'disabled';
+        logger.info(`Elite mode ${status}`, 'Extension');
+        await vscode.window.showInformationMessage(`Elite mode: ${status}`);
+    }
+    catch (error) {
+        await vscode.window.showErrorMessage('Failed to toggle Elite mode', 'Show Details').then(selection => {
+            if (selection === 'Show Details') {
+                logger.error('Failed to toggle Elite mode', 'Extension', error);
+            }
+        });
+    }
+}
+/**
+ * Reset blend counter for testing
+ * @param context - VS Code extension context
+ */
+async function resetBlendCounter(context) {
+    try {
+        // Use globalState (Memento API) instead of localStorage
+        await context.globalState.update('ai_tuner_blend_count', undefined);
+        await context.globalState.update('ai_tuner_blend_reset_date', undefined);
+        await vscode.window.showInformationMessage('Blend counter reset');
+    }
+    catch (error) {
+        await vscode.window.showErrorMessage('Failed to reset blend counter', 'Show Details').then(selection => {
+            if (selection === 'Show Details') {
+                const logger = logger_1.Logger.getInstance();
+                logger.error('Failed to reset blend counter', 'Extension', error);
+            }
+        });
     }
 }
 //# sourceMappingURL=extension.js.map

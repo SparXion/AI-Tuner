@@ -668,6 +668,66 @@ export class AITunerProvider implements vscode.TreeDataProvider<AITunerItem> {
   }
 
   /**
+   * Apply prompt to Cursor chat (Auto-Apply feature)
+   * @param promptText - The generated system prompt
+   */
+  public async applyPromptToCursor(promptText: string): Promise<void> {
+    const operationId = this.performanceMonitor.startOperation('apply_prompt');
+    
+    try {
+      // Check if Elite features are enabled
+      const config = vscode.workspace.getConfiguration('aiTuner');
+      const isElite = config.get<boolean>('devElite', false);
+      
+      if (!isElite) {
+        await vscode.window.showWarningMessage(
+          'Auto-Apply is an Elite feature. Enable devElite mode for testing, or upgrade to Elite.',
+          'Upgrade to Elite'
+        ).then(selection => {
+          if (selection === 'Upgrade to Elite') {
+            vscode.env.openExternal(vscode.Uri.parse('https://app.aituner.com'));
+          }
+        });
+        return;
+      }
+      
+      // TODO: Integrate with Cursor API when available
+      // For now, copy to clipboard and show instructions
+      await vscode.env.clipboard.writeText(promptText);
+      
+      this.logger.info('Prompt copied to clipboard for Auto-Apply', 'AITunerProvider', {
+        promptLength: promptText.length
+      });
+      
+      await vscode.window.showInformationMessage(
+        'Prompt copied! Paste into Cursor chat to apply.',
+        'Open Chat'
+      ).then(async (selection) => {
+        if (selection === 'Open Chat') {
+          // Try to focus Cursor chat if possible
+          try {
+            await vscode.commands.executeCommand('workbench.action.chat.open');
+          } catch {
+            // Cursor chat command might not be available
+          }
+        }
+      });
+      
+    } catch (error) {
+      const context: ErrorContext = {
+        operation: 'apply_prompt',
+        component: 'AITunerProvider',
+        context: { promptLength: promptText.length }
+      };
+      
+      await this.errorHandler.handleError(error as Error, context);
+      await vscode.window.showErrorMessage('Failed to apply prompt. Please copy manually.');
+    } finally {
+      this.performanceMonitor.endOperation(operationId);
+    }
+  }
+
+  /**
    * Update webview with current settings
    */
   private async updateWebview(): Promise<void> {
@@ -855,6 +915,12 @@ export class AITunerProvider implements vscode.TreeDataProvider<AITunerItem> {
           if (message.data && typeof message.data === 'object' && 'presetName' in message.data) {
             const presetName = this.configurationValidator.sanitizeInput(String(message.data['presetName']));
             await this.applyPreset(presetName);
+          }
+          break;
+          
+        case 'applyPrompt':
+          if (message.data && typeof message.data === 'object' && 'promptText' in message.data) {
+            await this.applyPromptToCursor(message.data['promptText'] as string);
           }
           break;
           
@@ -1320,6 +1386,7 @@ export class AITunerProvider implements vscode.TreeDataProvider<AITunerItem> {
         <div class="right-panel">
             <div class="prompt-text" id="prompt-text">Loading...</div>
             <div class="button-group">
+                <button class="btn success" id="apply-prompt" onclick="applyPrompt()">Apply to Cursor</button>
                 <button class="btn" id="copy-prompt" onclick="copyPrompt()">Copy Prompt</button>
                 <button class="btn secondary" id="save-preset" onclick="savePreset()">Save Preset</button>
             </div>
@@ -1677,6 +1744,36 @@ export class AITunerProvider implements vscode.TreeDataProvider<AITunerItem> {
                     type: 'error',
                     text: 'Preset "' + presetName + '" not found'
                 });
+            }
+        }
+        
+        // Apply prompt to Cursor chat
+        function applyPrompt() {
+            const promptElement = document.getElementById('prompt-text');
+            if (!promptElement || !promptElement.textContent) {
+                vscode.postMessage({
+                    command: 'showMessage',
+                    type: 'error',
+                    text: 'No prompt text available to apply'
+                });
+                return;
+            }
+            
+            const promptText = promptElement.textContent;
+            
+            // Send to extension for Auto-Apply
+            vscode.postMessage({
+                command: 'applyPrompt',
+                data: { promptText, settings: currentSettings }
+            });
+            
+            // Show feedback
+            const applyBtn = document.getElementById('apply-prompt');
+            if (applyBtn) {
+                applyBtn.textContent = "Applied!";
+                setTimeout(() => {
+                    applyBtn.textContent = "Apply to Cursor";
+                }, 2000);
             }
         }
         
