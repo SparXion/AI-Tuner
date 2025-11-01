@@ -7,6 +7,7 @@
 
 import * as vscode from 'vscode';
 import { AITunerProvider } from './aiTunerProvider';
+import { AITunerPanel } from './panel';
 import { Logger } from './logger';
 import { PerformanceMonitor } from './performanceMonitor';
 import { ErrorHandler } from './errorHandler';
@@ -298,10 +299,9 @@ export async function deactivate(): Promise<void> {
  * @param context - VS Code extension context
  * @param provider - AI Tuner provider instance
  */
-async function openAITunerPanel(context: vscode.ExtensionContext, provider: AITunerProvider): Promise<void> {
+async function openAITunerPanel(_context: vscode.ExtensionContext, _provider: AITunerProvider): Promise<void> {
   try {
-    const panel = provider.createWebviewPanel(context);
-    panel.reveal();
+    AITunerPanel.createOrShow();
   } catch (error) {
     await vscode.window.showErrorMessage(
       'Failed to open AI Tuner panel. Please try again.',
