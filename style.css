@@ -903,9 +903,14 @@ body.dark-mode .preset-btn.active {
 }
 
 body.dark-mode .preset-btn.custom {
-    background-color: #000000;
+    background-color: #1a1a1a;
     color: #ffffff;
-    border-color: #ffffff;
+    border-color: #333333;
+}
+
+body.dark-mode .preset-btn.custom:hover {
+    background-color: #333333;
+    border-color: #555555;
 }
 
 body.dark-mode .preset-delete-btn {

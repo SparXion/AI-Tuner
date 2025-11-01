@@ -177,7 +177,8 @@ function drawRadar(preset) {
                     max: 3,
                     ticks: {
                         stepSize: 1,
-                        color: textColor
+                        color: textColor,
+                        backdropColor: isDarkMode ? "#000000" : "#ffffff"
                     },
                     grid: {
                         color: gridColor
