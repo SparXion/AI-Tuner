@@ -160,7 +160,7 @@ select {
 select:focus {
     outline: none;
     border-color: #000000;
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
 }
 
 select:hover {
@@ -236,7 +236,7 @@ select:hover {
 
 .model-control-row select:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
 }
 
 .model-control-row .btn {
@@ -839,7 +839,7 @@ body.dark-mode .preset-dropdown:hover {
 body.dark-mode select:focus,
 body.dark-mode .preset-dropdown:focus {
     border-color: #ffffff;
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
 }
 
 body.dark-mode .radar-container-box,
