@@ -23,6 +23,14 @@ class AITuner {
         this.loadPresets();
         this.loadDarkModePreference();
         this.generatePrompt();
+        
+        // Initialize blend count tracking for Free tier
+        if (!localStorage.getItem('ai_tuner_blend_count')) {
+            localStorage.setItem('ai_tuner_blend_count', '0');
+        }
+        if (!localStorage.getItem('ai_tuner_blend_reset_date')) {
+            localStorage.setItem('ai_tuner_blend_reset_date', new Date().toDateString());
+        }
     }
 
     initializeElements() {
@@ -1843,6 +1851,24 @@ function loadModelPersona() {
 }
 
 function blendWithModel() {
+    // Check blend limit for Free tier
+    const today = new Date().toDateString();
+    const resetDate = localStorage.getItem('ai_tuner_blend_reset_date');
+    let blendCount = parseInt(localStorage.getItem('ai_tuner_blend_count') || '0');
+    
+    // Reset count if it's a new day
+    if (resetDate !== today) {
+        blendCount = 0;
+        localStorage.setItem('ai_tuner_blend_count', '0');
+        localStorage.setItem('ai_tuner_blend_reset_date', today);
+    }
+    
+    // Check if user has hit the daily limit (Free tier: 3/day)
+    if (blendCount >= 3) {
+        alert('Free tier: 3 blends per day limit reached.\n\nUpgrade to Elite for unlimited blending:\nhttps://app.aituner.com');
+        return;
+    }
+    
     const modelSelect = document.getElementById("modelSelect");
     const blendSelect = document.getElementById("blendSelect");
     const blendSlider = document.getElementById("blendSlider");
@@ -1949,6 +1975,10 @@ function blendWithModel() {
             const currentSettings = window.aiTuner.getCurrentSettings();
             drawRadar(currentSettings);
         }
+        
+        // Increment blend count for Free tier
+        blendCount++;
+        localStorage.setItem('ai_tuner_blend_count', blendCount.toString());
     } else {
         console.error('AITuner not initialized');
     }
