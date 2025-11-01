@@ -1540,7 +1540,7 @@ ${this.generateSettingsTable(settings)}
         customPresetNames.forEach(presetName => {
             const wrapper = document.createElement('div');
             wrapper.className = 'preset-item-wrapper';
-            wrapper.style.cssText = 'display: inline-flex; align-items: center; gap: 5px; margin: 5px;';
+            wrapper.style.cssText = 'position: relative; display: inline-flex; align-items: center; margin: 5px;';
             
             const button = document.createElement('button');
             button.className = 'preset-btn custom';
@@ -1551,7 +1551,7 @@ ${this.generateSettingsTable(settings)}
             deleteBtn.className = 'preset-delete-btn';
             deleteBtn.innerHTML = '×';
             deleteBtn.title = 'Delete preset';
-            deleteBtn.style.cssText = 'background: #ff4444; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 18px; line-height: 1; padding: 0; display: flex; align-items: center; justify-content: center; flex-shrink: 0;';
+            deleteBtn.style.cssText = 'position: absolute; top: -8px; right: -8px; background: #000000; color: white; border: 2px solid #ffffff; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 14px; line-height: 1; padding: 0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: bold; box-shadow: 0 1px 3px rgba(0,0,0,0.2);';
             deleteBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 this.deletePreset(presetName);
