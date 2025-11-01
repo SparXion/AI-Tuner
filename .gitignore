@@ -9,6 +9,7 @@ Thumbs.db
 
 # Editor files
 .vscode/
+!vscode/settings.json.example
 .idea/
 *.swp
 *.swo
@@ -50,3 +51,13 @@ node_modules/
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Testing
+cypress/videos/
+cypress/screenshots/
+.nyc_output/
+coverage/
+*.vsix
+.vscode-test/
+workspaceStorage/
+globalStorage/

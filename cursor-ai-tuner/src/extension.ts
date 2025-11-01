@@ -83,6 +83,14 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       {
         command: 'aiTuner.resetConfiguration',
         callback: () => resetConfiguration(configurationValidator, aiTunerProvider)
+      },
+      {
+        command: 'aiTuner.toggleElite',
+        callback: () => toggleEliteMode(logger)
+      },
+      {
+        command: 'aiTuner.resetBlends',
+        callback: () => resetBlendCounter(context)
       }
     ];
 
@@ -546,5 +554,55 @@ async function reloadConfiguration(
   } catch (error) {
     logger.error('Failed to reload configuration', 'Extension', error as Error);
     throw error;
+  }
+}
+
+/**
+ * Toggle Elite mode for development testing
+ * @param logger - Logger instance
+ */
+async function toggleEliteMode(logger: Logger): Promise<void> {
+  try {
+    const config = vscode.workspace.getConfiguration('aiTuner');
+    const current = config.get<boolean>('devElite', false);
+    await config.update('devElite', !current, true);
+    
+    const status = !current ? 'enabled' : 'disabled';
+    logger.info(`Elite mode ${status}`, 'Extension');
+    
+    await vscode.window.showInformationMessage(`Elite mode: ${status}`);
+  } catch (error) {
+    await vscode.window.showErrorMessage(
+      'Failed to toggle Elite mode',
+      'Show Details'
+    ).then(selection => {
+      if (selection === 'Show Details') {
+        logger.error('Failed to toggle Elite mode', 'Extension', error as Error);
+      }
+    });
+  }
+}
+
+/**
+ * Reset blend counter for testing
+ * @param context - VS Code extension context
+ */
+async function resetBlendCounter(context: vscode.ExtensionContext): Promise<void> {
+  try {
+    // Use globalState (Memento API) instead of localStorage
+    await context.globalState.update('ai_tuner_blend_count', undefined);
+    await context.globalState.update('ai_tuner_blend_reset_date', undefined);
+    
+    await vscode.window.showInformationMessage('Blend counter reset');
+  } catch (error) {
+    await vscode.window.showErrorMessage(
+      'Failed to reset blend counter',
+      'Show Details'
+    ).then(selection => {
+      if (selection === 'Show Details') {
+        const logger = Logger.getInstance();
+        logger.error('Failed to reset blend counter', 'Extension', error as Error);
+      }
+    });
   }
 }
