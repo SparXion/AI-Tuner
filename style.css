@@ -981,3 +981,8 @@ body.dark-mode .presets-section h2 {
 body.dark-mode .prompt-container-box h2 {
     color: #ffffff;
 }
+
+body.dark-mode header a,
+body.dark-mode header strong {
+    color: #ffffff;
+}
