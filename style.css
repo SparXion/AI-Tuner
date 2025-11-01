@@ -978,10 +978,6 @@ body.dark-mode .btn-secondary:hover {
     border-color: #333333;
 }
 
-body.dark-mode canvas {
-    filter: invert(1) hue-rotate(180deg);
-}
-
 body.dark-mode .prompt-container-box h2 {
     color: #ffffff;
 }
