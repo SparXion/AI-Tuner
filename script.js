@@ -21,6 +21,7 @@ class AITuner {
         this.initializeElements();
         this.setupEventListeners();
         this.loadPresets();
+        this.loadDarkModePreference();
         this.generatePrompt();
     }
 
@@ -1027,6 +1028,31 @@ ${this.generateSettingsTable(settings)}
             title: "Category Information",
             content: "<p>Information about this category is not available.</p>"
         };
+    }
+
+    toggleDarkMode() {
+        const body = document.body;
+        const isDarkMode = body.classList.toggle('dark-mode');
+        const icon = document.getElementById('dark-mode-icon');
+        
+        // Save preference to localStorage
+        localStorage.setItem('ai_tuner_dark_mode', isDarkMode);
+        
+        // Update icon
+        if (icon) {
+            icon.textContent = isDarkMode ? '☀️' : '🌙';
+        }
+    }
+
+    loadDarkModePreference() {
+        const savedDarkMode = localStorage.getItem('ai_tuner_dark_mode');
+        if (savedDarkMode === 'true') {
+            document.body.classList.add('dark-mode');
+            const icon = document.getElementById('dark-mode-icon');
+            if (icon) {
+                icon.textContent = '☀️';
+            }
+        }
     }
 
     toggleAnalyticsDashboard() {
