@@ -1042,6 +1042,14 @@ ${this.generateSettingsTable(settings)}
         if (text) {
             text.textContent = isDarkMode ? 'Light Mode' : 'Dark Mode';
         }
+        
+        // Redraw radar chart with new colors
+        if (typeof drawRadar === 'function') {
+            const currentSettings = this.getCurrentSettings();
+            if (currentSettings) {
+                drawRadar(currentSettings);
+            }
+        }
     }
 
     loadDarkModePreference() {
