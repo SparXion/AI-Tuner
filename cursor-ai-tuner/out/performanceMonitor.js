@@ -146,8 +146,8 @@ class PerformanceMonitor {
             timestamp: new Date()
         };
         this.memoryMeasurements.push(stats);
-        // Keep only last 100 measurements
-        if (this.memoryMeasurements.length > 100) {
+        // Keep only last 50 measurements to reduce memory usage
+        if (this.memoryMeasurements.length > 50) {
             this.memoryMeasurements.shift();
         }
         return stats;
@@ -191,8 +191,9 @@ class PerformanceMonitor {
      * @returns Memory leak analysis
      */
     checkMemoryLeaks() {
-        const trend = this.getMemoryTrend(20);
-        const hasLeak = trend.trend === 'increasing' && trend.averageUsage > this.memoryBaseline * 1.5;
+        const trend = this.getMemoryTrend(10); // Reduced from 20 to 10 measurements
+        // More conservative threshold to reduce false positives
+        const hasLeak = trend.trend === 'increasing' && trend.averageUsage > this.memoryBaseline * 2.0;
         let severity = 'low';
         let recommendation = 'Memory usage is normal';
         if (hasLeak) {

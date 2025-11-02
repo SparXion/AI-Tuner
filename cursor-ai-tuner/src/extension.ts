@@ -158,32 +158,36 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
     context.subscriptions.push(configChangeListener);
 
-    // Register memory monitoring if enabled
+    // Register memory monitoring if enabled (can be disabled via settings to reduce overhead)
     if (extensionConfig.enableMemoryMonitoring) {
       const memoryMonitorInterval = setInterval(() => {
         const memoryStats = performanceMonitor.measureMemory();
         const memoryLeakCheck = performanceMonitor.checkMemoryLeaks();
         
-        if (memoryLeakCheck.hasLeak && memoryLeakCheck.severity === 'high') {
-          logger.warn('High severity memory leak detected', 'Extension', {
+        // Only show warning for medium and high severity leaks
+        if (memoryLeakCheck.hasLeak && (memoryLeakCheck.severity === 'high' || memoryLeakCheck.severity === 'medium')) {
+          logger.warn(`${memoryLeakCheck.severity} severity memory leak detected`, 'Extension', {
             memoryStats,
             memoryLeakCheck
           });
           
-          vscode.window.showWarningMessage(
-            `AI Tuner memory usage is high: ${memoryLeakCheck.recommendation}`,
-            'Show Performance Report',
-            'Reset Performance Data'
-          ).then(selection => {
-            if (selection === 'Show Performance Report') {
-              showPerformanceReport(performanceMonitor);
-            } else if (selection === 'Reset Performance Data') {
-              performanceMonitor.reset();
-              vscode.window.showInformationMessage('Performance data has been reset.');
-            }
-          });
+          // Only show user notification for high severity
+          if (memoryLeakCheck.severity === 'high') {
+            vscode.window.showWarningMessage(
+              `AI Tuner memory usage is high: ${memoryLeakCheck.recommendation}`,
+              'Show Performance Report',
+              'Reset Performance Data'
+            ).then(selection => {
+              if (selection === 'Show Performance Report') {
+                showPerformanceReport(performanceMonitor);
+              } else if (selection === 'Reset Performance Data') {
+                performanceMonitor.reset();
+                vscode.window.showInformationMessage('Performance data has been reset.');
+              }
+            });
+          }
         }
-      }, 30000); // Check every 30 seconds
+      }, 60000); // Check every 60 seconds to reduce overhead
 
       context.subscriptions.push({
         dispose: () => clearInterval(memoryMonitorInterval)
