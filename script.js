@@ -24,13 +24,7 @@ class AITuner {
         this.loadDarkModePreference();
         this.generatePrompt();
         
-        // Initialize blend count tracking for Free tier
-        if (!localStorage.getItem('ai_tuner_blend_count')) {
-            localStorage.setItem('ai_tuner_blend_count', '0');
-        }
-        if (!localStorage.getItem('ai_tuner_blend_reset_date')) {
-            localStorage.setItem('ai_tuner_blend_reset_date', new Date().toDateString());
-        }
+        // Blend count tracking removed - everything is free
     }
 
     initializeElements() {
@@ -52,6 +46,7 @@ class AITuner {
             continuationBias: document.getElementById('continuation-bias'),
             selfSufficiency: document.getElementById('self-sufficiency'),
             assumptionStrength: document.getElementById('assumption-strength'),
+            cosmicPerspective: document.getElementById('cosmic-perspective'),
             truthPrioritization: document.getElementById('truth-prioritization'),
             sourceTransparency: document.getElementById('source-transparency'),
             uncertaintyAdmission: document.getElementById('uncertainty-admission'),
@@ -184,6 +179,7 @@ class AITuner {
             continuationBias: getValue(this.elements.continuationBias),
             selfSufficiency: getValue(this.elements.selfSufficiency),
             assumptionStrength: getValue(this.elements.assumptionStrength),
+            cosmicPerspective: getValue(this.elements.cosmicPerspective),
             truthPrioritization: getValue(this.elements.truthPrioritization),
             sourceTransparency: getValue(this.elements.sourceTransparency),
             uncertaintyAdmission: getValue(this.elements.uncertaintyAdmission),
@@ -560,6 +556,18 @@ class AITuner {
                 // Medium default
                 section += "• Assume balanced user capabilities\n";
                 break;
+        }
+
+        // Cosmic Perspective (Grok-specific)
+        if (settings.cosmicPerspective && settings.cosmicPerspective !== 'disabled') {
+            switch(settings.cosmicPerspective) {
+                case 'subtle':
+                    section += "• Use subtle cosmic perspective when appropriate\n";
+                    break;
+                case 'overt':
+                    section += "• Use overt cosmic perspective and existential framing\n";
+                    break;
+            }
         }
 
         return section + "\n";
@@ -1629,31 +1637,47 @@ ${this.generateSettingsTable(settings)}
     }
 
     applyPreset(presetName) {
-        if (!presetName || typeof presetName !== 'string') {
-            console.error('Invalid preset name:', presetName);
-            return;
-        }
-        
         const preset = this.presets[presetName];
-        if (!preset || typeof preset !== 'object') {
-            console.error(`Preset "${presetName}" not found`);
-            return;
-        }
+        if (!preset) return;
 
-        // Normalize and apply all settings from preset
+        // Map camelCase keys to kebab-case element IDs
+        const keyToElementId = {
+            personality: 'personality',
+            bluntness: 'bluntness',
+            termination: 'termination',
+            cognitiveTier: 'cognitive-tier',
+            toneNeutrality: 'tone-neutrality',
+            sentimentBoost: 'sentiment-boost',
+            mirrorAvoidance: 'mirror-avoidance',
+            elementElimination: 'element-elimination',
+            transitions: 'transitions',
+            callToAction: 'call-to-action',
+            questions: 'questions',
+            suggestions: 'suggestions',
+            motivational: 'motivational',
+            continuationBias: 'continuation-bias',
+            selfSufficiency: 'self-sufficiency',
+            assumptionStrength: 'assumption-strength',
+            cosmicPerspective: 'cosmic-perspective',
+            truthPrioritization: 'truth-prioritization',
+            sourceTransparency: 'source-transparency',
+            uncertaintyAdmission: 'uncertainty-admission',
+            selfReferentialHumor: 'self-referential-humor',
+            absurdismInjection: 'absurdism-injection',
+            toolInvocation: 'tool-invocation',
+            realTimeDataBias: 'real-time-data-bias'
+        };
+
+        // Loop through ALL controls and set them
         Object.keys(preset).forEach(key => {
-            const element = this.elements[key];
-            if (element && element.tagName === 'SELECT') {
-                const normalizedValue = this.normalizeValue(preset[key], key);
-                // Verify value exists in options before setting
-                const validOptions = Array.from(element.options).map(opt => opt.value);
-                if (validOptions.includes(normalizedValue)) {
-                    element.value = normalizedValue;
+            const elementId = keyToElementId[key] || key;
+            const element = document.getElementById(elementId);
+            if (element) {
+                if (element.type === 'checkbox') {
+                    element.checked = preset[key] === 'allowed' || preset[key] === 'enabled';
                 } else {
-                    console.warn(`Value "${normalizedValue}" not found in select "${key}", skipping`);
+                    element.value = preset[key];
                 }
-            } else if (element) {
-                element.value = this.normalizeValue(preset[key], key);
             }
         });
 
@@ -1851,23 +1875,7 @@ function loadModelPersona() {
 }
 
 function blendWithModel() {
-    // Check blend limit for Free tier
-    const today = new Date().toDateString();
-    const resetDate = localStorage.getItem('ai_tuner_blend_reset_date');
-    let blendCount = parseInt(localStorage.getItem('ai_tuner_blend_count') || '0');
-    
-    // Reset count if it's a new day
-    if (resetDate !== today) {
-        blendCount = 0;
-        localStorage.setItem('ai_tuner_blend_count', '0');
-        localStorage.setItem('ai_tuner_blend_reset_date', today);
-    }
-    
-    // Check if user has hit the daily limit (Free tier: 3/day)
-    if (blendCount >= 3) {
-        alert('Free tier: 3 blends per day limit reached.\n\nUpgrade to Elite for unlimited blending:\nhttps://app.aituner.com');
-        return;
-    }
+    // No tier restrictions - everything is free for now to build user base
     
     const modelSelect = document.getElementById("modelSelect");
     const blendSelect = document.getElementById("blendSelect");
@@ -1975,10 +1983,6 @@ function blendWithModel() {
             const currentSettings = window.aiTuner.getCurrentSettings();
             drawRadar(currentSettings);
         }
-        
-        // Increment blend count for Free tier
-        blendCount++;
-        localStorage.setItem('ai_tuner_blend_count', blendCount.toString());
     } else {
         console.error('AITuner not initialized');
     }

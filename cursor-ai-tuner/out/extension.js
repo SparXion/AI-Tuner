@@ -32,7 +32,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deactivate = exports.activate = void 0;
 const vscode = __importStar(require("vscode"));
 const aiTunerProvider_1 = require("./aiTunerProvider");
-const panel_1 = require("./panel");
 const logger_1 = require("./logger");
 const performanceMonitor_1 = require("./performanceMonitor");
 const errorHandler_1 = require("./errorHandler");
@@ -300,9 +299,11 @@ exports.deactivate = deactivate;
  * @param context - VS Code extension context
  * @param provider - AI Tuner provider instance
  */
-async function openAITunerPanel(_context, _provider) {
+async function openAITunerPanel(context, _provider) {
     try {
-        panel_1.AITunerPanel.createOrShow();
+        // Use iframe approach to load web version (single codebase)
+        const { AITunerPanel } = await Promise.resolve().then(() => __importStar(require('./panel')));
+        AITunerPanel.createOrShow(context);
     }
     catch (error) {
         await vscode.window.showErrorMessage('Failed to open AI Tuner panel. Please try again.', 'Retry', 'Show Details').then(selection => {

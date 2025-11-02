@@ -675,24 +675,17 @@ export class AITunerProvider implements vscode.TreeDataProvider<AITunerItem> {
     const operationId = this.performanceMonitor.startOperation('apply_prompt');
     
     try {
-      // Check if Elite features are enabled
-      const config = vscode.workspace.getConfiguration('aiTuner');
-      const isElite = config.get<boolean>('devElite', false);
-      
-      if (!isElite) {
-        await vscode.window.showWarningMessage(
-          'Auto-Apply is an Elite feature. Enable devElite mode for testing, or upgrade to Elite.',
-          'Upgrade to Elite'
-        ).then(selection => {
-          if (selection === 'Upgrade to Elite') {
-            vscode.env.openExternal(vscode.Uri.parse('https://app.aituner.com'));
-          }
-        });
+      // No tier restrictions - everything is free to build user base
+      // Try to use Cursor API first
+      try {
+        await vscode.commands.executeCommand('cursor.chat.setSystemPrompt', promptText);
+        await vscode.window.showInformationMessage('Prompt applied to Cursor chat!');
         return;
+      } catch {
+        // Cursor API not available, fall back to clipboard
       }
       
-      // TODO: Integrate with Cursor API when available
-      // For now, copy to clipboard and show instructions
+      // Fallback: Copy to clipboard and show instructions
       await vscode.env.clipboard.writeText(promptText);
       
       this.logger.info('Prompt copied to clipboard for Auto-Apply', 'AITunerProvider', {
