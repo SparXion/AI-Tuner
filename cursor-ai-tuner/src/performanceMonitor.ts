@@ -19,6 +19,8 @@ export class PerformanceMonitor {
   private operationStartTimes: Map<string, number> = new Map();
   private memoryMeasurements: MemoryStats[] = [];
   private isEnabled: boolean;
+  private measurementCount: number = 0;
+  private readonly WARMUP_MEASUREMENTS: number = 5; // Ignore first 5 measurements for baseline
 
   /**
    * Private constructor for singleton pattern
@@ -170,10 +172,21 @@ export class PerformanceMonitor {
     };
 
     this.memoryMeasurements.push(stats);
+    this.measurementCount++;
     
     // Keep only last 50 measurements to reduce memory usage
     if (this.memoryMeasurements.length > 50) {
       this.memoryMeasurements.shift();
+    }
+
+    // Establish baseline after warm-up period (average of first 5 measurements after warm-up)
+    if (this.measurementCount === this.WARMUP_MEASUREMENTS + 5) {
+      const recentMeasurements = this.memoryMeasurements.slice(-5);
+      const avgUsage = recentMeasurements.reduce((sum, m) => sum + m.used, 0) / recentMeasurements.length;
+      this.memoryBaseline = avgUsage;
+      this.logger.debug('Memory baseline established after warm-up', 'PerformanceMonitor', {
+        baseline: `${(this.memoryBaseline / 1024 / 1024).toFixed(2)} MB`
+      });
     }
 
     return stats;
@@ -233,9 +246,27 @@ export class PerformanceMonitor {
     recommendation: string;
     trend: ReturnType<PerformanceMonitor['getMemoryTrend']>;
   } {
+    // Skip leak detection during warm-up period
+    if (this.measurementCount <= this.WARMUP_MEASUREMENTS + 5) {
+      return {
+        hasLeak: false,
+        severity: 'low',
+        recommendation: 'Memory usage is normal (warm-up period)',
+        trend: this.getMemoryTrend(10)
+      };
+    }
+
+    // Ensure baseline is set (fallback to current usage if not)
+    if (this.memoryBaseline === 0) {
+      this.memoryBaseline = this.getCurrentMemoryUsage();
+    }
+
     const trend = this.getMemoryTrend(10); // Reduced from 20 to 10 measurements
-    // More conservative threshold to reduce false positives
-    const hasLeak = trend.trend === 'increasing' && trend.averageUsage > this.memoryBaseline * 2.0;
+    // Much more conservative threshold (3.5x) to reduce false positives
+    // Also require sustained increasing trend
+    const hasLeak = trend.trend === 'increasing' 
+      && trend.averageUsage > this.memoryBaseline * 3.5
+      && this.memoryMeasurements.length >= 10; // Need at least 10 measurements for reliable detection
     
     let severity: 'low' | 'medium' | 'high' = 'low';
     let recommendation = 'Memory usage is normal';
@@ -243,10 +274,11 @@ export class PerformanceMonitor {
     if (hasLeak) {
       const increasePercentage = ((trend.averageUsage - this.memoryBaseline) / this.memoryBaseline) * 100;
       
-      if (increasePercentage > 100) {
+      // More conservative severity thresholds
+      if (increasePercentage > 150) { // Changed from 100% to 150%
         severity = 'high';
         recommendation = 'Critical memory leak detected. Consider restarting the extension.';
-      } else if (increasePercentage > 50) {
+      } else if (increasePercentage > 100) { // Changed from 50% to 100%
         severity = 'medium';
         recommendation = 'Moderate memory increase detected. Monitor usage closely.';
       } else {
@@ -333,6 +365,7 @@ export class PerformanceMonitor {
   public reset(): void {
     this.operationStartTimes.clear();
     this.memoryMeasurements = [];
+    this.measurementCount = 0;
     this.memoryBaseline = this.getCurrentMemoryUsage();
     this.logger.info('Performance monitoring reset', 'PerformanceMonitor');
   }
@@ -343,6 +376,7 @@ export class PerformanceMonitor {
   public dispose(): void {
     this.operationStartTimes.clear();
     this.memoryMeasurements = [];
+    this.measurementCount = 0;
     this.logger.info('Performance monitor disposed', 'PerformanceMonitor');
   }
 }
