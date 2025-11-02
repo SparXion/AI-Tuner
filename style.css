@@ -185,7 +185,9 @@ select:hover {
     display: flex;
     flex-direction: column;
     gap: 30px;
-    align-self: start;
+    position: sticky;
+    top: 20px;
+    align-self: flex-start;
 }
 
 /* Radar Container Box */
