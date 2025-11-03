@@ -2,20 +2,20 @@
 
 **Free** visual AI personality configuration tool. Available as both a **web app** and **Cursor extension**.
 
-[🌐 Try Web Version →](https://sparxion.github.io/AI-Tuner/) | [📦 Install Cursor Extension →](#-installation)
+[Try Web Version](https://sparxion.github.io/AI-Tuner/) | [Install Cursor Extension](#installation)
 
 ---
 
-## ✨ Features
+## Features
 
-### 🎛️ **Core Functionality**
+### **Core Functionality**
 - **16+ Tunable Parameters**: Personality, bluntness, truth prioritization, humor, tool use, and more
 - **20+ Model Templates**: Preset configurations for Claude, GPT, Gemini, Grok, Cursor Agent, and more
 - **Real-time Preview**: See generated prompts instantly as you adjust settings
 - **One-Click Apply**: Apply configurations directly to Cursor (extension only)
 - **Sticky Preview**: Preview panel follows you as you scroll through options
 
-### 🎭 **Built-in Presets**
+### **Built-in Presets**
 - **Absolute Mode**: Maximum directness and efficiency
 - **Friendly Helper**: Warm, supportive, collaborative
 - **Analytical Expert**: Methodical, evidence-based, systematic
@@ -24,21 +24,21 @@
 - **Coding Assistant**: Technical, structured, efficient
 - **Factory Default**: Reset to neutral settings
 
-### 🤖 **AI Model Templates**
+### **AI Model Templates**
 - **Claude**: Reset presets for Claude, Claude Opus, Claude Sonnet
 - **GPT**: Templates for ChatGPT and variations
 - **Gemini**: Google Gemini configurations
 - **Grok**: X.AI Grok-specific presets with humor and real-time data bias
 - **Cursor Agent**: Cursor-specific reset configurations
 
-### 🌐 **Dual Platform**
+### **Dual Platform**
 - **Web Version**: Works in any browser, no installation needed
 - **Cursor Extension**: Integrated directly into Cursor with auto-apply functionality
 - **Single Codebase**: Both platforms share the same feature set
 
 ---
 
-## 📦 Installation
+## Installation
 
 ### **Web Version**
 Simply visit: [https://sparxion.github.io/AI-Tuner/](https://sparxion.github.io/AI-Tuner/)
@@ -68,7 +68,7 @@ npm run compile
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### **Web Version**
 1. Visit [sparxion.github.io/AI-Tuner](https://sparxion.github.io/AI-Tuner/)
@@ -87,7 +87,7 @@ npm run compile
 
 ---
 
-## 🎛️ Configuration Parameters
+## Configuration Parameters
 
 ### **Personality & Approach**
 Control the AI's fundamental personality: Neutral, Curious, Analytical, Witty, Directive, Collaborative, and more.
@@ -129,7 +129,7 @@ Control the AI's fundamental personality: Neutral, Curious, Analytical, Witty, D
 
 ---
 
-## 💡 Use Cases
+## Use Cases
 
 ### **Programming**
 Use "Coding Assistant" preset for technical, structured responses with minimal fluff.
@@ -148,7 +148,7 @@ Use model-specific reset presets (e.g., "Reset Grok", "Reset Cursor Agent") to r
 
 ---
 
-## 🔧 Advanced Features
+## Advanced Features
 
 ### **Custom Presets**
 Save your own personality configurations for reuse:
@@ -165,18 +165,18 @@ In the web version, the preview panel follows you as you scroll, making it easy 
 
 ---
 
-## 🌟 Latest Features
+## Latest Features
 
-- ✅ **Sticky Preview**: Preview panel stays visible while scrolling
-- ✅ **Model Templates**: Preset configurations for major AI models
-- ✅ **Improved Memory Management**: Better performance monitoring
-- ✅ **Grok-Specific Presets**: Optimized for X.AI's Grok personality
-- ✅ **Cursor Integration**: Direct apply-to-Cursor functionality
-- ✅ **Unified Codebase**: Web and extension share the same features
+- **Sticky Preview**: Preview panel stays visible while scrolling
+- **Model Templates**: Preset configurations for major AI models
+- **Improved Memory Management**: Better performance monitoring
+- **Grok-Specific Presets**: Optimized for X.AI's Grok personality
+- **Cursor Integration**: Direct apply-to-Cursor functionality
+- **Unified Codebase**: Web and extension share the same features
 
 ---
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### **Extension Not Loading**
 - Ensure Cursor is updated to the latest version
@@ -192,13 +192,13 @@ In the web version, the preview panel follows you as you scroll, making it easy 
 
 ---
 
-## 📄 License
+## License
 
 Apache 2.0 · [Full License](LICENSE)
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
 
@@ -207,7 +207,7 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 
 ---
 
-## 🔗 Links
+## Links
 
 - **Web App**: [sparxion.github.io/AI-Tuner](https://sparxion.github.io/AI-Tuner/)
 - **GitHub**: [github.com/SparXion/AI-Tuner](https://github.com/SparXion/AI-Tuner)
@@ -215,4 +215,4 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 
 ---
 
-**Made with ❤️ by [SparXion](https://sparxion.com)**
+**Made by [SparXion](https://sparxion.com)**
