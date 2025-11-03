@@ -70,3 +70,12 @@ cypress/results/
 # Jest
 coverage/
 .nyc_output/
+
+# Compiled TypeScript output
+out/
+**/out/
+*.d.ts.map
+*.js.map
+
+# Quarantine folder (archived/temporary files)
+_quarantine/
