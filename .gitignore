@@ -79,3 +79,7 @@ out/
 
 # Quarantine folder (archived/temporary files)
 _quarantine/
+
+# Private, untracked content
+_private/
+PERSONA-REPORT-v6.0.md
