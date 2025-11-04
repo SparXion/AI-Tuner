@@ -5,10 +5,56 @@
 - **v2.0**: Live on `index.html` (stable version)
 - **v3.0**: Available on `index-v6.html` (beta version)
 - **Branch**: `v6.0-upgrade` (pushed to GitHub)
+- **Existing Netlify Site**: v2.0 is already live
 
 ## Deployment Options
 
-### Option 1: GitHub Pages (Current)
+### Option 1: Update Existing Netlify Site (Recommended)
+
+Since you already have v2.0 live on Netlify:
+
+#### To Deploy Both Versions Together:
+
+1. **Go to your Netlify Dashboard**
+2. **Find your existing AI Tuner site**
+3. **Update Site Settings**:
+   - Go to **Site settings** → **Build & deploy**
+   - **Branch to deploy**: Change to `v6.0-upgrade` (or merge to `main` first)
+   - **Publish directory**: `.` (root directory)
+   - **Build command**: (leave empty - no build step)
+4. **Trigger Deploy**:
+   - Click "Trigger deploy" → "Deploy site"
+   - Or push to the branch you're tracking (Netlify will auto-deploy)
+
+#### Result:
+- Your existing Netlify site will now serve both versions
+- `index.html` → v2.0 (default)
+- `index-v6.html` → v3.0 (beta)
+- Users can switch via the toggle buttons in the header
+
+### Option 2: Keep v2.0 on Main, Deploy v3.0 from Branch
+
+If you want to keep v2.0 unchanged on main:
+
+1. **Keep existing Netlify site** pointing to `main` branch (v2.0)
+2. **Create new Netlify site** for v3.0:
+   - Add new site → Import from GitHub
+   - Connect to `SparXion/AI-Tuner`
+   - **Branch**: `v6.0-upgrade`
+   - This gives you a separate preview URL for v3.0
+
+### Option 3: Merge to Main and Deploy
+
+1. **Merge v6.0-upgrade → main**:
+   ```bash
+   git checkout main
+   git merge v6.0-upgrade
+   git push origin main
+   ```
+2. **Netlify will auto-deploy** from `main` (if configured)
+3. Both versions available on your main site
+
+### GitHub Pages (Alternative)
 
 If you're using GitHub Pages, the changes are already available:
 
@@ -16,18 +62,6 @@ If you're using GitHub Pages, the changes are already available:
 2. **For v3.0**: Visit `https://sparxion.github.io/AI-Tuner/index-v6.html`
 
 The version toggle buttons allow users to switch between versions.
-
-### Option 2: Netlify Deployment
-
-#### Initial Setup (if not already done):
-
-1. Go to [Netlify](https://app.netlify.com)
-2. Click "Add new site" → "Import an existing project"
-3. Connect to GitHub repository: `SparXion/AI-Tuner`
-4. Configure build settings:
-   - **Build command**: (leave empty - no build step needed)
-   - **Publish directory**: `.` (root directory)
-   - **Branch to deploy**: `v6.0-upgrade` (or `main` after merge)
 
 #### Branch Deployments:
 
