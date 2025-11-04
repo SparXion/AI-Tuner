@@ -1,0 +1,29 @@
+# Netlify Configuration for AI Tuner
+[build]
+  # No build step needed - static HTML site
+  publish = "."
+
+# Redirect rules
+[[redirects]]
+  from = "/"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/v3"
+  to = "/index-v6.html"
+  status = 200
+
+[[redirects]]
+  from = "/v3.0"
+  to = "/index-v6.html"
+  status = 200
+
+# Headers for CORS if needed
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "ALLOWALL"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+
