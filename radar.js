@@ -197,6 +197,115 @@ function drawRadar(preset) {
     });
 }
 
+// v6.0 Radar Chart - works with 0-10 numeric lever values
+function drawRadarV6(levers) {
+    const canvas = document.getElementById("radarCanvas");
+    if (!canvas) return;
+    
+    // Check if Chart is available
+    if (typeof Chart === 'undefined') {
+        console.warn('Chart.js not loaded');
+        return;
+    }
+    
+    // Check if dark mode is active
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    
+    // Choose colors based on dark mode
+    const backgroundColor = isDarkMode ? "rgba(173,216,230,0.2)" : "rgba(54,162,235,0.2)";
+    const borderColor = isDarkMode ? "#ADD8E6" : "#36A2EB";
+    const pointColor = isDarkMode ? "#ADD8E6" : "#36A2EB";
+    const textColor = isDarkMode ? "#ffffff" : "#000000";
+    const gridColor = isDarkMode ? "#666666" : "#cccccc";
+    
+    // Map key levers to radar chart dimensions
+    // Select representative levers that show different aspects of AI behavior
+    // Chart.js places labels clockwise starting from top (12 o'clock)
+    // Order: left (9 o'clock) -> clockwise around the chart
+    // For 8 labels: Left=6, Bottom=4, Right=2, Top=0
+    const radarLevers = [
+        { key: 'creativity', label: 'Creativity', value: levers.creativity || 5 },                 // 10 chars - top (12 o'clock)
+        { key: 'teachingMode', label: 'Teaching', value: levers.teachingMode || 5 },              // 8 chars - top-right (1:30)
+        { key: 'proactivityLevel', label: 'Proactivity', value: levers.proactivityLevel || 5 },   // 11 chars - right (3 o'clock)
+        { key: 'playfulness', label: 'Playfulness', value: levers.playfulness || 5 },              // 11 chars - bottom-right (4:30)
+        { key: 'conciseness', label: 'Conciseness', value: levers.conciseness || 5 },              // 11 chars - bottom (6 o'clock)
+        { key: 'answerCompleteness', label: 'Completeness', value: levers.answerCompleteness || 5 }, // 12 chars - bottom-left (7:30)
+        { key: 'hedgingIntensity', label: 'Hedging', value: levers.hedgingIntensity || 5 },      // 7 chars - left (9 o'clock) ← SHORTEST
+        { key: 'empathyExpressiveness', label: 'Empathy', value: levers.empathyExpressiveness || 5 } // 7 chars - top-left (10:30)
+    ];
+    
+    const labels = radarLevers.map(l => l.label);
+    const data = radarLevers.map(l => l.value || 5);
+    
+    if (radarChart) {
+        radarChart.destroy();
+    }
+    
+    radarChart = new Chart(canvas, {
+        type: "radar",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Current Settings",
+                data: data,
+                backgroundColor: backgroundColor,
+                borderColor: borderColor,
+                pointBackgroundColor: pointColor,
+                pointBorderColor: borderColor,
+                pointHoverBackgroundColor: pointColor,
+                pointHoverBorderColor: textColor,
+                borderWidth: 2,
+                pointRadius: 5,
+                pointHoverRadius: 7
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            resizeDelay: 100,
+            scales: {
+                r: {
+                    beginAtZero: true,
+                    max: 10,
+                    ticks: {
+                        stepSize: 2,
+                        color: textColor,
+                        backdropColor: isDarkMode ? "#1a1a1a" : "#ffffff",
+                        font: {
+                            size: 11
+                        }
+                    },
+                    grid: {
+                        color: gridColor,
+                        lineWidth: 1
+                    },
+                    pointLabels: {
+                        color: textColor,
+                        font: {
+                            size: 12,
+                            weight: '500'
+                        },
+                        padding: 5
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const lever = radarLevers[context.dataIndex];
+                            return `${lever.label}: ${lever.value}/10`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
 // Redraw radar chart on window resize with debouncing
 let resizeTimeout;
 let isResizing = false;

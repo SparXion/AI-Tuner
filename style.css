@@ -203,8 +203,15 @@ select:hover {
 .radar-wrapper {
     margin: 0 auto 20px auto;
     width: 100%;
-    max-width: 400px;
-    min-width: 200px;
+    max-width: 100%;
+    min-width: 250px;
+    position: relative;
+    height: 350px;
+}
+
+.radar-wrapper canvas {
+    max-width: 100%;
+    height: auto !important;
 }
 
 /* Model Controls Stacked */
