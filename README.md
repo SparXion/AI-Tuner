@@ -1,6 +1,8 @@
-# AI Tuner
+# AI Tuner Creative
 
-**Free** visual AI personality configuration tool. Available as both a **web app** and **Cursor extension**.
+**Experimental branch** of AI Tuner - A visual AI personality configuration tool. Available as both a **web app** and **Cursor extension**.
+
+> **Note**: This is the Creative experimental version, cloned from the main AI-Tuner-v2 project. Use this for testing new features and creative explorations.
 
 [Try Web Version](https://sparxion.github.io/AI-Tuner/) | [Install Cursor Extension](#installation)
 

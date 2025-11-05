@@ -1,7 +1,7 @@
 {
-  "name": "ai-tuner",
-  "version": "3.0.0",
-  "description": "AI Tuner - Free web tool to visually tune AI behavior. Elite = Web + Cursor sidebar + Auto-Apply",
+  "name": "ai-tuner-creative",
+  "version": "3.0.0-creative",
+  "description": "AI Tuner Creative - Experimental branch for creative features and testing. Free web tool to visually tune AI behavior.",
   "scripts": {
     "test": "echo 'Web app tests not yet implemented'",
     "test:e2e": "cypress run",
