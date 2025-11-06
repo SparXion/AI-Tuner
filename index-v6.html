@@ -266,6 +266,10 @@
                 return isMobileWidth || isMobileUA;
             }
             
+            // Store original parent for restoration
+            let originalParent = null;
+            let originalNextSibling = null;
+            
             function moveRadarToTop() {
                 console.log('🔍 Attempting to move radar chart...');
                 const radarContainer = document.querySelector('.radar-container-box');
@@ -301,6 +305,10 @@
                     return;
                 }
                 
+                // Store original position for restoration
+                originalParent = radarContainer.parentElement;
+                originalNextSibling = radarContainer.nextSibling;
+                
                 // Remove from current location
                 radarContainer.remove();
                 console.log('✅ Radar removed from current location');
@@ -326,11 +334,52 @@
                 }, 100);
             }
             
+            function restoreRadarToOriginal() {
+                const radarContainer = document.querySelector('.radar-container-box');
+                if (!radarContainer || !originalParent) {
+                    return;
+                }
+                
+                // Check if already in original position
+                if (radarContainer.parentElement === originalParent) {
+                    console.log('✅ Radar already in original position');
+                    return;
+                }
+                
+                // Remove from current location
+                radarContainer.remove();
+                console.log('✅ Radar removed from container');
+                
+                // Restore to original position
+                if (originalNextSibling && originalNextSibling.parentElement === originalParent) {
+                    originalParent.insertBefore(radarContainer, originalNextSibling);
+                } else {
+                    originalParent.appendChild(radarContainer);
+                }
+                console.log('✅ Radar chart restored to original position!');
+                
+                // Remove inline order style
+                radarContainer.style.order = '';
+                
+                // Reinitialize chart after DOM move
+                setTimeout(function() {
+                    if (window.aiTuner && window.aiTuner.levers && typeof drawRadarV6 === 'function') {
+                        try {
+                            drawRadarV6(window.aiTuner.levers);
+                            console.log('✅ Radar chart reinitialized after restore');
+                        } catch (e) {
+                            console.warn('⚠️ Could not reinitialize chart:', e);
+                        }
+                    }
+                }, 100);
+            }
+            
             function tryMoveRadar() {
                 if (isMobile()) {
                     moveRadarToTop();
                 } else {
-                    console.log('🖥️ Not mobile, skipping radar move');
+                    console.log('🖥️ Not mobile, restoring radar to original position');
+                    restoreRadarToOriginal();
                 }
             }
             
