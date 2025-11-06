@@ -270,6 +270,19 @@
             let originalParent = null;
             let originalNextSibling = null;
             
+            // Capture original position on page load
+            function captureOriginalPosition() {
+                const radarContainer = document.querySelector('.radar-container-box');
+                if (radarContainer && !originalParent) {
+                    originalParent = radarContainer.parentElement;
+                    originalNextSibling = radarContainer.nextSibling;
+                    console.log('📸 Captured original radar position:', {
+                        parent: originalParent?.className || 'none',
+                        nextSibling: originalNextSibling?.className || 'none'
+                    });
+                }
+            }
+            
             function moveRadarToTop() {
                 console.log('🔍 Attempting to move radar chart...');
                 const radarContainer = document.querySelector('.radar-container-box');
@@ -305,9 +318,11 @@
                     return;
                 }
                 
-                // Store original position for restoration
-                originalParent = radarContainer.parentElement;
-                originalNextSibling = radarContainer.nextSibling;
+                // Store original position for restoration (if not already captured)
+                if (!originalParent) {
+                    originalParent = radarContainer.parentElement;
+                    originalNextSibling = radarContainer.nextSibling;
+                }
                 
                 // Remove from current location
                 radarContainer.remove();
@@ -382,6 +397,14 @@
                     restoreRadarToOriginal();
                 }
             }
+            
+            // Capture original position first
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', captureOriginalPosition);
+            } else {
+                captureOriginalPosition();
+            }
+            setTimeout(captureOriginalPosition, 100);
             
             // Try immediately if DOM is ready
             if (document.readyState === 'loading') {
@@ -530,4 +553,5 @@
     </script>
 </body>
 </html>
+
 
