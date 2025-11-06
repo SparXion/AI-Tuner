@@ -102,25 +102,24 @@
                 </div>
             </div>
             
+            <!-- Saved Presets Section -->
+            <div class="saved-presets-header" style="margin-top: 30px;">
+                <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 10px;">Saved Presets</h3>
+                <div id="saved-presets-container" class="preset-buttons-header">
+                    <p class="no-presets-message" style="color: #999; font-style: italic; margin: 0; font-size: 0.9rem;">No saved presets yet. Create one using "Save Preset" button.</p>
+                </div>
+            </div>
         </header>
 
         <main class="main-layout">
             <!-- Left Side: Three-Step Workflow -->
             <div class="workflow-container">
-                <!-- Radar Chart - Moved to top above Step 1 -->
-                <div class="radar-container-box" style="margin-bottom: 30px;">
-                    <h3>Live Preview</h3>
-                    <div class="radar-wrapper">
-                        <canvas id="radarCanvas"></canvas>
-                    </div>
-                </div>
-                
                 <!-- Step 1: Choose Model (Trunk) -->
                 <div class="workflow-step step-1">
                     <div class="step-header">
                         <div class="step-number">1</div>
                         <div class="step-title">
-                            <h2>Choose Your AI Model <span class="info-btn-step" data-step="1">i</span></h2>
+                            <h2>Choose Your AI Model <span class="info-btn-step" data-step="1">ℹ</span></h2>
                             <p class="step-description">Select the AI platform you want to tune. This sets the foundation with the model's default persona.</p>
                         </div>
                     </div>
@@ -134,7 +133,7 @@
                     <div class="step-header">
                         <div class="step-number">2</div>
                         <div class="step-title">
-                            <h2>Apply Hidden Mode <span class="info-btn-step" data-step="2">i</span></h2>
+                            <h2>Apply Hidden Mode <span class="info-btn-step" data-step="2">ℹ</span></h2>
                             <p class="step-description">Apply a specialized persona from the secret menu. These override the default model persona.</p>
                         </div>
                     </div>
@@ -148,7 +147,7 @@
                     <div class="step-header">
                         <div class="step-number">3</div>
                         <div class="step-title">
-                            <h2>Fine-Tune Your Settings <span class="info-btn-step" data-step="3">i</span></h2>
+                            <h2>Fine-Tune Your Settings <span class="info-btn-step" data-step="3">ℹ</span></h2>
                             <p class="step-description">Adjust sliders to customize the AI's behavior precisely.</p>
                         </div>
                     </div>
@@ -161,14 +160,22 @@
             <!-- Preview Section (Right Side) -->
             <div class="preview-section-container">
                 <div class="preview-section">
+                    <!-- Radar Container Box -->
+                    <div class="radar-container-box">
+                        <h3>Live Preview</h3>
+                        <div class="radar-wrapper">
+                            <canvas id="radarCanvas"></canvas>
+                        </div>
+                    </div>
+                    
                     <!-- Prompt Container Box -->
                     <div class="prompt-container-box">
                         <h3>Generated Prompt</h3>
                         
-                        <!-- Saved Presets Section - Moved here from header -->
-                        <div class="saved-presets-header" style="margin-bottom: 20px;">
+                        <!-- Saved Presets Section - Mobile only (hidden on desktop) -->
+                        <div class="saved-presets-header saved-presets-mobile" style="display: none; margin-bottom: 20px;">
                             <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 10px;">Saved Presets</h3>
-                            <div id="saved-presets-container" class="preset-buttons-header">
+                            <div id="saved-presets-container-mobile" class="preset-buttons-header">
                                 <p class="no-presets-message" style="color: #999; font-style: italic; margin: 0; font-size: 0.9rem;">No saved presets yet. Create one using "Save Preset" button.</p>
                             </div>
                         </div>

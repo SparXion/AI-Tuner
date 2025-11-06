@@ -94,15 +94,12 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 600;
-    font-style: italic;
     background: #000;
     color: #fff;
     transition: all 0.2s;
     margin-left: 8px;
-    text-decoration: none;
-    font-family: inherit;
 }
 
 .info-btn-step:hover {
@@ -714,12 +711,6 @@ body.advanced-mode .mode-box[data-mode="beginner"]:hover {
 }
 
 /* Radar wrapper - make it bigger for v6 - override style.css */
-/* When radar is in workflow-container (left side), it should be full width */
-.workflow-container .radar-container-box {
-    width: 100%;
-    margin-bottom: 30px;
-}
-
 .radar-container-box .radar-wrapper {
     width: 100% !important;
     min-width: 400px !important;
@@ -751,28 +742,6 @@ body.advanced-mode .mode-box[data-mode="beginner"]:hover {
     flex-direction: column;
     max-height: calc(100vh - 300px);
     overflow: hidden;
-}
-
-/* Saved presets inside prompt container */
-.prompt-container-box .saved-presets-header {
-    margin-bottom: 20px;
-    padding: 0;
-    border: none;
-    background: transparent;
-}
-
-.prompt-container-box .saved-presets-header h3 {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 10px;
-    color: inherit;
-}
-
-.prompt-container-box .preset-buttons-header {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
 }
 
 .prompt-container-box h3 {
@@ -1400,10 +1369,57 @@ body.dark-mode .mode-description {
         margin-bottom: 12px;
     }
     
-    /* Radar chart - responsive sizing */
-    .workflow-container .radar-container-box {
-        width: 100%;
+    /* MOBILE-ONLY: Move radar chart to top above Step 1 */
+    /* Reorder preview section to appear first in main layout */
+    .main-layout {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    
+    .preview-section-container {
+        order: -1; /* Move preview section to top */
+        margin-bottom: 30px;
+    }
+    
+    .preview-section-container .radar-container-box {
+        order: -1; /* Move radar to top of preview section */
         margin-bottom: 20px;
+    }
+    
+    .preview-section-container .prompt-container-box {
+        order: 1; /* Prompt box comes after radar */
+    }
+    
+    /* MOBILE-ONLY: Move saved presets from header to prompt box */
+    header .saved-presets-header {
+        display: none !important; /* Hide from header on mobile */
+    }
+    
+    /* Show mobile version in prompt box */
+    .saved-presets-mobile {
+        display: block !important;
+    }
+    
+    /* MOBILE-ONLY: Change info button emoji to "i" */
+    .info-btn-step {
+        font-size: 0 !important; /* Hide emoji */
+        position: relative;
+    }
+    
+    .info-btn-step::before {
+        content: 'i';
+        font-size: 0.75rem;
+        font-style: italic;
+        font-weight: 600;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
     }
     
     .radar-container-box .radar-wrapper {

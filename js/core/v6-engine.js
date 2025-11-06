@@ -685,7 +685,8 @@ class AITunerV6 {
 
     loadAndRenderSavedPresets() {
         const container = document.getElementById('saved-presets-container');
-        if (!container) return;
+        const mobileContainer = document.getElementById('saved-presets-container-mobile');
+        const containers = [container, mobileContainer].filter(c => c !== null);
 
         // Load presets from localStorage
         let presets = {};
@@ -698,48 +699,52 @@ class AITunerV6 {
             }
         }
 
-        // Clear container
-        container.innerHTML = '';
-
         const presetKeys = Object.keys(presets);
-        if (presetKeys.length === 0) {
-            const message = document.createElement('p');
-            message.className = 'no-presets-message';
-            message.style.cssText = 'color: #999; font-style: italic; margin: 0; font-size: 0.9rem;';
-            message.textContent = 'No saved presets yet. Create one using "Save Preset" button.';
-            container.appendChild(message);
-            return;
-        }
+        
+        // Render to all containers
+        containers.forEach(cont => {
+            // Clear container
+            cont.innerHTML = '';
 
-        // Create preset buttons
-        presetKeys.forEach(presetKey => {
-            const preset = presets[presetKey];
-            const button = document.createElement('button');
-            button.className = 'preset-btn-header';
-            button.textContent = preset.name || presetKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-            button.addEventListener('click', () => {
-                this.loadPreset(presetKey);
-            });
-            
-            // Add delete button
-            const deleteBtn = document.createElement('button');
-            deleteBtn.className = 'preset-delete-btn-header';
-            deleteBtn.innerHTML = '×';
-            deleteBtn.title = 'Delete preset';
-            deleteBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (confirm(`Delete preset "${preset.name || presetKey}"?`)) {
-                    delete presets[presetKey];
-                    localStorage.setItem('ai_tuner_presets_v6', JSON.stringify(presets));
-                    this.loadAndRenderSavedPresets();
-                }
-            });
+            if (presetKeys.length === 0) {
+                const message = document.createElement('p');
+                message.className = 'no-presets-message';
+                message.style.cssText = 'color: #999; font-style: italic; margin: 0; font-size: 0.9rem;';
+                message.textContent = 'No saved presets yet. Create one using "Save Preset" button.';
+                cont.appendChild(message);
+                return;
+            }
 
-            const wrapper = document.createElement('div');
-            wrapper.className = 'preset-item-header';
-            wrapper.appendChild(button);
-            wrapper.appendChild(deleteBtn);
-            container.appendChild(wrapper);
+            // Create preset buttons
+            presetKeys.forEach(presetKey => {
+                const preset = presets[presetKey];
+                const button = document.createElement('button');
+                button.className = 'preset-btn-header';
+                button.textContent = preset.name || presetKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                button.addEventListener('click', () => {
+                    this.loadPreset(presetKey);
+                });
+                
+                // Add delete button
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'preset-delete-btn-header';
+                deleteBtn.innerHTML = '×';
+                deleteBtn.title = 'Delete preset';
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (confirm(`Delete preset "${preset.name || presetKey}"?`)) {
+                        delete presets[presetKey];
+                        localStorage.setItem('ai_tuner_presets_v6', JSON.stringify(presets));
+                        this.loadAndRenderSavedPresets();
+                    }
+                });
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'preset-item-header';
+                wrapper.appendChild(button);
+                wrapper.appendChild(deleteBtn);
+                cont.appendChild(wrapper);
+            });
         });
     }
 
