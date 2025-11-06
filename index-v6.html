@@ -279,6 +279,18 @@
                 // Insert at the very top of container (before header)
                 container.insertBefore(radarContainer, container.firstChild);
                 console.log('✅ Radar chart moved to top of container!');
+                
+                // Reinitialize chart after DOM move to fix Chart.js resize errors
+                setTimeout(function() {
+                    if (window.aiTuner && window.aiTuner.levers && typeof drawRadarV6 === 'function') {
+                        try {
+                            drawRadarV6(window.aiTuner.levers);
+                            console.log('✅ Radar chart reinitialized after move');
+                        } catch (e) {
+                            console.warn('⚠️ Could not reinitialize chart:', e);
+                        }
+                    }
+                }, 100);
             }
             
             function tryMoveRadar() {
