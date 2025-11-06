@@ -1138,12 +1138,20 @@ body.dark-mode .mode-description {
     /* Container padding for mobile */
     .container {
         padding: 15px 15px !important;
+        display: flex !important;
+        flex-direction: column !important;
     }
     
     /* Header optimizations */
     header {
         margin-bottom: 30px;
         padding-bottom: 20px;
+        order: 2; /* Header comes after radar */
+    }
+    
+    /* Main layout comes after header */
+    main.main-layout {
+        order: 3;
     }
     
     h1 {
@@ -1369,25 +1377,44 @@ body.dark-mode .mode-description {
         margin-bottom: 12px;
     }
     
-    /* MOBILE-ONLY: Move radar chart to top above Step 1 */
-    /* Reorder preview section to appear first in main layout */
+    /* MOBILE-ONLY: Move radar chart to very top of viewport */
+    /* First, make main layout a column */
     .main-layout {
         display: flex !important;
         flex-direction: column !important;
     }
     
+    /* Move preview section container to top of main layout */
     .preview-section-container {
-        order: -1; /* Move preview section to top */
+        order: -1 !important; /* Move preview section container to top */
         margin-bottom: 30px;
+        margin-top: 0 !important;
     }
     
+    /* Move radar chart to the very top of preview section */
     .preview-section-container .radar-container-box {
-        order: -1; /* Move radar to top of preview section */
+        order: -10 !important; /* Highest priority - goes to top */
         margin-bottom: 20px;
+        margin-top: 0 !important;
     }
     
+    /* Prompt box comes after radar */
     .preview-section-container .prompt-container-box {
-        order: 1; /* Prompt box comes after radar */
+        order: 1;
+    }
+    
+    /* Workflow container comes after preview section */
+    .workflow-container {
+        order: 1;
+    }
+    
+    /* Ensure preview section appears before workflow in main layout */
+    .main-layout > .preview-section-container {
+        order: -1 !important;
+    }
+    
+    .main-layout > .workflow-container {
+        order: 1 !important;
     }
     
     /* MOBILE-ONLY: Move saved presets from header to prompt box */
