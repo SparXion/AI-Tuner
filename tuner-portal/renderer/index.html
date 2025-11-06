@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tuner Portal - Cognitive Co-Pilot OS</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header with Chatbot Selector -->
+        <header class="app-header">
+            <div class="header-left">
+                <h1 class="app-title">Tuner Portal</h1>
+                <select id="chatbot-selector" class="chatbot-selector">
+                    <option value="chatgpt">ChatGPT</option>
+                    <option value="claude">Claude</option>
+                    <option value="grok">Grok</option>
+                    <option value="gemini">Gemini</option>
+                    <option value="perplexity">Perplexity</option>
+                    <option value="mistral">Mistral</option>
+                    <option value="llama">Llama</option>
+                </select>
+            </div>
+            <div class="header-right">
+                <button id="access-hub-btn" class="icon-btn" title="Access Hub">🔐</button>
+                <button id="save-session-btn" class="icon-btn" title="Save Session">💾</button>
+                <button id="load-session-btn" class="icon-btn" title="Load Session">📂</button>
+                <button id="export-config-btn" class="icon-btn" title="Export Config">📤</button>
+                <button id="import-config-btn" class="icon-btn" title="Import Config">📥</button>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Left Panel: AI Tuner Controls -->
+            <aside class="tuner-panel" id="tuner-panel">
+                <div class="tuner-header">
+                    <h2>AI Tuner</h2>
+                    <div class="mode-toggle">
+                        <button id="mode-beginner" class="mode-btn active">Beginner</button>
+                        <button id="mode-advanced" class="mode-btn">Advanced</button>
+                    </div>
+                </div>
+
+                <!-- Model Selector -->
+                <section class="tuner-section">
+                    <h3>Step 1: Choose Model</h3>
+                    <div id="model-selector" class="model-selector"></div>
+                </section>
+
+                <!-- Persona Selector -->
+                <section class="tuner-section">
+                    <h3>Step 2: Select Persona</h3>
+                    <div id="persona-selector" class="persona-selector"></div>
+                </section>
+
+                <!-- Levers -->
+                <section class="tuner-section">
+                    <h3>Step 3: Fine-Tune</h3>
+                    <div id="controls-section" class="controls-section"></div>
+                </section>
+
+                <!-- Presets -->
+                <section class="tuner-section">
+                    <h3>Presets</h3>
+                    <div id="presets-container" class="presets-container">
+                        <button id="save-preset-btn" class="preset-btn">Save Preset</button>
+                        <div id="saved-presets" class="saved-presets"></div>
+                    </div>
+                </section>
+
+                <!-- Auto-Tune Controls -->
+                <section class="tuner-section">
+                    <h3>Auto-Tune</h3>
+                    <div class="auto-tune-controls">
+                        <label class="auto-tune-toggle-label">
+                            <input type="checkbox" id="auto-tune-mode-toggle" checked>
+                            <span id="auto-tune-mode-label">Auto</span>
+                        </label>
+                        <p class="auto-tune-description">Detects discipline from your input and suggests presets</p>
+                    </div>
+                </section>
+
+                <!-- Memory Controls -->
+                <section class="tuner-section">
+                    <h3>Memory</h3>
+                    <div class="memory-controls">
+                        <label>
+                            <input type="radio" name="memory-mode" value="full" checked>
+                            <span>Full Memory</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="memory-mode" value="session">
+                            <span>Session Only</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="memory-mode" value="off">
+                            <span>Off</span>
+                        </label>
+                    </div>
+                </section>
+
+                <!-- Goal Lock -->
+                <section class="tuner-section">
+                    <h3>Goal Lock</h3>
+                    <input type="text" id="goal-input" class="goal-input" placeholder="Enter goal (e.g., 'Sci-fi world with emotional AI')">
+                </section>
+
+                <!-- Output Format -->
+                <section class="tuner-section">
+                    <h3>Output Format</h3>
+                    <select id="output-format" class="output-format">
+                        <option value="raw">Raw</option>
+                        <option value="bullet">Bullet Points</option>
+                        <option value="poem">Poem</option>
+                        <option value="script">Script</option>
+                        <option value="markdown">Markdown</option>
+                    </select>
+                </section>
+
+                <!-- Prompt Preview -->
+                <section class="tuner-section">
+                    <h3>System Prompt Preview</h3>
+                    <div id="prompt-preview" class="prompt-preview"></div>
+                </section>
+            </aside>
+
+            <!-- Right Panel: Portal View (Embedded Chatbot) -->
+            <main class="portal-view" id="portal-view">
+                <div class="portal-placeholder">
+                    <p>Portal view will be embedded here</p>
+                </div>
+            </main>
+        </div>
+
+        <!-- Unified Input Bar -->
+        <footer class="unified-input-bar">
+            <div id="auto-tune-suggestion" class="auto-tune-suggestion" style="display: none;"></div>
+            <input type="text" id="unified-input" class="unified-input" placeholder="Type your message... (System prompt will be auto-injected)">
+            <button id="send-btn" class="send-btn">Send</button>
+        </footer>
+
+        <!-- Access Hub Modal -->
+        <div id="access-hub-modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>🔐 Access Hub</h2>
+                    <button class="modal-close" id="access-hub-close">×</button>
+                </div>
+                <div id="access-hub-panel" class="modal-body">
+                    <!-- Content loaded by access-hub-ui.js -->
+                </div>
+                <div class="modal-tabs">
+                    <button class="tab-btn active" data-tab="services">Services</button>
+                    <button class="tab-btn" data-tab="subscriptions">Subscriptions</button>
+                    <button class="tab-btn" data-tab="audit">Audit Log</button>
+                </div>
+                <div id="services-list" class="tab-content active"></div>
+                <div id="subscriptions-list" class="tab-content"></div>
+                <div id="audit-log-list" class="tab-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/data/v6-models.js"></script>
+    <script src="js/data/v6-levers.js"></script>
+    <script src="js/data/v6-personas.js"></script>
+    <script src="js/core/v6-engine.js"></script>
+    <script src="tuner-integration.js"></script>
+    <script src="auto-tune-ui.js"></script>
+    <script src="access-hub-ui.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
+

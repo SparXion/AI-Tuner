@@ -211,7 +211,28 @@
     </div>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chart.js with fallback for mobile -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" 
+            onerror="this.onerror=null; loadChartJSFallback();"></script>
+    <script>
+        // Fallback if CDN fails (common on mobile)
+        function loadChartJSFallback() {
+            console.warn('Chart.js CDN failed, trying alternative CDN...');
+            const script = document.createElement('script');
+            script.src = 'https://unpkg.com/chart.js@latest/dist/chart.umd.js';
+            script.onerror = function() {
+                console.error('All Chart.js CDNs failed');
+                const errorDiv = document.createElement('div');
+                errorDiv.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #ff0000; color: #fff; padding: 15px; z-index: 10000; text-align: center; font-size: 14px;';
+                errorDiv.innerHTML = '⚠️ Chart.js failed to load. The radar chart may not work, but the rest of the app should function. <button onclick="location.reload()" style="margin-left: 10px; padding: 5px 10px; background: #fff; color: #000; border: none; cursor: pointer;">Reload</button>';
+                document.body.appendChild(errorDiv);
+            };
+            script.onload = function() {
+                console.log('Chart.js loaded from fallback CDN');
+            };
+            document.head.appendChild(script);
+        }
+    </script>
     <script src="js/data/v6-models.js"></script>
     <script src="js/data/v6-levers.js"></script>
     <script src="js/data/v6-personas.js"></script>
@@ -228,14 +249,20 @@
             document.body.appendChild(errorDiv);
         });
         
-        // Check if scripts loaded
+        // Check if scripts loaded (for debugging)
         window.addEventListener('load', function() {
-            console.log('Page loaded');
+            console.log('✅ Page fully loaded');
             console.log('Chart.js available:', typeof Chart !== 'undefined');
             console.log('AITunerV6 available:', typeof window.AITunerV6 !== 'undefined');
             console.log('LEVERS_V6 available:', typeof window.LEVERS_V6 !== 'undefined');
             console.log('MODELS_V6 available:', typeof window.MODELS_V6 !== 'undefined');
             console.log('PERSONAS_V6 available:', typeof window.PERSONAS_V6 !== 'undefined');
+            
+            // Mobile-specific: Check if we're on mobile
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+            if (isMobile) {
+                console.log('📱 Mobile device detected');
+            }
         });
         
         // Initialize v3.0 app
@@ -249,37 +276,67 @@
             }
         })();
         
-        document.addEventListener("DOMContentLoaded", () => {
-            console.log('DOMContentLoaded');
+        // Wait for all scripts to load, especially on mobile
+        function initializeApp() {
+            console.log('Initializing app...');
+            console.log('Chart.js available:', typeof Chart !== 'undefined');
+            console.log('AITunerV6 available:', typeof window.AITunerV6 !== 'undefined');
+            console.log('LEVERS_V6 available:', typeof window.LEVERS_V6 !== 'undefined');
+            console.log('MODELS_V6 available:', typeof window.MODELS_V6 !== 'undefined');
+            console.log('PERSONAS_V6 available:', typeof window.PERSONAS_V6 !== 'undefined');
             
-            // Check dependencies
-            if (typeof Chart === 'undefined') {
-                console.error('Chart.js not loaded!');
+            // Check critical dependencies
+            if (typeof window.AITunerV6 === 'undefined') {
+                console.error('AITunerV6 not loaded!');
                 const errorDiv = document.createElement('div');
-                errorDiv.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #ff0000; color: #fff; padding: 10px; z-index: 10000; text-align: center;';
-                errorDiv.textContent = 'Chart.js failed to load. Please check your internet connection.';
+                errorDiv.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #ff0000; color: #fff; padding: 15px; z-index: 10000; text-align: center; font-size: 14px;';
+                errorDiv.innerHTML = '❌ Application script failed to load. <button onclick="location.reload()" style="margin-left: 10px; padding: 5px 10px; background: #fff; color: #000; border: none; cursor: pointer; border-radius: 4px;">Reload Page</button>';
                 document.body.appendChild(errorDiv);
                 return;
             }
             
-            if (typeof window.AITunerV6 === 'undefined') {
-                console.error('AITunerV6 not loaded!');
-                const errorDiv = document.createElement('div');
-                errorDiv.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #ff0000; color: #fff; padding: 10px; z-index: 10000; text-align: center;';
-                errorDiv.textContent = 'Application script failed to load. Please refresh the page.';
-                document.body.appendChild(errorDiv);
-                return;
+            // Chart.js is optional - app can work without it
+            if (typeof Chart === 'undefined') {
+                console.warn('Chart.js not loaded - radar chart will not work, but app will continue');
+                // Don't block initialization, just warn
             }
             
             try {
                 window.aiTuner = new window.AITunerV6();
-                console.log('AI Tuner initialized successfully');
+                console.log('✅ AI Tuner initialized successfully');
+                
+                // Hide loader if still visible
+                const loader = document.getElementById('page-loader');
+                if (loader) {
+                    loader.style.opacity = '0';
+                    loader.style.transition = 'opacity 0.3s';
+                    setTimeout(() => loader.remove(), 300);
+                }
             } catch (error) {
                 console.error('Error initializing AI Tuner:', error);
                 const errorDiv = document.createElement('div');
-                errorDiv.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #ff0000; color: #fff; padding: 10px; z-index: 10000; text-align: center;';
-                errorDiv.textContent = 'Error initializing application: ' + error.message;
+                errorDiv.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #ff0000; color: #fff; padding: 15px; z-index: 10000; text-align: center; font-size: 14px;';
+                errorDiv.innerHTML = '❌ Error: ' + (error.message || 'Unknown error') + ' <button onclick="location.reload()" style="margin-left: 10px; padding: 5px 10px; background: #fff; color: #000; border: none; cursor: pointer; border-radius: 4px;">Reload</button>';
                 document.body.appendChild(errorDiv);
+            }
+        }
+        
+        // Try to initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener("DOMContentLoaded", () => {
+                // Give scripts a moment to load, especially on mobile
+                setTimeout(initializeApp, 100);
+            });
+        } else {
+            // DOM already loaded
+            setTimeout(initializeApp, 100);
+        }
+        
+        // Also try on window load as backup
+        window.addEventListener('load', () => {
+            // If app hasn't initialized yet, try again
+            if (!window.aiTuner) {
+                setTimeout(initializeApp, 200);
             }
         });
         
