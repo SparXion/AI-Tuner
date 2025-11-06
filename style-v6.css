@@ -1126,3 +1126,463 @@ body.dark-mode .app-info-features li::before {
 body.dark-mode .mode-description {
     color: #aaa;
 }
+
+/* ============================================
+   MOBILE OPTIMIZATIONS
+   These styles ONLY affect mobile viewports (< 768px)
+   Desktop and Cursor extension remain unchanged
+   ============================================ */
+
+/* Tablet and Large Phone (max-width: 768px) */
+@media (max-width: 768px) {
+    /* Container padding for mobile */
+    .container {
+        padding: 15px 15px !important;
+    }
+    
+    /* Header optimizations */
+    header {
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+    }
+    
+    h1 {
+        font-size: 2rem !important;
+        margin-bottom: 8px;
+    }
+    
+    .subtitle {
+        font-size: 0.95rem;
+    }
+    
+    /* Header buttons - stack vertically and make touch-friendly */
+    header > div[style*="display: flex"] {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 8px !important;
+    }
+    
+    header .btn {
+        width: 100%;
+        min-height: 44px; /* Touch-friendly minimum */
+        font-size: 1rem;
+        padding: 12px 16px;
+    }
+    
+    /* Mode toggle boxes - stack on mobile */
+    .mode-toggle-boxes {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
+    
+    .mode-box {
+        width: 100% !important;
+        min-height: 48px; /* Touch-friendly */
+        font-size: 1rem;
+    }
+    
+    .mode-description {
+        font-size: 0.8rem;
+        margin-top: 8px;
+    }
+    
+    /* Saved presets - full width buttons */
+    .preset-buttons-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .preset-item-header {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .preset-btn-header {
+        flex: 1;
+        min-height: 44px;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+    }
+    
+    .preset-delete-btn-header {
+        min-width: 44px;
+        min-height: 44px;
+        width: 44px;
+        height: 44px;
+    }
+    
+    /* Workflow steps - better spacing */
+    .workflow-step {
+        padding: 20px 15px;
+        margin-bottom: 20px;
+    }
+    
+    .step-header {
+        gap: 12px;
+        margin-bottom: 15px;
+    }
+    
+    .step-number {
+        width: 36px;
+        height: 36px;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+    
+    .step-title h2 {
+        font-size: 1.3rem;
+    }
+    
+    .step-description {
+        font-size: 0.9rem;
+    }
+    
+    /* Info buttons - larger for touch */
+    .info-btn-step {
+        width: 28px;
+        height: 28px;
+        font-size: 0.9rem;
+        min-width: 28px;
+        min-height: 28px;
+    }
+    
+    /* Model grid - single column on mobile */
+    .model-grid {
+        grid-template-columns: 1fr !important;
+        gap: 10px;
+    }
+    
+    .model-card {
+        padding: 18px;
+        min-height: 60px;
+    }
+    
+    .model-card .model-name {
+        font-size: 1rem;
+    }
+    
+    .model-card .model-desc {
+        font-size: 0.85rem;
+    }
+    
+    /* Persona grid - single column */
+    .persona-grid {
+        grid-template-columns: 1fr !important;
+        gap: 10px;
+    }
+    
+    .persona-card {
+        padding: 18px;
+        min-height: 80px;
+    }
+    
+    .persona-card .persona-name {
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+    }
+    
+    .persona-card .persona-desc {
+        font-size: 0.9rem;
+    }
+    
+    /* Lever controls - touch-friendly */
+    .lever-control {
+        padding: 18px 15px;
+        margin-bottom: 15px;
+    }
+    
+    .lever-header {
+        margin-bottom: 12px;
+    }
+    
+    .lever-label {
+        font-size: 1rem;
+    }
+    
+    .lever-value {
+        font-size: 1.2rem;
+        min-width: 40px;
+    }
+    
+    .lever-description {
+        font-size: 0.9rem;
+        margin-bottom: 12px;
+    }
+    
+    /* Slider - larger touch target */
+    .lever-slider {
+        height: 8px;
+        -webkit-appearance: none;
+        appearance: none;
+    }
+    
+    .lever-slider::-webkit-slider-thumb {
+        width: 24px;
+        height: 24px;
+        border: 3px solid #fff;
+        cursor: pointer;
+    }
+    
+    .lever-slider::-moz-range-thumb {
+        width: 24px;
+        height: 24px;
+        border: 3px solid #fff;
+        cursor: pointer;
+    }
+    
+    /* Category groups */
+    .category-group-v6 {
+        padding: 18px 15px;
+        margin-bottom: 20px;
+    }
+    
+    .category-group-v6 h2 {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+    }
+    
+    .category-group-v6 .info-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 0.9rem;
+        min-width: 28px;
+        min-height: 28px;
+    }
+    
+    /* Preview section - full width on mobile */
+    .preview-section-container {
+        position: static !important;
+        max-height: none !important;
+        margin-top: 30px;
+        overflow: visible;
+    }
+    
+    .radar-container-box {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .radar-container-box h3 {
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+    }
+    
+    /* Radar chart - responsive sizing */
+    .radar-container-box .radar-wrapper {
+        min-width: 100% !important;
+        width: 100% !important;
+        height: 350px !important;
+        max-width: 100% !important;
+    }
+    
+    .radar-container-box .radar-wrapper canvas {
+        width: 100% !important;
+        height: 350px !important;
+        max-width: 100% !important;
+    }
+    
+    .prompt-container-box {
+        padding: 15px;
+        max-height: none !important;
+    }
+    
+    .prompt-container-box h3 {
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+    }
+    
+    .prompt-preview {
+        max-height: 300px;
+        font-size: 0.8rem;
+        padding: 12px;
+    }
+    
+    /* Action buttons - full width, touch-friendly */
+    .actions {
+        gap: 10px;
+        padding-top: 12px;
+    }
+    
+    .actions .btn {
+        min-height: 48px;
+        font-size: 1rem;
+        padding: 14px 16px;
+    }
+    
+    /* App info section */
+    .app-info-section {
+        margin-top: 20px;
+    }
+    
+    .app-info-toggle {
+        padding: 14px 16px;
+        font-size: 0.95rem;
+    }
+    
+    .app-info-inner {
+        padding: 20px 15px;
+    }
+    
+    .app-info-inner h3 {
+        font-size: 1.2rem;
+        margin-bottom: 12px;
+    }
+    
+    .app-info-inner h4 {
+        font-size: 1rem;
+        margin: 18px 0 8px 0;
+    }
+    
+    .app-info-inner p,
+    .app-info-inner li {
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+    
+    /* Numbered steps - adjust padding */
+    .app-info-steps li {
+        padding-left: 45px;
+        gap: 12px;
+    }
+    
+    .app-info-steps li::before {
+        width: 28px;
+        height: 28px;
+        font-size: 0.9rem;
+    }
+    
+    /* Bullet points */
+    .app-info-features li {
+        padding-left: 20px;
+        gap: 8px;
+    }
+}
+
+/* Small Phone (max-width: 480px) */
+@media (max-width: 480px) {
+    /* Even tighter spacing on small phones */
+    .container {
+        padding: 12px 12px !important;
+    }
+    
+    h1 {
+        font-size: 1.75rem !important;
+    }
+    
+    .subtitle {
+        font-size: 0.9rem;
+    }
+    
+    /* Workflow steps - compact */
+    .workflow-step {
+        padding: 15px 12px;
+    }
+    
+    .step-number {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+    }
+    
+    .step-title h2 {
+        font-size: 1.2rem;
+    }
+    
+    /* Model and persona cards - compact */
+    .model-card {
+        padding: 15px;
+        min-height: 55px;
+    }
+    
+    .persona-card {
+        padding: 15px;
+        min-height: 70px;
+    }
+    
+    /* Lever controls - compact */
+    .lever-control {
+        padding: 15px 12px;
+    }
+    
+    .lever-label {
+        font-size: 0.95rem;
+    }
+    
+    .lever-value {
+        font-size: 1.1rem;
+    }
+    
+    /* Radar chart - smaller on tiny screens */
+    .radar-container-box .radar-wrapper {
+        height: 300px !important;
+    }
+    
+    .radar-container-box .radar-wrapper canvas {
+        height: 300px !important;
+    }
+    
+    .prompt-preview {
+        max-height: 250px;
+        font-size: 0.75rem;
+        padding: 10px;
+    }
+    
+    /* Buttons - still touch-friendly */
+    .actions .btn {
+        min-height: 44px;
+        font-size: 0.95rem;
+        padding: 12px 14px;
+    }
+    
+    /* App info - compact */
+    .app-info-toggle {
+        padding: 12px 14px;
+        font-size: 0.9rem;
+    }
+    
+    .app-info-inner {
+        padding: 15px 12px;
+    }
+    
+    .app-info-inner h3 {
+        font-size: 1.1rem;
+    }
+    
+    .app-info-inner h4 {
+        font-size: 0.95rem;
+    }
+    
+    .app-info-inner p,
+    .app-info-inner li {
+        font-size: 0.85rem;
+    }
+}
+
+/* Touch device optimizations (any touch device, regardless of screen size) */
+@media (hover: none) and (pointer: coarse) {
+    /* Increase tap targets for all touch devices */
+    .btn,
+    .mode-box,
+    .model-card,
+    .persona-card,
+    .preset-btn-header,
+    .info-btn-step,
+    .app-info-toggle {
+        cursor: pointer;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Remove hover effects on touch devices */
+    .model-card:hover,
+    .persona-card:hover {
+        transform: none;
+        box-shadow: none;
+    }
+    
+    /* Ensure sliders are touch-friendly */
+    .lever-slider {
+        -webkit-tap-highlight-color: transparent;
+    }
+}
