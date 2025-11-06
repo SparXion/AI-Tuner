@@ -266,9 +266,21 @@
                     return;
                 }
                 
-                // Check if already at top
-                if (container.firstChild === radarContainer) {
-                    console.log('✅ Radar already at top');
+                // Check if already at top (as direct child of container)
+                const isDirectChild = radarContainer.parentElement === container;
+                const isFirstChild = container.firstChild === radarContainer;
+                
+                console.log('🔍 Current state:', {
+                    isDirectChild: isDirectChild,
+                    isFirstChild: isFirstChild,
+                    parentElement: radarContainer.parentElement?.className || 'none',
+                    containerChildren: Array.from(container.children).map(c => c.className || c.tagName)
+                });
+                
+                if (isDirectChild && isFirstChild) {
+                    console.log('✅ Radar already at top as first child of container');
+                    // Ensure CSS order is applied
+                    radarContainer.style.order = '-10';
                     return;
                 }
                 
@@ -279,6 +291,10 @@
                 // Insert at the very top of container (before header)
                 container.insertBefore(radarContainer, container.firstChild);
                 console.log('✅ Radar chart moved to top of container!');
+                
+                // Force CSS order to ensure it stays at top
+                radarContainer.style.order = '-10';
+                console.log('✅ Applied order: -10 to radar container');
                 
                 // Reinitialize chart after DOM move to fix Chart.js resize errors
                 setTimeout(function() {

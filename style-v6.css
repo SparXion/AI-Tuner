@@ -1142,6 +1142,13 @@ body.dark-mode .mode-description {
         flex-direction: column !important;
     }
     
+    /* When radar container is moved to top of container, ensure it's first */
+    .container > .radar-container-box {
+        order: -10 !important; /* Highest priority - goes to absolute top */
+        margin-bottom: 20px;
+        margin-top: 0 !important;
+    }
+    
     /* Reorder container children: main (with radar) first, then header */
     .container > main.main-layout {
         order: -1 !important; /* Main comes first (contains radar) */
