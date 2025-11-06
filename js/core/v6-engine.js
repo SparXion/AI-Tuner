@@ -5,25 +5,56 @@
 
 class AITunerV6 {
     constructor() {
-        this.selectedModel = null;
-        this.selectedPersona = null;
-        this.levers = {};
-        this.mode = 'beginner'; // 'beginner' or 'advanced'
-        this.emojiShutoff = false; // Emergency emoji shutoff toggle
-        this.initializeLevers();
-        this.initializeElements();
-        this.loadModePreference();
-        this.loadEmojiShutoffPreference();
-        this.renderModelSelector();
-        this.renderPersonaSelector();
-        this.renderLevers();
-        this.setupEventListeners();
-        this.loadDarkModePreference();
-        this.updateModeUI();
-        // Initialize radar chart and prompt
-        setTimeout(() => {
-            this.generatePrompt();
-        }, 100); // Small delay to ensure DOM is ready
+        try {
+            console.log('AITunerV6: Starting initialization...');
+            this.selectedModel = null;
+            this.selectedPersona = null;
+            this.levers = {};
+            this.mode = 'beginner'; // 'beginner' or 'advanced'
+            this.emojiShutoff = false; // Emergency emoji shutoff toggle
+            
+            // Check dependencies
+            if (!window.LEVERS_V6) {
+                console.error('LEVERS_V6 not found!');
+                throw new Error('Levers data not loaded');
+            }
+            if (!window.MODELS_V6) {
+                console.error('MODELS_V6 not found!');
+                throw new Error('Models data not loaded');
+            }
+            if (!window.PERSONAS_V6) {
+                console.error('PERSONAS_V6 not found!');
+                throw new Error('Personas data not loaded');
+            }
+            if (typeof Chart === 'undefined') {
+                console.error('Chart.js not found!');
+                throw new Error('Chart.js library not loaded');
+            }
+            
+            this.initializeLevers();
+            this.initializeElements();
+            this.loadModePreference();
+            this.loadEmojiShutoffPreference();
+            this.renderModelSelector();
+            this.renderPersonaSelector();
+            this.renderLevers();
+            this.setupEventListeners();
+            this.loadDarkModePreference();
+            this.updateModeUI();
+            
+            // Initialize radar chart and prompt with error handling
+            setTimeout(() => {
+                try {
+                    this.generatePrompt();
+                    console.log('AITunerV6: Initialization complete');
+                } catch (error) {
+                    console.error('AITunerV6: Error generating prompt:', error);
+                }
+            }, 100); // Small delay to ensure DOM is ready
+        } catch (error) {
+            console.error('AITunerV6: Initialization error:', error);
+            throw error; // Re-throw to be caught by parent
+        }
     }
 
     initializeLevers() {

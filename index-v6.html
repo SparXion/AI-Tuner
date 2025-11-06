@@ -218,6 +218,26 @@
     <script src="radar.js"></script>
     <script src="js/core/v6-engine.js"></script>
     <script>
+        // Error handling and loading state
+        window.addEventListener('error', function(e) {
+            console.error('JavaScript Error:', e.message, e.filename, e.lineno);
+            // Show error message to user
+            const errorDiv = document.createElement('div');
+            errorDiv.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #ff0000; color: #fff; padding: 10px; z-index: 10000; text-align: center;';
+            errorDiv.textContent = 'Error loading page. Check console for details.';
+            document.body.appendChild(errorDiv);
+        });
+        
+        // Check if scripts loaded
+        window.addEventListener('load', function() {
+            console.log('Page loaded');
+            console.log('Chart.js available:', typeof Chart !== 'undefined');
+            console.log('AITunerV6 available:', typeof window.AITunerV6 !== 'undefined');
+            console.log('LEVERS_V6 available:', typeof window.LEVERS_V6 !== 'undefined');
+            console.log('MODELS_V6 available:', typeof window.MODELS_V6 !== 'undefined');
+            console.log('PERSONAS_V6 available:', typeof window.PERSONAS_V6 !== 'undefined');
+        });
+        
         // Initialize v3.0 app
         // Load dark mode preference BEFORE DOMContentLoaded to prevent flash
         (function() {
@@ -230,10 +250,60 @@
         })();
         
         document.addEventListener("DOMContentLoaded", () => {
-            if (window.AITunerV6) {
+            console.log('DOMContentLoaded');
+            
+            // Check dependencies
+            if (typeof Chart === 'undefined') {
+                console.error('Chart.js not loaded!');
+                const errorDiv = document.createElement('div');
+                errorDiv.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #ff0000; color: #fff; padding: 10px; z-index: 10000; text-align: center;';
+                errorDiv.textContent = 'Chart.js failed to load. Please check your internet connection.';
+                document.body.appendChild(errorDiv);
+                return;
+            }
+            
+            if (typeof window.AITunerV6 === 'undefined') {
+                console.error('AITunerV6 not loaded!');
+                const errorDiv = document.createElement('div');
+                errorDiv.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #ff0000; color: #fff; padding: 10px; z-index: 10000; text-align: center;';
+                errorDiv.textContent = 'Application script failed to load. Please refresh the page.';
+                document.body.appendChild(errorDiv);
+                return;
+            }
+            
+            try {
                 window.aiTuner = new window.AITunerV6();
+                console.log('AI Tuner initialized successfully');
+            } catch (error) {
+                console.error('Error initializing AI Tuner:', error);
+                const errorDiv = document.createElement('div');
+                errorDiv.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #ff0000; color: #fff; padding: 10px; z-index: 10000; text-align: center;';
+                errorDiv.textContent = 'Error initializing application: ' + error.message;
+                document.body.appendChild(errorDiv);
             }
         });
+        
+        // Add loading indicator
+        (function() {
+            const loader = document.createElement('div');
+            loader.id = 'page-loader';
+            loader.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #fff; z-index: 9999; display: flex; align-items: center; justify-content: center; font-size: 18px;';
+            loader.textContent = 'Loading AI Tuner...';
+            document.body.appendChild(loader);
+            
+            window.addEventListener('load', function() {
+                setTimeout(function() {
+                    const loaderEl = document.getElementById('page-loader');
+                    if (loaderEl) {
+                        loaderEl.style.opacity = '0';
+                        loaderEl.style.transition = 'opacity 0.3s';
+                        setTimeout(function() {
+                            loaderEl.remove();
+                        }, 300);
+                    }
+                }, 500);
+            });
+        })();
     </script>
 </body>
 </html>
