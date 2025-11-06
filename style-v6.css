@@ -1142,16 +1142,19 @@ body.dark-mode .mode-description {
         flex-direction: column !important;
     }
     
+    /* Reorder container children: main (with radar) first, then header */
+    .container > main.main-layout {
+        order: -1 !important; /* Main comes first (contains radar) */
+    }
+    
+    .container > header {
+        order: 1 !important; /* Header comes after main */
+    }
+    
     /* Header optimizations */
     header {
         margin-bottom: 30px;
         padding-bottom: 20px;
-        order: 2; /* Header comes after radar */
-    }
-    
-    /* Main layout comes after header */
-    main.main-layout {
-        order: 3;
     }
     
     h1 {
@@ -1384,11 +1387,15 @@ body.dark-mode .mode-description {
         flex-direction: column !important;
     }
     
-    /* Move preview section container to top of main layout */
-    .preview-section-container {
-        order: -1 !important; /* Move preview section container to top */
+    /* Move preview section container to top of main layout (before workflow) */
+    .main-layout > .preview-section-container {
+        order: -1 !important; /* Preview section comes before workflow */
         margin-bottom: 30px;
         margin-top: 0 !important;
+    }
+    
+    .main-layout > .workflow-container {
+        order: 1 !important; /* Workflow comes after preview */
     }
     
     /* Move radar chart to the very top of preview section */
@@ -1401,20 +1408,6 @@ body.dark-mode .mode-description {
     /* Prompt box comes after radar */
     .preview-section-container .prompt-container-box {
         order: 1;
-    }
-    
-    /* Workflow container comes after preview section */
-    .workflow-container {
-        order: 1;
-    }
-    
-    /* Ensure preview section appears before workflow in main layout */
-    .main-layout > .preview-section-container {
-        order: -1 !important;
-    }
-    
-    .main-layout > .workflow-container {
-        order: 1 !important;
     }
     
     /* MOBILE-ONLY: Move saved presets from header to prompt box */
