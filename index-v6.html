@@ -242,6 +242,20 @@
     <script src="radar.js?v=3.0.1"></script>
     <script src="js/core/v6-engine.js?v=3.0.1"></script>
     <script>
+        // Force cache refresh on mobile if needed
+        (function() {
+            const version = '3.0.1';
+            const storedVersion = localStorage.getItem('aituner-version');
+            if (storedVersion !== version) {
+                console.log('🔄 Version changed, clearing cache...');
+                localStorage.setItem('aituner-version', version);
+                // Force reload if version changed
+                if (storedVersion && storedVersion !== version) {
+                    window.location.reload(true);
+                }
+            }
+        })();
+        
         // MOBILE: Move radar chart to top of viewport
         (function() {
             function isMobile() {
