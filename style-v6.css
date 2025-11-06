@@ -94,12 +94,15 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 600;
+    font-style: italic;
     background: #000;
     color: #fff;
     transition: all 0.2s;
     margin-left: 8px;
+    text-decoration: none;
+    font-family: inherit;
 }
 
 .info-btn-step:hover {
@@ -711,6 +714,12 @@ body.advanced-mode .mode-box[data-mode="beginner"]:hover {
 }
 
 /* Radar wrapper - make it bigger for v6 - override style.css */
+/* When radar is in workflow-container (left side), it should be full width */
+.workflow-container .radar-container-box {
+    width: 100%;
+    margin-bottom: 30px;
+}
+
 .radar-container-box .radar-wrapper {
     width: 100% !important;
     min-width: 400px !important;
@@ -742,6 +751,28 @@ body.advanced-mode .mode-box[data-mode="beginner"]:hover {
     flex-direction: column;
     max-height: calc(100vh - 300px);
     overflow: hidden;
+}
+
+/* Saved presets inside prompt container */
+.prompt-container-box .saved-presets-header {
+    margin-bottom: 20px;
+    padding: 0;
+    border: none;
+    background: transparent;
+}
+
+.prompt-container-box .saved-presets-header h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: inherit;
+}
+
+.prompt-container-box .preset-buttons-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
 }
 
 .prompt-container-box h3 {
@@ -1370,6 +1401,11 @@ body.dark-mode .mode-description {
     }
     
     /* Radar chart - responsive sizing */
+    .workflow-container .radar-container-box {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    
     .radar-container-box .radar-wrapper {
         min-width: 100% !important;
         width: 100% !important;
@@ -1515,6 +1551,10 @@ body.dark-mode .mode-description {
     }
     
     /* Radar chart - smaller on tiny screens */
+    .workflow-container .radar-container-box {
+        margin-bottom: 15px;
+    }
+    
     .radar-container-box .radar-wrapper {
         height: 300px !important;
     }

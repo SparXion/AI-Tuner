@@ -1,0 +1,125 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #ffffff;
+  color: #000000;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+button {
+  font-family: inherit;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #000000;
+  cursor: pointer;
+  border: 2px solid #ffffff;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #000000;
+  cursor: pointer;
+  border: 2px solid #ffffff;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  background: #000000;
+  height: 8px;
+  border-radius: 4px;
+}
+
+input[type="range"]::-moz-range-track {
+  background: #000000;
+  height: 8px;
+  border-radius: 4px;
+}
+
+/* Prevent browser extensions from adding overlays - be specific to avoid hiding actual UI elements */
+.grammarly-button,
+.grammarly-indicator,
+div[class*="grammarly"]:not(input):not(label):not(button),
+div[class*="extension-overlay"]:not(input):not(label):not(button),
+div[class*="student-overlay"]:not(input):not(label):not(button),
+div[id*="student-overlay"]:not(input):not(label):not(button),
+iframe[src*="student"],
+iframe[src*="localhost/student"],
+/* Target any element that might be extension overlay */
+[class*="red-dot"],
+[class*="reddot"],
+[class*="dropdown-indicator"],
+[class*="extension-popup"],
+[style*="position: absolute"][style*="z-index: 999"],
+[style*="position: fixed"][style*="z-index: 999"],
+span[style*="position: absolute"],
+div[style*="position: absolute"][style*="cursor: pointer"],
+a[href*="localhost/student"],
+a[href*="student"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+}
+
+/* Prevent extension overlays on labels and inputs */
+label[data-gramm="false"],
+input[data-gramm="false"] {
+  position: relative;
+  z-index: 1;
+}
+
+/* Hide extension-generated popups but not our actual UI */
+body > div[style*="position: fixed"][style*="z-index"]:not([class]):not([id]):not([data-root]) {
+  display: none !important;
+}
+
+/* More aggressive targeting of extension overlays */
+*[style*="background"][style*="red"]:not([data-gramm="false"]):not(input):not(button):not(label) {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+/* Target any small red dot indicators */
+span[style*="background"][style*="red"],
+div[style*="background"][style*="red"],
+span[style*="color"][style*="red"],
+div[style*="color"][style*="red"] {
+  display: none !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+
+/* Toast animation */
+@keyframes fadeInOut {
+  0%, 100% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  10%, 90% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
