@@ -1381,10 +1381,11 @@ body.dark-mode .mode-description {
     }
     
     /* MOBILE-ONLY: Move radar chart to very top of viewport */
-    /* First, make main layout a column */
+    /* First, make main layout a flex column (not grid) */
     .main-layout {
         display: flex !important;
         flex-direction: column !important;
+        grid-template-columns: none !important;
     }
     
     /* Move preview section container to top of main layout (before workflow) */
@@ -1392,10 +1393,18 @@ body.dark-mode .mode-description {
         order: -1 !important; /* Preview section comes before workflow */
         margin-bottom: 30px;
         margin-top: 0 !important;
+        width: 100% !important;
     }
     
     .main-layout > .workflow-container {
         order: 1 !important; /* Workflow comes after preview */
+        width: 100% !important;
+    }
+    
+    /* Make preview-section a flex column to allow reordering */
+    .preview-section-container .preview-section {
+        display: flex !important;
+        flex-direction: column !important;
     }
     
     /* Move radar chart to the very top of preview section */
@@ -1403,11 +1412,13 @@ body.dark-mode .mode-description {
         order: -10 !important; /* Highest priority - goes to top */
         margin-bottom: 20px;
         margin-top: 0 !important;
+        width: 100% !important;
     }
     
     /* Prompt box comes after radar */
     .preview-section-container .prompt-container-box {
-        order: 1;
+        order: 1 !important;
+        width: 100% !important;
     }
     
     /* MOBILE-ONLY: Move saved presets from header to prompt box */
