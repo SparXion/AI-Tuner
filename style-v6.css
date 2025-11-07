@@ -1142,20 +1142,44 @@ body.dark-mode .mode-description {
         flex-direction: column !important;
     }
     
-    /* When radar container is moved to top of container, ensure it's first */
-    .container > .radar-container-box {
-        order: -10 !important; /* Highest priority - goes to absolute top */
-        margin-bottom: 20px;
-        margin-top: 0 !important;
-    }
-    
-    /* Reorder container children: main (with radar) first, then header */
+    /* Reorder: Main layout first (contains radar), then header */
     .container > main.main-layout {
-        order: -1 !important; /* Main comes first (contains radar) */
+        order: -1 !important; /* Main comes first */
     }
     
     .container > header {
         order: 1 !important; /* Header comes after main */
+    }
+    
+    /* Within main layout, put preview section (with radar) first */
+    .main-layout {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    
+    .preview-section-container {
+        order: -1 !important; /* Preview section first */
+        width: 100% !important;
+    }
+    
+    .workflow-container {
+        order: 1 !important; /* Workflow comes after preview */
+        width: 100% !important;
+    }
+    
+    /* Within preview section, radar comes first */
+    .preview-section {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    
+    .radar-container-box {
+        order: -1 !important; /* Radar first */
+        margin-bottom: 20px;
+    }
+    
+    .prompt-container-box {
+        order: 1 !important; /* Prompt after radar */
     }
     
     /* Header optimizations */
