@@ -368,7 +368,10 @@ function handleResize() {
         isResizing = true;
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => {
-            if (window.aiTuner && typeof window.aiTuner.getCurrentSettings === 'function') {
+            // Use v6 version if available (for v3.0), otherwise fall back to v2.0
+            if (window.aiTuner && window.aiTuner.levers && typeof drawRadarV6 === 'function') {
+                drawRadarV6(window.aiTuner.levers);
+            } else if (window.aiTuner && typeof window.aiTuner.getCurrentSettings === 'function') {
                 const currentSettings = window.aiTuner.getCurrentSettings();
                 if (currentSettings && typeof drawRadar === 'function') {
                     drawRadar(currentSettings);
