@@ -115,7 +115,45 @@
         </header>
 
         <main class="main-layout">
-            <!-- Left Side: Three-Step Workflow -->
+            <!-- Preview Section (Left Side) -->
+            <div class="preview-section-container">
+                <div class="preview-section">
+                    <!-- Radar Container Box -->
+                    <div class="radar-container-box">
+                        <h3>Live Preview</h3>
+                        <div class="radar-wrapper">
+                            <canvas id="radarCanvas"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Prompt Container Box -->
+                    <div class="prompt-container-box">
+                        <h3>Generated Prompt</h3>
+                        
+                        <!-- Saved Presets Section - Mobile only (hidden on desktop) -->
+                        <div class="saved-presets-header saved-presets-mobile" style="display: none; margin-bottom: 20px;">
+                            <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 10px;">Saved Presets</h3>
+                            <div id="saved-presets-container-mobile" class="preset-buttons-header">
+                                <p class="no-presets-message" style="color: #999; font-style: italic; margin: 0; font-size: 0.9rem;">No saved presets yet. Create one using "Save Preset" button.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="prompt-preview" id="prompt-preview">
+                            <p class="placeholder-text">← Start by selecting a model (Step 1)</p>
+                        </div>
+                        <div class="actions">
+                            <button id="copy-prompt" class="btn btn-primary">Copy Prompt</button>
+                            <button id="save-preset" class="btn btn-secondary">Save Preset</button>
+                            <button id="download-json" class="btn btn-secondary">Download Config</button>
+                            <button id="download-markdown" class="btn btn-secondary">Download Doc</button>
+                            <button id="upload-config" class="btn btn-secondary">Upload Config</button>
+                        </div>
+                        <input type="file" id="file-input" accept=".json" style="display: none;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Three-Step Workflow (Right Side) -->
             <div class="workflow-container">
                 <!-- Step 1: Choose Model (Trunk) -->
                 <div class="workflow-step step-1">
@@ -156,44 +194,6 @@
                     </div>
                     <div class="controls-section" id="controls-section">
                         <!-- Levers will be populated by JavaScript organized by 12 categories -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Preview Section (Right Side) -->
-            <div class="preview-section-container">
-                <div class="preview-section">
-                    <!-- Radar Container Box -->
-                    <div class="radar-container-box">
-                        <h3>Live Preview</h3>
-                        <div class="radar-wrapper">
-                            <canvas id="radarCanvas"></canvas>
-                        </div>
-                    </div>
-                    
-                    <!-- Prompt Container Box -->
-                    <div class="prompt-container-box">
-                        <h3>Generated Prompt</h3>
-                        
-                        <!-- Saved Presets Section - Mobile only (hidden on desktop) -->
-                        <div class="saved-presets-header saved-presets-mobile" style="display: none; margin-bottom: 20px;">
-                            <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 10px;">Saved Presets</h3>
-                            <div id="saved-presets-container-mobile" class="preset-buttons-header">
-                                <p class="no-presets-message" style="color: #999; font-style: italic; margin: 0; font-size: 0.9rem;">No saved presets yet. Create one using "Save Preset" button.</p>
-                            </div>
-                        </div>
-                        
-                        <div class="prompt-preview" id="prompt-preview">
-                            <p class="placeholder-text">← Start by selecting a model (Step 1)</p>
-                        </div>
-                        <div class="actions">
-                            <button id="copy-prompt" class="btn btn-primary">Copy Prompt</button>
-                            <button id="save-preset" class="btn btn-secondary">Save Preset</button>
-                            <button id="download-json" class="btn btn-secondary">Download Config</button>
-                            <button id="download-markdown" class="btn btn-secondary">Download Doc</button>
-                            <button id="upload-config" class="btn btn-secondary">Upload Config</button>
-                        </div>
-                        <input type="file" id="file-input" accept=".json" style="display: none;">
                     </div>
                 </div>
             </div>
