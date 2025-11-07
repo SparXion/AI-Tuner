@@ -363,12 +363,11 @@ class AITunerV6 {
             }
         }
 
-        // Update radar chart if available
+        // Update radar chart - ALWAYS use v6 version for v3.0
         if (typeof drawRadarV6 === 'function') {
             drawRadarV6(this.levers);
-        } else if (typeof drawRadar === 'function') {
-            // Fallback to old radar if v6 version doesn't exist
-            drawRadar(this.getCurrentSettings());
+        } else {
+            console.error('drawRadarV6 function not found! Make sure radar.js is loaded.');
         }
     }
 

@@ -1142,13 +1142,15 @@ body.dark-mode .mode-description {
         flex-direction: column !important;
     }
     
-    /* Reorder: Main layout first (contains radar), then header */
+    /* Reorder: Put preview section (with radar) at the very top */
     .container > main.main-layout {
-        order: -1 !important; /* Main comes first */
+        order: -2 !important; /* Main comes first */
+        display: flex !important;
+        flex-direction: column !important;
     }
     
     .container > header {
-        order: 1 !important; /* Header comes after main */
+        order: -1 !important; /* Header comes after radar but before workflow */
     }
     
     /* Within main layout, put preview section (with radar) first */
@@ -1158,7 +1160,7 @@ body.dark-mode .mode-description {
     }
     
     .preview-section-container {
-        order: -1 !important; /* Preview section first */
+        order: -1 !important; /* Preview section first (contains radar) */
         width: 100% !important;
     }
     
