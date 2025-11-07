@@ -1,6 +1,7 @@
 // radar.js – radar chart + blend helpers
 
 let radarChart = null;
+let isCreatingChart = false; // Flag to prevent multiple simultaneous chart creations
 
 function valueToNum(v) {
     if (v === null || v === undefined || v === '') return 0;
@@ -248,7 +249,13 @@ function drawRadarV6(levers) {
     const labels = radarLevers.map(l => l.label);
     const data = radarLevers.map(l => l.value || 5);
     
-    // Destroy existing chart if it exists
+    // Prevent multiple simultaneous chart creations
+    if (isCreatingChart) {
+        console.warn('Chart creation already in progress, skipping...');
+        return;
+    }
+    
+    // Destroy existing chart if it exists (synchronously, before setTimeout)
     if (radarChart) {
         try {
             radarChart.destroy();
@@ -276,6 +283,23 @@ function drawRadarV6(levers) {
     
     // Small delay to ensure DOM is stable (especially after DOM moves)
     setTimeout(() => {
+        // Double-check we're not already creating a chart
+        if (isCreatingChart) {
+            console.warn('Chart creation already in progress (inside setTimeout), skipping...');
+            return;
+        }
+        
+        // Destroy again inside setTimeout in case another chart was created
+        if (radarChart) {
+            try {
+                radarChart.destroy();
+            } catch (e) {
+                console.warn('Error destroying chart (inside setTimeout):', e);
+            }
+            radarChart = null;
+        }
+        
+        isCreatingChart = true;
         try {
             radarChart = new Chart(canvas, {
         type: "radar",
@@ -339,22 +363,29 @@ function drawRadarV6(levers) {
                 }
             }
         }
-    });
-    
-    // Force resize after creation (helps with mobile rendering)
-    if (radarChart && typeof radarChart.resize === 'function') {
-        setTimeout(() => {
-            try {
-                radarChart.resize();
-            } catch (e) {
-                console.warn('Error resizing chart:', e);
+            });
+            
+            // Force resize after creation (helps with mobile rendering)
+            if (radarChart && typeof radarChart.resize === 'function') {
+                setTimeout(() => {
+                    try {
+                        radarChart.resize();
+                    } catch (e) {
+                        console.warn('Error resizing chart:', e);
+                    }
+                }, 50);
             }
-        }, 50);
-    }
         } catch (e) {
             console.error('Error creating radar chart:', e);
-            // Retry after a delay if there was an error
-            setTimeout(() => drawRadarV6(levers), 200);
+            radarChart = null;
+            // Retry after a delay if there was an error (but only if not already retrying)
+            setTimeout(() => {
+                if (!isCreatingChart) {
+                    drawRadarV6(levers);
+                }
+            }, 200);
+        } finally {
+            isCreatingChart = false;
         }
     }, 50);
 }

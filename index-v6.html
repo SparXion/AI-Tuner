@@ -7,8 +7,8 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>AI Tuner v3.0 - Customize AI Response Style</title>
-    <link rel="stylesheet" href="style.css?v=3.0.1">
-    <link rel="stylesheet" href="style-v6.css?v=3.0.1">
+    <link rel="stylesheet" href="style.css?v=3.0.2">
+    <link rel="stylesheet" href="style-v6.css?v=3.0.2">
     <style>
         /* Force dark mode colors - loaded last to override everything */
         body.dark-mode .radar-container-box,
@@ -236,11 +236,11 @@
             document.head.appendChild(script);
         }
     </script>
-    <script src="js/data/v6-models.js?v=3.0.1"></script>
-    <script src="js/data/v6-levers.js?v=3.0.1"></script>
-    <script src="js/data/v6-personas.js?v=3.0.1"></script>
-    <script src="radar.js?v=3.0.1"></script>
-    <script src="js/core/v6-engine.js?v=3.0.1"></script>
+    <script src="js/data/v6-models.js?v=3.0.2"></script>
+    <script src="js/data/v6-levers.js?v=3.0.2"></script>
+    <script src="js/data/v6-personas.js?v=3.0.2"></script>
+    <script src="radar.js?v=3.0.2"></script>
+    <script src="js/core/v6-engine.js?v=3.0.2"></script>
     <script>
         // Force cache refresh on mobile if needed
         (function() {
@@ -297,7 +297,17 @@
         })();
         
         // Wait for all scripts to load, especially on mobile
+        let isInitializing = false;
+        let isInitialized = false;
+        
         function initializeApp() {
+            // Prevent multiple initializations
+            if (isInitializing || isInitialized) {
+                console.log('App already initializing or initialized, skipping...');
+                return;
+            }
+            
+            isInitializing = true;
             console.log('Initializing app...');
             console.log('Chart.js available:', typeof Chart !== 'undefined');
             console.log('AITunerV6 available:', typeof window.AITunerV6 !== 'undefined');
@@ -307,6 +317,7 @@
             
             // Check critical dependencies
             if (typeof window.AITunerV6 === 'undefined') {
+                isInitializing = false;
                 console.error('AITunerV6 not loaded!');
                 const errorDiv = document.createElement('div');
                 errorDiv.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #ff0000; color: #fff; padding: 15px; z-index: 10000; text-align: center; font-size: 14px;';
@@ -324,6 +335,7 @@
             try {
                 window.aiTuner = new window.AITunerV6();
                 console.log('✅ AI Tuner initialized successfully');
+                isInitialized = true;
                 
                 // Hide loader if still visible
                 const loader = document.getElementById('page-loader');
@@ -334,10 +346,13 @@
                 }
             } catch (error) {
                 console.error('Error initializing AI Tuner:', error);
+                isInitializing = false;
                 const errorDiv = document.createElement('div');
                 errorDiv.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #ff0000; color: #fff; padding: 15px; z-index: 10000; text-align: center; font-size: 14px;';
                 errorDiv.innerHTML = '❌ Error: ' + (error.message || 'Unknown error') + ' <button onclick="location.reload()" style="margin-left: 10px; padding: 5px 10px; background: #fff; color: #000; border: none; cursor: pointer; border-radius: 4px;">Reload</button>';
                 document.body.appendChild(errorDiv);
+            } finally {
+                isInitializing = false;
             }
         }
         
@@ -355,7 +370,7 @@
         // Also try on window load as backup
         window.addEventListener('load', () => {
             // If app hasn't initialized yet, try again
-            if (!window.aiTuner) {
+            if (!window.aiTuner && !isInitialized && !isInitializing) {
                 setTimeout(initializeApp, 200);
             }
         });
