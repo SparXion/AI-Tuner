@@ -1,0 +1,85 @@
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor files
+.vscode/
+!vscode/settings.json.example
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# nyc test coverage
+.nyc_output
+
+# Dependency directories
+node_modules/
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Testing
+cypress/videos/
+cypress/screenshots/
+cypress/downloads/
+.nyc_output/
+coverage/
+*.vsix
+.vscode-test/
+workspaceStorage/
+globalStorage/
+
+# Cypress
+cypress.env.json
+cypress/results/
+
+# Jest
+coverage/
+.nyc_output/
+
+# Compiled TypeScript output
+out/
+**/out/
+*.d.ts.map
+*.js.map
+
+# Quarantine folder (archived/temporary files)
+_quarantine/
+
+# Private, untracked content
+_private/
+PERSONA-REPORT-v6.0.md
