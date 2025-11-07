@@ -3,7 +3,7 @@
  * Model-specific default lever values
  */
 
-window.AI_MODELS_V6 = {
+window.MODELS_V6 = window.AI_MODELS_V6 = {
     "grok": {
         name: "Grok (xAI)",
         description: "Truth-seeking, identity-locked, subtly witty",

@@ -5,25 +5,56 @@
 
 class AITunerV6 {
     constructor() {
-        this.selectedModel = null;
-        this.selectedPersona = null;
-        this.levers = {};
-        this.mode = 'beginner'; // 'beginner' or 'advanced'
-        this.emojiShutoff = false; // Emergency emoji shutoff toggle
-        this.initializeLevers();
-        this.initializeElements();
-        this.loadModePreference();
-        this.loadEmojiShutoffPreference();
-        this.renderModelSelector();
-        this.renderPersonaSelector();
-        this.renderLevers();
-        this.setupEventListeners();
-        this.loadDarkModePreference();
-        this.updateModeUI();
-        // Initialize radar chart and prompt
-        setTimeout(() => {
-            this.generatePrompt();
-        }, 100); // Small delay to ensure DOM is ready
+        try {
+            console.log('AITunerV6: Starting initialization...');
+            this.selectedModel = null;
+            this.selectedPersona = null;
+            this.levers = {};
+            this.mode = 'beginner'; // 'beginner' or 'advanced'
+            this.emojiShutoff = false; // Emergency emoji shutoff toggle
+            
+            // Check dependencies
+            if (!window.LEVERS_V6) {
+                console.error('LEVERS_V6 not found!');
+                throw new Error('Levers data not loaded');
+            }
+            if (!window.MODELS_V6) {
+                console.error('MODELS_V6 not found!');
+                throw new Error('Models data not loaded');
+            }
+            if (!window.PERSONAS_V6) {
+                console.error('PERSONAS_V6 not found!');
+                throw new Error('Personas data not loaded');
+            }
+            if (typeof Chart === 'undefined') {
+                console.error('Chart.js not found!');
+                throw new Error('Chart.js library not loaded');
+            }
+            
+            this.initializeLevers();
+            this.initializeElements();
+            this.loadModePreference();
+            this.loadEmojiShutoffPreference();
+            this.renderModelSelector();
+            this.renderPersonaSelector();
+            this.renderLevers();
+            this.setupEventListeners();
+            this.loadDarkModePreference();
+            this.updateModeUI();
+            
+            // Initialize radar chart and prompt with error handling
+            setTimeout(() => {
+                try {
+                    this.generatePrompt();
+                    console.log('AITunerV6: Initialization complete');
+                } catch (error) {
+                    console.error('AITunerV6: Error generating prompt:', error);
+                }
+            }, 100); // Small delay to ensure DOM is ready
+        } catch (error) {
+            console.error('AITunerV6: Initialization error:', error);
+            throw error; // Re-throw to be caught by parent
+        }
     }
 
     initializeLevers() {
@@ -332,12 +363,11 @@ class AITunerV6 {
             }
         }
 
-        // Update radar chart if available
+        // Update radar chart - ALWAYS use v6 version for v3.0
         if (typeof drawRadarV6 === 'function') {
             drawRadarV6(this.levers);
-        } else if (typeof drawRadar === 'function') {
-            // Fallback to old radar if v6 version doesn't exist
-            drawRadar(this.getCurrentSettings());
+        } else {
+            console.error('drawRadarV6 function not found! Make sure radar.js is loaded.');
         }
     }
 
@@ -685,7 +715,8 @@ class AITunerV6 {
 
     loadAndRenderSavedPresets() {
         const container = document.getElementById('saved-presets-container');
-        if (!container) return;
+        const mobileContainer = document.getElementById('saved-presets-container-mobile');
+        const containers = [container, mobileContainer].filter(c => c !== null);
 
         // Load presets from localStorage
         let presets = {};
@@ -698,48 +729,52 @@ class AITunerV6 {
             }
         }
 
-        // Clear container
-        container.innerHTML = '';
-
         const presetKeys = Object.keys(presets);
-        if (presetKeys.length === 0) {
-            const message = document.createElement('p');
-            message.className = 'no-presets-message';
-            message.style.cssText = 'color: #999; font-style: italic; margin: 0; font-size: 0.9rem;';
-            message.textContent = 'No saved presets yet. Create one using "Save Preset" button.';
-            container.appendChild(message);
-            return;
-        }
+        
+        // Render to all containers
+        containers.forEach(cont => {
+            // Clear container
+            cont.innerHTML = '';
 
-        // Create preset buttons
-        presetKeys.forEach(presetKey => {
-            const preset = presets[presetKey];
-            const button = document.createElement('button');
-            button.className = 'preset-btn-header';
-            button.textContent = preset.name || presetKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-            button.addEventListener('click', () => {
-                this.loadPreset(presetKey);
-            });
-            
-            // Add delete button
-            const deleteBtn = document.createElement('button');
-            deleteBtn.className = 'preset-delete-btn-header';
-            deleteBtn.innerHTML = '×';
-            deleteBtn.title = 'Delete preset';
-            deleteBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (confirm(`Delete preset "${preset.name || presetKey}"?`)) {
-                    delete presets[presetKey];
-                    localStorage.setItem('ai_tuner_presets_v6', JSON.stringify(presets));
-                    this.loadAndRenderSavedPresets();
-                }
-            });
+            if (presetKeys.length === 0) {
+                const message = document.createElement('p');
+                message.className = 'no-presets-message';
+                message.style.cssText = 'color: #999; font-style: italic; margin: 0; font-size: 0.9rem;';
+                message.textContent = 'No saved presets yet. Create one using "Save Preset" button.';
+                cont.appendChild(message);
+                return;
+            }
 
-            const wrapper = document.createElement('div');
-            wrapper.className = 'preset-item-header';
-            wrapper.appendChild(button);
-            wrapper.appendChild(deleteBtn);
-            container.appendChild(wrapper);
+            // Create preset buttons
+            presetKeys.forEach(presetKey => {
+                const preset = presets[presetKey];
+                const button = document.createElement('button');
+                button.className = 'preset-btn-header';
+                button.textContent = preset.name || presetKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                button.addEventListener('click', () => {
+                    this.loadPreset(presetKey);
+                });
+                
+                // Add delete button
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'preset-delete-btn-header';
+                deleteBtn.innerHTML = '×';
+                deleteBtn.title = 'Delete preset';
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (confirm(`Delete preset "${preset.name || presetKey}"?`)) {
+                        delete presets[presetKey];
+                        localStorage.setItem('ai_tuner_presets_v6', JSON.stringify(presets));
+                        this.loadAndRenderSavedPresets();
+                    }
+                });
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'preset-item-header';
+                wrapper.appendChild(button);
+                wrapper.appendChild(deleteBtn);
+                cont.appendChild(wrapper);
+            });
         });
     }
 

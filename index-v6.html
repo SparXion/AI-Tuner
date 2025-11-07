@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>AI Tuner v3.0 - Customize AI Response Style</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="style-v6.css">
+    <link rel="stylesheet" href="style.css?v=3.0.2">
+    <link rel="stylesheet" href="style-v6.css?v=3.0.2">
     <style>
         /* Force dark mode colors - loaded last to override everything */
         body.dark-mode .radar-container-box,
@@ -112,7 +115,45 @@
         </header>
 
         <main class="main-layout">
-            <!-- Left Side: Three-Step Workflow -->
+            <!-- Preview Section (Left Side) -->
+            <div class="preview-section-container">
+                <div class="preview-section">
+                    <!-- Radar Container Box -->
+                    <div class="radar-container-box">
+                        <h3>Live Preview</h3>
+                        <div class="radar-wrapper">
+                            <canvas id="radarCanvas"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Prompt Container Box -->
+                    <div class="prompt-container-box">
+                        <h3>Generated Prompt</h3>
+                        
+                        <!-- Saved Presets Section - Mobile only (hidden on desktop) -->
+                        <div class="saved-presets-header saved-presets-mobile" style="display: none; margin-bottom: 20px;">
+                            <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 10px;">Saved Presets</h3>
+                            <div id="saved-presets-container-mobile" class="preset-buttons-header">
+                                <p class="no-presets-message" style="color: #999; font-style: italic; margin: 0; font-size: 0.9rem;">No saved presets yet. Create one using "Save Preset" button.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="prompt-preview" id="prompt-preview">
+                            <p class="placeholder-text">← Start by selecting a model (Step 1)</p>
+                        </div>
+                        <div class="actions">
+                            <button id="copy-prompt" class="btn btn-primary">Copy Prompt</button>
+                            <button id="save-preset" class="btn btn-secondary">Save Preset</button>
+                            <button id="download-json" class="btn btn-secondary">Download Config</button>
+                            <button id="download-markdown" class="btn btn-secondary">Download Doc</button>
+                            <button id="upload-config" class="btn btn-secondary">Upload Config</button>
+                        </div>
+                        <input type="file" id="file-input" accept=".json" style="display: none;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Three-Step Workflow (Right Side) -->
             <div class="workflow-container">
                 <!-- Step 1: Choose Model (Trunk) -->
                 <div class="workflow-step step-1">
@@ -156,35 +197,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Preview Section (Right Side) -->
-            <div class="preview-section-container">
-                <div class="preview-section">
-                    <!-- Radar Container Box -->
-                    <div class="radar-container-box">
-                        <h3>Live Preview</h3>
-                        <div class="radar-wrapper">
-                            <canvas id="radarCanvas"></canvas>
-                        </div>
-                    </div>
-                    
-                    <!-- Prompt Container Box -->
-                    <div class="prompt-container-box">
-                        <h3>Generated Prompt</h3>
-                        <div class="prompt-preview" id="prompt-preview">
-                            <p class="placeholder-text">← Start by selecting a model (Step 1)</p>
-                        </div>
-                        <div class="actions">
-                            <button id="copy-prompt" class="btn btn-primary">Copy Prompt</button>
-                            <button id="save-preset" class="btn btn-secondary">Save Preset</button>
-                            <button id="download-json" class="btn btn-secondary">Download Config</button>
-                            <button id="download-markdown" class="btn btn-secondary">Download Doc</button>
-                            <button id="upload-config" class="btn btn-secondary">Upload Config</button>
-                        </div>
-                        <input type="file" id="file-input" accept=".json" style="display: none;">
-                    </div>
-                </div>
-            </div>
         </main>
     </div>
 
@@ -202,13 +214,91 @@
     </div>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="js/data/v6-models.js"></script>
-    <script src="js/data/v6-levers.js"></script>
-    <script src="js/data/v6-personas.js"></script>
-    <script src="radar.js"></script>
-    <script src="js/core/v6-engine.js"></script>
+    <!-- Chart.js with fallback for mobile -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" 
+            onerror="this.onerror=null; loadChartJSFallback();"></script>
     <script>
+        // Fallback if CDN fails (common on mobile)
+        function loadChartJSFallback() {
+            console.warn('Chart.js CDN failed, trying alternative CDN...');
+            const script = document.createElement('script');
+            script.src = 'https://unpkg.com/chart.js@latest/dist/chart.umd.js';
+            script.onerror = function() {
+                console.error('All Chart.js CDNs failed');
+                const errorDiv = document.createElement('div');
+                errorDiv.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #ff0000; color: #fff; padding: 15px; z-index: 10000; text-align: center; font-size: 14px;';
+                errorDiv.innerHTML = '⚠️ Chart.js failed to load. The radar chart may not work, but the rest of the app should function. <button onclick="location.reload()" style="margin-left: 10px; padding: 5px 10px; background: #fff; color: #000; border: none; cursor: pointer;">Reload</button>';
+                document.body.appendChild(errorDiv);
+            };
+            script.onload = function() {
+                console.log('Chart.js loaded from fallback CDN');
+            };
+            document.head.appendChild(script);
+        }
+    </script>
+    <script src="js/data/v6-models.js?v=3.0.2"></script>
+    <script src="js/data/v6-levers.js?v=3.0.2"></script>
+    <script src="js/data/v6-personas.js?v=3.0.2"></script>
+    <script src="radar.js?v=3.0.2"></script>
+    <script src="js/core/v6-engine.js?v=3.0.2"></script>
+    <script>
+        // Force cache refresh on mobile if needed
+        (function() {
+            const version = '3.0.2';
+            const storedVersion = localStorage.getItem('aituner-version');
+            if (storedVersion !== version) {
+                console.log('🔄 Version changed, clearing cache...');
+                localStorage.setItem('aituner-version', version);
+                // Force reload if version changed
+                if (storedVersion && storedVersion !== version) {
+                    window.location.reload(true);
+                }
+            }
+        })();
+        
+        // SIMPLIFIED: No DOM manipulation - let CSS handle mobile layout
+        // The radar chart stays in its original position, CSS handles reordering on mobile
+        
+        // Error handling and loading state
+        window.addEventListener('error', function(e) {
+            // Ignore Chart.js resize errors that we're handling
+            if (e.message && (
+                e.message.includes('ownerDocument') ||
+                e.message.includes('Chart.js') ||
+                e.filename && e.filename.includes('chart.js')
+            )) {
+                // These are handled by our resize handler, just log a warning
+                console.warn('Chart.js resize error (handled):', e.message);
+                return;
+            }
+            
+            console.error('JavaScript Error:', e.message, e.filename, e.lineno);
+            // Only show critical errors to user
+            if (!e.message || (!e.message.includes('ownerDocument') && !e.message.includes('Chart.js'))) {
+                // Show error message to user for non-Chart.js errors
+                const errorDiv = document.createElement('div');
+                errorDiv.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #ff0000; color: #fff; padding: 10px; z-index: 10000; text-align: center;';
+                errorDiv.textContent = 'Error loading page. Check console for details.';
+                document.body.appendChild(errorDiv);
+            }
+        });
+        
+        // Check if scripts loaded (for debugging)
+        window.addEventListener('load', function() {
+            console.log('✅ Page fully loaded');
+            console.log('Chart.js available:', typeof Chart !== 'undefined');
+            console.log('AITunerV6 available:', typeof window.AITunerV6 !== 'undefined');
+            console.log('LEVERS_V6 available:', typeof window.LEVERS_V6 !== 'undefined');
+            console.log('MODELS_V6 available:', typeof window.MODELS_V6 !== 'undefined');
+            console.log('PERSONAS_V6 available:', typeof window.PERSONAS_V6 !== 'undefined');
+            
+            // Mobile-specific: Check if we're on mobile
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+            if (isMobile) {
+                console.log('📱 Mobile device detected');
+            }
+        });
+        
         // Initialize v3.0 app
         // Load dark mode preference BEFORE DOMContentLoaded to prevent flash
         (function() {
@@ -220,12 +310,109 @@
             }
         })();
         
-        document.addEventListener("DOMContentLoaded", () => {
-            if (window.AITunerV6) {
+        // Wait for all scripts to load, especially on mobile
+        let isInitializing = false;
+        let isInitialized = false;
+        
+        function initializeApp() {
+            // Prevent multiple initializations
+            if (isInitializing || isInitialized) {
+                console.log('App already initializing or initialized, skipping...');
+                return;
+            }
+            
+            isInitializing = true;
+            console.log('Initializing app...');
+            console.log('Chart.js available:', typeof Chart !== 'undefined');
+            console.log('AITunerV6 available:', typeof window.AITunerV6 !== 'undefined');
+            console.log('LEVERS_V6 available:', typeof window.LEVERS_V6 !== 'undefined');
+            console.log('MODELS_V6 available:', typeof window.MODELS_V6 !== 'undefined');
+            console.log('PERSONAS_V6 available:', typeof window.PERSONAS_V6 !== 'undefined');
+            
+            // Check critical dependencies
+            if (typeof window.AITunerV6 === 'undefined') {
+                isInitializing = false;
+                console.error('AITunerV6 not loaded!');
+                const errorDiv = document.createElement('div');
+                errorDiv.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #ff0000; color: #fff; padding: 15px; z-index: 10000; text-align: center; font-size: 14px;';
+                errorDiv.innerHTML = '❌ Application script failed to load. <button onclick="location.reload()" style="margin-left: 10px; padding: 5px 10px; background: #fff; color: #000; border: none; cursor: pointer; border-radius: 4px;">Reload Page</button>';
+                document.body.appendChild(errorDiv);
+                return;
+            }
+            
+            // Chart.js is optional - app can work without it
+            if (typeof Chart === 'undefined') {
+                console.warn('Chart.js not loaded - radar chart will not work, but app will continue');
+                // Don't block initialization, just warn
+            }
+            
+            try {
                 window.aiTuner = new window.AITunerV6();
+                console.log('✅ AI Tuner initialized successfully');
+                isInitialized = true;
+                
+                // Hide loader if still visible
+                const loader = document.getElementById('page-loader');
+                if (loader) {
+                    loader.style.opacity = '0';
+                    loader.style.transition = 'opacity 0.3s';
+                    setTimeout(() => loader.remove(), 300);
+                }
+            } catch (error) {
+                console.error('Error initializing AI Tuner:', error);
+                isInitializing = false;
+                const errorDiv = document.createElement('div');
+                errorDiv.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #ff0000; color: #fff; padding: 15px; z-index: 10000; text-align: center; font-size: 14px;';
+                errorDiv.innerHTML = '❌ Error: ' + (error.message || 'Unknown error') + ' <button onclick="location.reload()" style="margin-left: 10px; padding: 5px 10px; background: #fff; color: #000; border: none; cursor: pointer; border-radius: 4px;">Reload</button>';
+                document.body.appendChild(errorDiv);
+            } finally {
+                isInitializing = false;
+            }
+        }
+        
+        // Try to initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener("DOMContentLoaded", () => {
+                // Give scripts a moment to load, especially on mobile
+                setTimeout(initializeApp, 100);
+            });
+        } else {
+            // DOM already loaded
+            setTimeout(initializeApp, 100);
+        }
+        
+        // Also try on window load as backup
+        window.addEventListener('load', () => {
+            // If app hasn't initialized yet, try again
+            if (!window.aiTuner && !isInitialized && !isInitializing) {
+                setTimeout(initializeApp, 200);
             }
         });
+        
+        // Add loading indicator
+        (function() {
+            const loader = document.createElement('div');
+            loader.id = 'page-loader';
+            loader.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #fff; z-index: 9999; display: flex; align-items: center; justify-content: center; font-size: 18px;';
+            loader.textContent = 'Loading AI Tuner...';
+            document.body.appendChild(loader);
+            
+            window.addEventListener('load', function() {
+                setTimeout(function() {
+                    const loaderEl = document.getElementById('page-loader');
+                    if (loaderEl) {
+                        loaderEl.style.opacity = '0';
+                        loaderEl.style.transition = 'opacity 0.3s';
+                        setTimeout(function() {
+                            loaderEl.remove();
+                        }, 300);
+                    }
+                }, 500);
+            });
+        })();
     </script>
 </body>
 </html>
+
+
 
