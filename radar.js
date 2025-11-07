@@ -320,7 +320,7 @@ function drawRadarV6(levers) {
             }]
         },
         options: {
-            responsive: true,
+            responsive: false, // Disable automatic responsive - we handle it manually
             maintainAspectRatio: false,
             resizeDelay: 100,
             scales: {
@@ -399,13 +399,68 @@ function handleResize() {
         isResizing = true;
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => {
-            // Use v6 version if available (for v3.0), otherwise fall back to v2.0
-            if (window.aiTuner && window.aiTuner.levers && typeof drawRadarV6 === 'function') {
-                drawRadarV6(window.aiTuner.levers);
-            } else if (window.aiTuner && typeof window.aiTuner.getCurrentSettings === 'function') {
-                const currentSettings = window.aiTuner.getCurrentSettings();
-                if (currentSettings && typeof drawRadar === 'function') {
-                    drawRadar(currentSettings);
+            // Check if canvas exists and is visible before trying to resize
+            const canvas = document.getElementById("radarCanvas");
+            if (!canvas) {
+                isResizing = false;
+                return;
+            }
+            
+            // Check if canvas is in the DOM and visible
+            if (!canvas.offsetParent && canvas.offsetWidth === 0 && canvas.offsetHeight === 0) {
+                // Canvas is hidden, destroy chart if it exists
+                if (radarChart) {
+                    try {
+                        radarChart.destroy();
+                    } catch (e) {
+                        console.warn('Error destroying hidden chart:', e);
+                    }
+                    radarChart = null;
+                }
+                isResizing = false;
+                return;
+            }
+            
+            // Canvas is visible, try to resize or redraw
+            if (radarChart) {
+                try {
+                    // Check if chart is still valid (canvas hasn't been removed)
+                    if (radarChart.canvas && radarChart.canvas.ownerDocument) {
+                        radarChart.resize();
+                    } else {
+                        // Chart is invalid, destroy and recreate
+                        radarChart.destroy();
+                        radarChart = null;
+                        // Redraw if we have data
+                        if (window.aiTuner && window.aiTuner.levers && typeof drawRadarV6 === 'function') {
+                            drawRadarV6(window.aiTuner.levers);
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Error resizing chart:', e);
+                    // If resize fails, try to redraw
+                    if (window.aiTuner && window.aiTuner.levers && typeof drawRadarV6 === 'function') {
+                        // Destroy invalid chart first
+                        if (radarChart) {
+                            try {
+                                radarChart.destroy();
+                            } catch (e2) {
+                                // Ignore destroy errors
+                            }
+                            radarChart = null;
+                        }
+                        drawRadarV6(window.aiTuner.levers);
+                    }
+                }
+            } else {
+                // No chart exists, create one if we have data
+                if (window.aiTuner && window.aiTuner.levers && typeof drawRadarV6 === 'function') {
+                    drawRadarV6(window.aiTuner.levers);
+                } else if (window.aiTuner && typeof window.aiTuner.getCurrentSettings === 'function') {
+                    const currentSettings = window.aiTuner.getCurrentSettings();
+                    if (currentSettings && typeof drawRadar === 'function') {
+                        drawRadar(currentSettings);
+                    }
                 }
             }
             isResizing = false;

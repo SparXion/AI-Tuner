@@ -261,12 +261,26 @@
         
         // Error handling and loading state
         window.addEventListener('error', function(e) {
+            // Ignore Chart.js resize errors that we're handling
+            if (e.message && (
+                e.message.includes('ownerDocument') ||
+                e.message.includes('Chart.js') ||
+                e.filename && e.filename.includes('chart.js')
+            )) {
+                // These are handled by our resize handler, just log a warning
+                console.warn('Chart.js resize error (handled):', e.message);
+                return;
+            }
+            
             console.error('JavaScript Error:', e.message, e.filename, e.lineno);
-            // Show error message to user
-            const errorDiv = document.createElement('div');
-            errorDiv.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #ff0000; color: #fff; padding: 10px; z-index: 10000; text-align: center;';
-            errorDiv.textContent = 'Error loading page. Check console for details.';
-            document.body.appendChild(errorDiv);
+            // Only show critical errors to user
+            if (!e.message || (!e.message.includes('ownerDocument') && !e.message.includes('Chart.js'))) {
+                // Show error message to user for non-Chart.js errors
+                const errorDiv = document.createElement('div');
+                errorDiv.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #ff0000; color: #fff; padding: 10px; z-index: 10000; text-align: center;';
+                errorDiv.textContent = 'Error loading page. Check console for details.';
+                document.body.appendChild(errorDiv);
+            }
         });
         
         // Check if scripts loaded (for debugging)
