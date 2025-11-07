@@ -15,37 +15,66 @@
 }
 
 /* Main Layout - Side by Side */
+/* Preview (radar) on left, Workflow on right */
 .main-layout {
     display: grid !important;
-    grid-template-columns: 1fr 500px !important;
+    grid-template-columns: 500px 1fr !important;
     gap: 40px;
     align-items: start;
     flex-direction: row !important;
 }
 
+/* Reorder grid items: preview first (left), workflow second (right) */
+.preview-section-container {
+    order: -1;
+}
+
+.workflow-container {
+    order: 1;
+}
+
 @media (max-width: 1200px) {
+    /* When squished, stack vertically with radar at top */
     .main-layout {
-        grid-template-columns: 1fr !important;
+        display: flex !important;
+        flex-direction: column !important;
+        grid-template-columns: none !important;
     }
     
     .preview-section-container {
+        order: -1 !important; /* Radar at top */
         position: static !important;
-        margin-top: 40px;
+        margin-top: 0 !important;
+        margin-bottom: 40px !important;
+        width: 100% !important;
+    }
+    
+    .workflow-container {
+        order: 1 !important; /* Workflow below radar */
+        width: 100% !important;
     }
 }
 
-/* Tablet and small desktop windows (481px-768px) - keep desktop layout but stack vertically */
+/* Tablet and small desktop windows (481px-768px) - stack vertically with radar at top */
 @media (max-width: 768px) and (min-width: 481px) {
-    /* Keep desktop order: header first, then main */
-    /* Only stack main layout vertically, don't reorder */
+    /* Stack vertically with radar at top */
     .main-layout {
-        display: grid !important;
-        grid-template-columns: 1fr !important;
+        display: flex !important;
+        flex-direction: column !important;
+        grid-template-columns: none !important;
     }
     
     .preview-section-container {
+        order: -1 !important; /* Radar at top */
         position: static !important;
-        margin-top: 40px;
+        margin-top: 0 !important;
+        margin-bottom: 40px !important;
+        width: 100% !important;
+    }
+    
+    .workflow-container {
+        order: 1 !important; /* Workflow below radar */
+        width: 100% !important;
     }
     
     /* Keep desktop order - don't reorder container children */
