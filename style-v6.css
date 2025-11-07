@@ -19,14 +19,18 @@
 .main-layout {
     display: grid !important;
     grid-template-columns: 500px 1fr !important;
-    grid-template-areas: "preview workflow" !important;
     gap: 40px;
     align-items: start;
-    flex-direction: row !important;
 }
 
-/* HTML now has preview first, workflow second - matches visual order */
-/* No need for explicit grid placement since HTML order matches desired layout */
+/* Explicitly assign grid areas - preview on left, workflow on right */
+.main-layout > .preview-section-container {
+    grid-area: 1 / 1 / 2 / 2 !important; /* row 1, col 1 (left) */
+}
+
+.main-layout > .workflow-container {
+    grid-area: 1 / 2 / 2 / 3 !important; /* row 1, col 2 (right) */
+}
 
 @media (max-width: 1200px) {
     /* When squished, stack vertically with radar at top */
