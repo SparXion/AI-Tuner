@@ -25,12 +25,15 @@
 }
 
 /* Explicitly place items: preview on left (column 1), workflow on right (column 2) */
-.preview-section-container {
-    grid-column: 1;
+/* HTML has workflow first, preview second, but we want preview on left */
+.main-layout > .preview-section-container {
+    grid-column: 1 / 2 !important;
+    grid-row: 1;
 }
 
-.workflow-container {
-    grid-column: 2;
+.main-layout > .workflow-container {
+    grid-column: 2 / 3 !important;
+    grid-row: 1;
 }
 
 @media (max-width: 1200px) {
