@@ -1149,8 +1149,8 @@ body.dark-mode .mode-description {
 
 /* ============================================
    MOBILE OPTIMIZATIONS
-   These styles ONLY affect mobile viewports (< 768px)
-   Desktop and Cursor extension remain unchanged
+   These styles ONLY affect small phones (< 480px)
+   Desktop and tablet-sized windows keep normal layout
    ============================================ */
 
 /* Small phones only (max-width: 480px) - apply mobile reordering */
