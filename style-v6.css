@@ -1143,35 +1143,24 @@ body.dark-mode .mode-description {
     }
     
     /* MOBILE: Reorder to put radar at the very top */
-    /* Strategy: Extract radar visually to top, then header, then workflow */
+    /* Override desktop grid layout with flexbox for mobile */
     
-    .container {
-        position: relative;
-    }
-    
-    /* Put main layout first (contains radar) */
-    .container > main.main-layout {
-        order: -2 !important;
-        display: flex !important;
-        flex-direction: column !important;
-    }
-    
-    /* Put header after main (so it comes after radar) */
-    .container > header {
-        order: -1 !important;
-    }
-    
-    /* Within main layout, put preview section (with radar) first */
+    /* Force main layout to flexbox (overrides desktop grid) */
     .main-layout {
         display: flex !important;
         flex-direction: column !important;
+        grid-template-columns: none !important;
     }
     
+    /* Put preview section (with radar) first */
     .preview-section-container {
         order: -1 !important; /* Preview section first (contains radar) */
         width: 100% !important;
+        position: static !important; /* Override sticky positioning */
+        margin-top: 0 !important;
     }
     
+    /* Put workflow after preview */
     .workflow-container {
         order: 1 !important; /* Workflow comes after preview */
         width: 100% !important;
@@ -1190,6 +1179,20 @@ body.dark-mode .mode-description {
     
     .prompt-container-box {
         order: 1 !important; /* Prompt after radar */
+    }
+    
+    /* Reorder container children: main (with radar) first, then header */
+    .container {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    
+    .container > main.main-layout {
+        order: -1 !important; /* Main comes first (contains radar) */
+    }
+    
+    .container > header {
+        order: 1 !important; /* Header comes after main */
     }
     
     /* Header optimizations */
