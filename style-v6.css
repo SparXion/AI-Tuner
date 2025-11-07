@@ -34,6 +34,21 @@
     }
 }
 
+/* Tablet breakpoint - keep desktop layout but stack vertically */
+@media (max-width: 768px) and (min-width: 481px) {
+    /* Keep desktop order: header first, then main */
+    /* Only stack main layout vertically, don't reorder */
+    .main-layout {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+    }
+    
+    .preview-section-container {
+        position: static !important;
+        margin-top: 40px;
+    }
+}
+
 /* ============================================
    WORKFLOW STEPS
    ============================================ */
@@ -1144,6 +1159,7 @@ body.dark-mode .mode-description {
     
     /* MOBILE: Reorder to put radar at the very top */
     /* Override desktop grid layout with flexbox for mobile */
+    /* NOTE: Keep header first, main second - only reorder within main */
     
     /* Force main layout to flexbox (overrides desktop grid) */
     .main-layout {
@@ -1152,7 +1168,7 @@ body.dark-mode .mode-description {
         grid-template-columns: none !important;
     }
     
-    /* Put preview section (with radar) first */
+    /* Put preview section (with radar) first within main layout */
     .preview-section-container {
         order: -1 !important; /* Preview section first (contains radar) */
         width: 100% !important;
@@ -1181,19 +1197,8 @@ body.dark-mode .mode-description {
         order: 1 !important; /* Prompt after radar */
     }
     
-    /* Reorder container children: main (with radar) first, then header */
-    .container {
-        display: flex !important;
-        flex-direction: column !important;
-    }
-    
-    .container > main.main-layout {
-        order: -1 !important; /* Main comes first (contains radar) */
-    }
-    
-    .container > header {
-        order: 1 !important; /* Header comes after main */
-    }
+    /* Keep desktop order: header first, then main */
+    /* Don't reorder container children - this causes issues on desktop when window is resized */
     
     /* Header optimizations */
     header {
