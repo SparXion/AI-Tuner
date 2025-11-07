@@ -19,6 +19,7 @@
 .main-layout {
     display: grid !important;
     grid-template-columns: 500px 1fr !important;
+    grid-template-areas: "preview workflow" !important;
     gap: 40px;
     align-items: start;
     flex-direction: row !important;
@@ -27,13 +28,15 @@
 /* Explicitly place items: preview on left (column 1), workflow on right (column 2) */
 /* HTML has workflow first, preview second, but we want preview on left */
 .main-layout > .preview-section-container {
-    grid-column: 1 / 2 !important;
-    grid-row: 1;
+    grid-area: preview !important;
+    grid-column: 1 !important;
+    grid-row: 1 !important;
 }
 
 .main-layout > .workflow-container {
-    grid-column: 2 / 3 !important;
-    grid-row: 1;
+    grid-area: workflow !important;
+    grid-column: 2 !important;
+    grid-row: 1 !important;
 }
 
 @media (max-width: 1200px) {
