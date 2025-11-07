@@ -340,6 +340,23 @@ function drawRadarV6(levers) {
             }
         }
     });
+    
+    // Force resize after creation (helps with mobile rendering)
+    if (radarChart && typeof radarChart.resize === 'function') {
+        setTimeout(() => {
+            try {
+                radarChart.resize();
+            } catch (e) {
+                console.warn('Error resizing chart:', e);
+            }
+        }, 50);
+    }
+        } catch (e) {
+            console.error('Error creating radar chart:', e);
+            // Retry after a delay if there was an error
+            setTimeout(() => drawRadarV6(levers), 200);
+        }
+    }, 50);
 }
 
 // Redraw radar chart on window resize with debouncing
