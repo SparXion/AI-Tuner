@@ -40,7 +40,9 @@
         grid-template-columns: none !important;
     }
     
-    .preview-section-container {
+    /* Reset grid-area when using flexbox */
+    .main-layout > .preview-section-container {
+        grid-area: auto !important;
         order: -1 !important; /* Radar at top */
         position: static !important;
         margin-top: 0 !important;
@@ -48,7 +50,8 @@
         width: 100% !important;
     }
     
-    .workflow-container {
+    .main-layout > .workflow-container {
+        grid-area: auto !important;
         order: 1 !important; /* Workflow below radar */
         width: 100% !important;
     }
