@@ -200,11 +200,22 @@ function drawRadar(preset) {
 // v6.0 Radar Chart - works with 0-10 numeric lever values
 function drawRadarV6(levers) {
     const canvas = document.getElementById("radarCanvas");
-    if (!canvas) return;
+    if (!canvas) {
+        console.warn('Radar canvas not found');
+        return;
+    }
     
     // Check if Chart is available
     if (typeof Chart === 'undefined') {
         console.warn('Chart.js not loaded');
+        return;
+    }
+    
+    // Check if canvas is in the DOM and visible
+    if (!canvas.offsetParent && canvas.offsetWidth === 0 && canvas.offsetHeight === 0) {
+        console.warn('Radar canvas is not visible');
+        // Try again after a short delay
+        setTimeout(() => drawRadarV6(levers), 100);
         return;
     }
     
@@ -237,11 +248,36 @@ function drawRadarV6(levers) {
     const labels = radarLevers.map(l => l.label);
     const data = radarLevers.map(l => l.value || 5);
     
+    // Destroy existing chart if it exists
     if (radarChart) {
-        radarChart.destroy();
+        try {
+            radarChart.destroy();
+        } catch (e) {
+            console.warn('Error destroying chart:', e);
+        }
+        radarChart = null;
     }
     
-    radarChart = new Chart(canvas, {
+    // Ensure canvas has proper dimensions
+    const container = canvas.closest('.radar-wrapper');
+    if (container) {
+        const containerWidth = container.offsetWidth;
+        const containerHeight = container.offsetHeight;
+        if (containerWidth > 0 && containerHeight > 0) {
+            // Set explicit dimensions if needed
+            if (!canvas.style.width) {
+                canvas.style.width = '100%';
+            }
+            if (!canvas.style.height) {
+                canvas.style.height = '100%';
+            }
+        }
+    }
+    
+    // Small delay to ensure DOM is stable (especially after DOM moves)
+    setTimeout(() => {
+        try {
+            radarChart = new Chart(canvas, {
         type: "radar",
         data: {
             labels: labels,

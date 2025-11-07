@@ -337,16 +337,20 @@
                 console.log('✅ Applied order: -10 to radar container');
                 
                 // Reinitialize chart after DOM move to fix Chart.js resize errors
+                // Use longer delay to ensure DOM is fully stable
                 setTimeout(function() {
                     if (window.aiTuner && window.aiTuner.levers && typeof drawRadarV6 === 'function') {
                         try {
-                            drawRadarV6(window.aiTuner.levers);
-                            console.log('✅ Radar chart reinitialized after move');
+                            // Force a small delay to ensure canvas is ready
+                            setTimeout(() => {
+                                drawRadarV6(window.aiTuner.levers);
+                                console.log('✅ Radar chart reinitialized after move');
+                            }, 50);
                         } catch (e) {
                             console.warn('⚠️ Could not reinitialize chart:', e);
                         }
                     }
-                }, 100);
+                }, 150);
             }
             
             function restoreRadarToOriginal() {
@@ -377,16 +381,20 @@
                 radarContainer.style.order = '';
                 
                 // Reinitialize chart after DOM move
+                // Use longer delay to ensure DOM is fully stable
                 setTimeout(function() {
                     if (window.aiTuner && window.aiTuner.levers && typeof drawRadarV6 === 'function') {
                         try {
-                            drawRadarV6(window.aiTuner.levers);
-                            console.log('✅ Radar chart reinitialized after restore');
+                            // Force a small delay to ensure canvas is ready
+                            setTimeout(() => {
+                                drawRadarV6(window.aiTuner.levers);
+                                console.log('✅ Radar chart reinitialized after restore');
+                            }, 50);
                         } catch (e) {
                             console.warn('⚠️ Could not reinitialize chart:', e);
                         }
                     }
-                }, 100);
+                }, 150);
             }
             
             function tryMoveRadar() {
@@ -553,5 +561,6 @@
     </script>
 </body>
 </html>
+
 
 
