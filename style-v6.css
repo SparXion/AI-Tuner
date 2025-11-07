@@ -16,19 +16,27 @@
 
 /* Main Layout - Side by Side */
 /* Preview (radar) on left, Workflow on right */
+/* FORCE GRID LAYOUT - VERSION 3.0.2 */
 .main-layout {
     display: grid !important;
     grid-template-columns: 500px 1fr !important;
-    gap: 40px;
-    align-items: start;
+    gap: 40px !important;
+    align-items: start !important;
+    width: 100% !important;
+    max-width: 100% !important;
 }
 
 /* Explicitly assign grid areas - preview on left, workflow on right */
+/* Using grid-area shorthand: row-start / col-start / row-end / col-end */
 .main-layout > .preview-section-container {
+    grid-row: 1 !important;
+    grid-column: 1 !important;
     grid-area: 1 / 1 / 2 / 2 !important; /* row 1, col 1 (left) */
 }
 
 .main-layout > .workflow-container {
+    grid-row: 1 !important;
+    grid-column: 2 !important;
     grid-area: 1 / 2 / 2 / 3 !important; /* row 1, col 2 (right) */
 }
 
