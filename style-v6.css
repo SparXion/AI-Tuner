@@ -24,13 +24,13 @@
     flex-direction: row !important;
 }
 
-/* Reorder grid items: preview first (left), workflow second (right) */
+/* Explicitly place items: preview on left (column 1), workflow on right (column 2) */
 .preview-section-container {
-    order: -1;
+    grid-column: 1;
 }
 
 .workflow-container {
-    order: 1;
+    grid-column: 2;
 }
 
 @media (max-width: 1200px) {
