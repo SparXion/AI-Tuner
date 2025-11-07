@@ -34,7 +34,7 @@
     }
 }
 
-/* Tablet breakpoint - keep desktop layout but stack vertically */
+/* Tablet and small desktop windows (481px-768px) - keep desktop layout but stack vertically */
 @media (max-width: 768px) and (min-width: 481px) {
     /* Keep desktop order: header first, then main */
     /* Only stack main layout vertically, don't reorder */
@@ -46,6 +46,11 @@
     .preview-section-container {
         position: static !important;
         margin-top: 40px;
+    }
+    
+    /* Keep desktop order - don't reorder container children */
+    .container {
+        display: block !important; /* Not flex, so no reordering */
     }
 }
 
@@ -1148,8 +1153,8 @@ body.dark-mode .mode-description {
    Desktop and Cursor extension remain unchanged
    ============================================ */
 
-/* Tablet and Large Phone (max-width: 768px) */
-@media (max-width: 768px) {
+/* Small phones only (max-width: 480px) - apply mobile reordering */
+@media (max-width: 480px) {
     /* Container padding for mobile */
     .container {
         padding: 15px 15px !important;
