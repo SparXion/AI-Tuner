@@ -6,31 +6,6 @@
 
 ---
 
-## Project Layout
-
-Directory | Purpose
----|---
-`v2.0/` | Original control-only v2.0 web app without radar visualization.
-`legacy-v3.0/` | Preserved single-radar experience that powers the original v3.0 web app.
-`v3.5/` | Current four-tuner web experience with draggable axes and apply workflows.
-`cursor-ai-tuner/` | VS Code/Cursor extension codebase sharing the same tuning logic.
-`scripts/clone-related.sh` | Helper script that clones the upstream repos listed below into `related-repos/`.
-
-Run the helper script from the repo root to fetch all upstream sources:
-
-```bash
-./scripts/clone-related.sh
-```
-
-## Related Repositories
-
-- **Legacy Builds (v2.0 / v3.0):** [github.com/SparXion/AI-Tuner](https://github.com/SparXion/AI-Tuner.git)
-- **Baseline Snapshot (v3.0 seed):** [github.com/SparXion/AI-Tuner-v3.0](https://github.com/SparXion/AI-Tuner-v3.0.git)
-- **Creative Vite/React Prototype:** [github.com/SparXion/AI-Tuner-Creative](https://github.com/SparXion/AI-Tuner-Creative.git)
-- **Electron Portal Launcher:** [github.com/SparXion/AI-Tuner-Portal](https://github.com/SparXion/AI-Tuner-Portal.git)
-
----
-
 ## Features
 
 ### **Core Functionality**
