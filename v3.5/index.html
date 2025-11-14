@@ -6,9 +6,9 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>AI Tuner v3.0 - Customize AI Response Style</title>
-    <link rel="stylesheet" href="style.css?v=3.0.2">
-    <link rel="stylesheet" href="style-v6.css?v=3.0.2">
+    <title>AI Tuner v3.5 - Customize AI Response Style</title>
+    <link rel="stylesheet" href="css/style.css?v=3.0.2">
+    <link rel="stylesheet" href="css/style-v6.css?v=3.0.2">
     <style>
         /* Force dark mode colors - loaded last to override everything */
         body.dark-mode .radar-container-box,
@@ -45,115 +45,151 @@
 </head>
 <body>
     <div class="container">
-        <header>
-            <div style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-bottom: 20px;">
-                <a href="index.html" class="btn btn-secondary" style="font-size: 1rem; padding: 8px 16px; text-decoration: none; display: inline-block;">
-                    Back to v2.0
-                </a>
-                <button id="emoji-shutoff-toggle" class="btn btn-secondary" style="font-size: 1rem; padding: 8px 16px;">
-                    <span id="emoji-shutoff-text">No Emojis</span>
+        <div class="top-bar">
+            <div class="top-actions">
+                <button id="emoji-shutoff-toggle" class="btn btn-secondary top-actions__btn">
+                    <span id="emoji-shutoff-text">No Emojis!</span>
                 </button>
-                <button id="dark-mode-toggle" class="btn btn-secondary" style="font-size: 1rem; padding: 8px 16px;">
+                <button id="dark-mode-toggle" class="btn btn-secondary top-actions__btn">
                     <span id="dark-mode-text">Dark Mode</span>
                 </button>
             </div>
-            <h1>AI Tuner v3.0</h1>
-            <p class="subtitle" id="mode-subtitle">Customize AI behavior with precision controls</p>
-            <div class="mode-toggle-container" style="margin-top: 20px;">
-                <div class="mode-toggle-boxes">
-                    <button id="mode-beginner" class="mode-box" data-mode="beginner">
-                        <span>Beginner</span>
-                    </button>
-                    <button id="mode-advanced" class="mode-box" data-mode="advanced">
-                        <span>Advanced</span>
-                    </button>
+        </div>
+
+        <section class="hero">
+            <h1>AI Tuner v3.5</h1>
+            <p class="hero-subtitle" id="mode-subtitle">Customize AI behavior with precision controls</p>
+        </section>
+
+        <section class="app-info-section">
+            <button id="app-info-toggle" class="app-info-toggle">
+                <span class="app-info-toggle-text">What is AI Tuner?</span>
+                <span class="app-info-toggle-icon">▼</span>
+            </button>
+            <div id="app-info-content" class="app-info-content">
+                <div class="app-info-inner">
+                    <h3>About AI Tuner</h3>
+                    <p><strong>AI Tuner</strong> lets you customize how AI assistants respond to you. Instead of accepting default behavior, you can fine-tune personality, tone, and communication style.</p>
+
+                    <h4>How It Works</h4>
+                    <ol class="app-info-steps">
+                        <li><strong>Choose Your AI Model</strong> - Select from 7 leading platforms (Grok, Gemini, Claude, ChatGPT, Perplexity, Mistral, Llama). Each has its own default personality.</li>
+                        <li><strong>Apply Hidden Mode</strong> - Override the default with specialized personas like Therapist, Truth-Seeker, or Coder modes.</li>
+                        <li><strong>Fine-Tune Settings</strong> - Adjust 12-26 sliders to control specific behaviors like empathy, conciseness, creativity, and more.</li>
+                    </ol>
+
+                    <h4>Key Features</h4>
+                    <ul class="app-info-features">
+                        <li><strong>Universal Tuning:</strong> Works with any AI model through prompt engineering</li>
+                        <li><strong>26 Precise Levers:</strong> Control everything from hedging intensity to answer completeness</li>
+                        <li><strong>Live Preview:</strong> See your settings visualized in a radar chart and generated prompt</li>
+                        <li><strong>Save Presets:</strong> Create and reuse your favorite configurations</li>
+                        <li><strong>Advanced Mode:</strong> Access the full 26-lever matrix with radar-driven tuning</li>
+                    </ul>
+
+                    <p><em>Copy the generated prompt and paste it into your AI chat to apply your custom tuning.</em></p>
                 </div>
             </div>
-            <div class="mode-description">
-                <strong>Beginner:</strong> 12 essential levers | <strong>Advanced:</strong> All 26 tuning levers
-            </div>
-            
-            <!-- Expandable Info Section -->
-            <div class="app-info-section" style="margin-top: 30px;">
-                <button id="app-info-toggle" class="app-info-toggle">
-                    <span class="app-info-toggle-text">What is AI Tuner?</span>
-                    <span class="app-info-toggle-icon">▼</span>
-                </button>
-                <div id="app-info-content" class="app-info-content">
-                    <div class="app-info-inner">
-                        <h3>About AI Tuner</h3>
-                        <p><strong>AI Tuner</strong> lets you customize how AI assistants respond to you. Instead of accepting default behavior, you can fine-tune personality, tone, and communication style.</p>
-                        
-                        <h4>How It Works</h4>
-                        <ol class="app-info-steps">
-                            <li><strong>Choose Your AI Model</strong> - Select from 7 leading platforms (Grok, Gemini, Claude, ChatGPT, Perplexity, Mistral, Llama). Each has its own default personality.</li>
-                            <li><strong>Apply Hidden Mode</strong> - Override the default with specialized personas like Therapist, Truth-Seeker, or Coder modes.</li>
-                            <li><strong>Fine-Tune Settings</strong> - Adjust 12-26 sliders to control specific behaviors like empathy, conciseness, creativity, and more.</li>
-                        </ol>
-                        
-                        <h4>Key Features</h4>
-                        <ul class="app-info-features">
-                            <li><strong>Universal Tuning:</strong> Works with any AI model through prompt engineering</li>
-                            <li><strong>26 Precise Levers:</strong> Control everything from hedging intensity to answer completeness</li>
-                            <li><strong>Live Preview:</strong> See your settings visualized in a radar chart and generated prompt</li>
-                            <li><strong>Save Presets:</strong> Create and reuse your favorite configurations</li>
-                            <li><strong>Beginner/Advanced Modes:</strong> Start simple with 12 essential levers or unlock all 26 for complete control</li>
-                        </ul>
-                        
-                        <p><em>Copy the generated prompt and paste it into your AI chat to apply your custom tuning.</em></p>
+        </section>
+
+        <!-- Web Tuners -->
+        <section class="web-tuner-section" aria-label="AI Tuner Radar Controls">
+            <div class="web-tuner-grid">
+                <div class="web-tuner-card radar-container-box" data-tuner="persona">
+                    <div class="web-tuner-card__header">
+                        <div class="web-tuner-card__title">
+                            <h3>Persona Spine</h3>
+                            <p class="web-tuner-card__subtitle">Identity &amp; attitude tuning</p>
+                        </div>
+                        <button class="info-btn info-btn-tuner" data-tuner="persona" aria-label="Persona Spine information">ℹ</button>
+                    </div>
+                    <div class="radar-wrapper">
+                        <canvas id="personaRadarCanvas"></canvas>
+                    </div>
+                    <div class="radar-actions">
+                        <span id="persona-pending-indicator" class="radar-pending-indicator" aria-live="polite"></span>
+                        <button id="apply-persona-settings" class="btn btn-primary" disabled>Apply Persona Changes</button>
+                    </div>
+                </div>
+
+                <div class="web-tuner-card radar-container-box" data-tuner="engagement">
+                    <div class="web-tuner-card__header">
+                        <div class="web-tuner-card__title">
+                            <h3>Engagement Surface</h3>
+                            <p class="web-tuner-card__subtitle">Communication &amp; pacing</p>
+                        </div>
+                        <button class="info-btn info-btn-tuner" data-tuner="engagement" aria-label="Engagement Surface information">ℹ</button>
+                    </div>
+                    <div class="radar-wrapper">
+                        <canvas id="engagementRadarCanvas"></canvas>
+                    </div>
+                    <div class="radar-actions">
+                        <span id="engagement-pending-indicator" class="radar-pending-indicator" aria-live="polite"></span>
+                        <button id="apply-engagement-settings" class="btn btn-primary" disabled>Apply Engagement Changes</button>
+                    </div>
+                </div>
+
+                <div class="web-tuner-card radar-container-box" data-tuner="truth">
+                    <div class="web-tuner-card__header">
+                        <div class="web-tuner-card__title">
+                            <h3>Truth Discipline</h3>
+                            <p class="web-tuner-card__subtitle">Reasoning &amp; validation</p>
+                        </div>
+                        <button class="info-btn info-btn-tuner" data-tuner="truth" aria-label="Truth Discipline information">ℹ</button>
+                    </div>
+                    <div class="radar-wrapper">
+                        <canvas id="truthRadarCanvas"></canvas>
+                    </div>
+                    <div class="radar-actions">
+                        <span id="truth-pending-indicator" class="radar-pending-indicator" aria-live="polite"></span>
+                        <button id="apply-truth-settings" class="btn btn-primary" disabled>Apply Truth Changes</button>
+                    </div>
+                </div>
+
+                <div class="web-tuner-card radar-container-box" data-tuner="delivery">
+                    <div class="web-tuner-card__header">
+                        <div class="web-tuner-card__title">
+                            <h3>Delivery System</h3>
+                            <p class="web-tuner-card__subtitle">Presentation &amp; formatting</p>
+                        </div>
+                        <button class="info-btn info-btn-tuner" data-tuner="delivery" aria-label="Delivery System information">ℹ</button>
+                    </div>
+                    <div class="radar-wrapper">
+                        <canvas id="deliveryRadarCanvas"></canvas>
+                    </div>
+                    <div class="radar-actions">
+                        <span id="delivery-pending-indicator" class="radar-pending-indicator" aria-live="polite"></span>
+                        <button id="apply-delivery-settings" class="btn btn-primary" disabled>Apply Delivery Changes</button>
                     </div>
                 </div>
             </div>
-            
-            <!-- Saved Presets Section -->
-            <div class="saved-presets-header" style="margin-top: 30px;">
-                <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 10px;">Saved Presets</h3>
-                <div id="saved-presets-container" class="preset-buttons-header">
-                    <p class="no-presets-message" style="color: #999; font-style: italic; margin: 0; font-size: 0.9rem;">No saved presets yet. Create one using "Save Preset" button.</p>
+        </section>
+
+        <section class="prompt-section">
+            <div class="prompt-container-box">
+                <h3>Generated Prompt</h3>
+                <div class="prompt-preview" id="prompt-preview">
+                    <p class="placeholder-text">← Start by selecting a model (Step 1)</p>
                 </div>
+                <div class="actions actions-inline">
+                    <button id="copy-prompt" class="btn btn-primary">Copy Prompt</button>
+                    <button id="save-preset" class="btn btn-secondary">Save Preset</button>
+                    <button id="download-json" class="btn btn-secondary">Download Config</button>
+                    <button id="download-markdown" class="btn btn-secondary">Download Doc</button>
+                    <button id="upload-config" class="btn btn-secondary">Upload Config</button>
+                </div>
+                <input type="file" id="file-input" accept=".json" style="display: none;">
             </div>
-        </header>
+        </section>
+
+        <div class="saved-presets-header">
+            <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 10px;">Saved Presets</h3>
+            <div id="saved-presets-container" class="preset-buttons-header">
+                <p class="no-presets-message" style="color: #999; font-style: italic; margin: 0; font-size: 0.9rem;">No saved presets yet. Create one using "Save Preset" button.</p>
+            </div>
+        </div>
 
         <main class="main-layout">
-            <!-- Preview Section (Left Side) -->
-            <div class="preview-section-container">
-                <div class="preview-section">
-                    <!-- Radar Container Box -->
-                    <div class="radar-container-box">
-                        <h3>Live Preview</h3>
-                        <div class="radar-wrapper">
-                            <canvas id="radarCanvas"></canvas>
-                        </div>
-                    </div>
-                    
-                    <!-- Prompt Container Box -->
-                    <div class="prompt-container-box">
-                        <h3>Generated Prompt</h3>
-                        
-                        <!-- Saved Presets Section - Mobile only (hidden on desktop) -->
-                        <div class="saved-presets-header saved-presets-mobile" style="display: none; margin-bottom: 20px;">
-                            <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 10px;">Saved Presets</h3>
-                            <div id="saved-presets-container-mobile" class="preset-buttons-header">
-                                <p class="no-presets-message" style="color: #999; font-style: italic; margin: 0; font-size: 0.9rem;">No saved presets yet. Create one using "Save Preset" button.</p>
-                            </div>
-                        </div>
-                        
-                        <div class="prompt-preview" id="prompt-preview">
-                            <p class="placeholder-text">← Start by selecting a model (Step 1)</p>
-                        </div>
-                        <div class="actions">
-                            <button id="copy-prompt" class="btn btn-primary">Copy Prompt</button>
-                            <button id="save-preset" class="btn btn-secondary">Save Preset</button>
-                            <button id="download-json" class="btn btn-secondary">Download Config</button>
-                            <button id="download-markdown" class="btn btn-secondary">Download Doc</button>
-                            <button id="upload-config" class="btn btn-secondary">Upload Config</button>
-                        </div>
-                        <input type="file" id="file-input" accept=".json" style="display: none;">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Three-Step Workflow (Right Side) -->
             <div class="workflow-container">
                 <!-- Step 1: Choose Model (Trunk) -->
                 <div class="workflow-step step-1">
@@ -239,7 +275,7 @@
     <script src="js/data/v6-models.js?v=3.0.2"></script>
     <script src="js/data/v6-levers.js?v=3.0.2"></script>
     <script src="js/data/v6-personas.js?v=3.0.2"></script>
-    <script src="radar.js?v=3.0.2"></script>
+    <script src="js/radar.js?v=3.0.2"></script>
     <script src="js/core/v6-engine.js?v=3.0.2"></script>
     <script>
         // Force cache refresh on mobile if needed
