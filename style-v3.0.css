@@ -469,23 +469,39 @@
     transition: all 0.2s;
 }
 
-.personality-selector-section select {
+.personality-selector-section select,
+.personality-select {
+    width: 100%;
+    padding: 10px 40px 10px 15px;
+    border: 2px solid #000;
+    border-radius: 4px;
+    background: #fff;
+    color: #000;
+    font-size: 0.95rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+    cursor: pointer;
     transition: all 0.2s;
     appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23000' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 15px center;
-    padding-right: 40px;
+    background-color: #fff;
 }
 
-.personality-selector-section select:hover {
+.personality-selector-section select:hover,
+.personality-select:hover {
     background-color: #f5f5f5;
+    border-color: #333;
 }
 
-.personality-selector-section select:focus {
+.personality-selector-section select:focus,
+.personality-select:focus {
     outline: none;
     border-color: #333;
     box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
 }
 
 /* ============================================
@@ -979,15 +995,27 @@ body.dark-mode .personality-selector-section label {
     color: #d1d1d1 !important;
 }
 
-body.dark-mode .personality-selector-section select {
-    background: #1a1a1a;
-    border-color: #fff;
-    color: #fff;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23fff' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+body.dark-mode .personality-selector-section select,
+body.dark-mode .personality-select {
+    background: #1a1a1a !important;
+    border-color: #fff !important;
+    color: #fff !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23fff' d='M6 9L1 4h10z'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 15px center !important;
+    background-color: #1a1a1a !important;
 }
 
-body.dark-mode .personality-selector-section select:hover {
-    background-color: #2a2a2a;
+body.dark-mode .personality-selector-section select:hover,
+body.dark-mode .personality-select:hover {
+    background-color: #2a2a2a !important;
+    border-color: #fff !important;
+}
+
+body.dark-mode .personality-selector-section select:focus,
+body.dark-mode .personality-select:focus {
+    background-color: #1a1a1a !important;
+    border-color: #fff !important;
 }
 
 body.dark-mode .personality-selector-section .info-btn-step {
