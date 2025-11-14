@@ -231,19 +231,15 @@ function drawRadarV6(levers) {
     const gridColor = isDarkMode ? "#666666" : "#cccccc";
     
     // Map key levers to radar chart dimensions
-    // Select representative levers that show different aspects of AI behavior
-    // Chart.js places labels clockwise starting from top (12 o'clock)
-    // Order: left (9 o'clock) -> clockwise around the chart
-    // For 8 labels: Left=6, Bottom=4, Right=2, Top=0
     const radarLevers = [
-        { key: 'creativity', label: 'Creativity', value: levers.creativity || 5 },                 // 10 chars - top (12 o'clock)
-        { key: 'teachingMode', label: 'Teaching', value: levers.teachingMode || 5 },              // 8 chars - top-right (1:30)
-        { key: 'proactivityLevel', label: 'Proactivity', value: levers.proactivityLevel || 5 },   // 11 chars - right (3 o'clock)
-        { key: 'playfulness', label: 'Playfulness', value: levers.playfulness || 5 },              // 11 chars - bottom-right (4:30)
-        { key: 'conciseness', label: 'Conciseness', value: levers.conciseness || 5 },              // 11 chars - bottom (6 o'clock)
-        { key: 'answerCompleteness', label: 'Completeness', value: levers.answerCompleteness || 5 }, // 12 chars - bottom-left (7:30)
-        { key: 'hedgingIntensity', label: 'Hedging', value: levers.hedgingIntensity || 5 },      // 7 chars - left (9 o'clock) ← SHORTEST
-        { key: 'empathyExpressiveness', label: 'Empathy', value: levers.empathyExpressiveness || 5 } // 7 chars - top-left (10:30)
+        { key: 'creativity', label: 'Creativity', value: levers.creativity || 5 },
+        { key: 'teachingMode', label: 'Teaching', value: levers.teachingMode || 5 },
+        { key: 'proactivityLevel', label: 'Proactivity', value: levers.proactivityLevel || 5 },
+        { key: 'playfulness', label: 'Playfulness', value: levers.playfulness || 5 },
+        { key: 'conciseness', label: 'Conciseness', value: levers.conciseness || 5 },
+        { key: 'answerCompleteness', label: 'Completeness', value: levers.answerCompleteness || 5 },
+        { key: 'hedgingIntensity', label: 'Hedging', value: levers.hedgingIntensity || 5 },
+        { key: 'empathyExpressiveness', label: 'Empathy', value: levers.empathyExpressiveness || 5 }
     ];
     
     const labels = radarLevers.map(l => l.label);
@@ -271,7 +267,6 @@ function drawRadarV6(levers) {
         const containerWidth = container.offsetWidth;
         const containerHeight = container.offsetHeight;
         if (containerWidth > 0 && containerHeight > 0) {
-            // Set explicit dimensions if needed
             if (!canvas.style.width) {
                 canvas.style.width = '100%';
             }
@@ -281,15 +276,12 @@ function drawRadarV6(levers) {
         }
     }
     
-    // Small delay to ensure DOM is stable (especially after DOM moves)
     setTimeout(() => {
-        // Double-check we're not already creating a chart
         if (isCreatingChart) {
             console.warn('Chart creation already in progress (inside setTimeout), skipping...');
             return;
         }
         
-        // Destroy again inside setTimeout in case another chart was created
         if (radarChart) {
             try {
                 radarChart.destroy();
@@ -302,70 +294,71 @@ function drawRadarV6(levers) {
         isCreatingChart = true;
         try {
             radarChart = new Chart(canvas, {
-        type: "radar",
-        data: {
-            labels: labels,
-            datasets: [{
-                label: "Current Settings",
-                data: data,
-                backgroundColor: backgroundColor,
-                borderColor: borderColor,
-                pointBackgroundColor: pointColor,
-                pointBorderColor: borderColor,
-                pointHoverBackgroundColor: pointColor,
-                pointHoverBorderColor: textColor,
-                borderWidth: 2,
-                pointRadius: 5,
-                pointHoverRadius: 7
-            }]
-        },
-        options: {
-            responsive: false, // Disable automatic responsive - we handle it manually
-            maintainAspectRatio: false,
-            resizeDelay: 100,
-            scales: {
-                r: {
-                    beginAtZero: true,
-                    max: 10,
-                    ticks: {
-                        stepSize: 2,
-                        color: textColor,
-                        backdropColor: isDarkMode ? "#1a1a1a" : "#ffffff",
-                        font: {
-                            size: 11
-                        }
-                    },
-                    grid: {
-                        color: gridColor,
-                        lineWidth: 1
-                    },
-                    pointLabels: {
-                        color: textColor,
-                        font: {
-                            size: 12,
-                            weight: '500'
-                        },
-                        padding: 5
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: false
+                type: "radar",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Current Settings",
+                        data: data,
+                        backgroundColor: backgroundColor,
+                        borderColor: borderColor,
+                        pointBackgroundColor: pointColor,
+                        pointBorderColor: borderColor,
+                        pointHoverBackgroundColor: pointColor,
+                        pointHoverBorderColor: textColor,
+                        borderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }]
                 },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            const lever = radarLevers[context.dataIndex];
-                            return `${lever.label}: ${lever.value}/10`;
+                options: {
+                    responsive: false,
+                    maintainAspectRatio: false,
+                    resizeDelay: 100,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 10,
+                            ticks: {
+                                stepSize: 2,
+                                color: textColor,
+                                backdropColor: isDarkMode ? "#1a1a1a" : "#ffffff",
+                                font: {
+                                    size: 11
+                                }
+                            },
+                            grid: {
+                                color: gridColor,
+                                lineWidth: 1
+                            },
+                            pointLabels: {
+                                color: textColor,
+                                font: {
+                                    size: 12,
+                                    weight: '500'
+                                },
+                                padding: 5
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const lever = radarLevers[context.dataIndex];
+                                    return `${lever.label}: ${Math.round(lever.value)}/10`;
+                                }
+                            }
                         }
                     }
                 }
-            }
-        }
             });
             
-            // Force resize after creation (helps with mobile rendering)
+            attachRadarInteractions(canvas, radarChart, radarLevers);
+            
             if (radarChart && typeof radarChart.resize === 'function') {
                 setTimeout(() => {
                     try {
@@ -378,7 +371,6 @@ function drawRadarV6(levers) {
         } catch (e) {
             console.error('Error creating radar chart:', e);
             radarChart = null;
-            // Retry after a delay if there was an error (but only if not already retrying)
             setTimeout(() => {
                 if (!isCreatingChart) {
                     drawRadarV6(levers);
@@ -388,6 +380,141 @@ function drawRadarV6(levers) {
             isCreatingChart = false;
         }
     }, 50);
+}
+
+function cleanupRadarInteractions(canvas) {
+    if (canvas && canvas._radarHandlers) {
+        Object.entries(canvas._radarHandlers).forEach(([evt, handler]) => {
+            canvas.removeEventListener(evt, handler);
+        });
+        canvas._radarHandlers = null;
+    }
+}
+
+function attachRadarInteractions(canvas, chart, radarLevers) {
+    if (!canvas || !chart || !chart.scales || !chart.scales.r) {
+        return;
+    }
+
+    cleanupRadarInteractions(canvas);
+
+    const scale = chart.scales.r;
+    const state = {
+        active: false,
+        index: null,
+        pointerId: null
+    };
+
+    const computeValue = (event) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        const dx = x - scale.xCenter;
+        const dy = y - scale.yCenter;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const raw = scale.min + (distance / (scale.drawingArea || 1)) * (scale.max - scale.min);
+        return Math.max(scale.min, Math.min(scale.max, raw));
+    };
+
+    const applyValue = (index, rawValue) => {
+        const dataset = chart.data.datasets[0];
+        if (!dataset || dataset.data[index] === undefined) return;
+        dataset.data[index] = rawValue;
+        radarLevers[index].value = rawValue;
+        chart.update('none');
+
+        const lever = radarLevers[index];
+        const clamped = Math.round(Math.max(0, Math.min(10, rawValue)));
+        if (window.aiTuner && window.aiTuner.levers) {
+            window.aiTuner.levers[lever.key] = clamped;
+        }
+
+        const slider = document.getElementById(`lever-${lever.key}`);
+        if (slider) {
+            slider.value = clamped;
+        }
+        const valueLabel = document.getElementById(`lever-value-${lever.key}`);
+        if (valueLabel) {
+            valueLabel.textContent = clamped;
+        }
+
+        if (window.aiTuner) {
+            const preview = window.aiTuner.elements?.preview;
+            if (preview) {
+                const placeholder = preview.querySelector?.('.placeholder-text');
+                if (placeholder) {
+                    placeholder.remove();
+                }
+                const promptText = window.aiTuner.buildPrompt?.() ?? '';
+                if (promptText && promptText.trim()) {
+                    preview.textContent = promptText;
+                }
+            }
+        }
+    };
+
+    const finalize = () => {
+        state.active = false;
+        state.index = null;
+        if (window.aiTuner && typeof window.aiTuner.generatePrompt === 'function') {
+            window.requestAnimationFrame(() => window.aiTuner.generatePrompt());
+        }
+        canvas.style.cursor = 'grab';
+    };
+
+    const handlers = {
+        pointerdown: (event) => {
+            const elements = chart.getElementsAtEventForMode(event, 'nearest', { intersect: true }, true);
+            if (!elements.length) return;
+            const element = elements[0];
+            if (element.datasetIndex !== 0) return;
+
+            state.active = true;
+            state.index = element.index;
+            state.pointerId = event.pointerId;
+            try {
+                canvas.setPointerCapture(event.pointerId);
+            } catch (err) {
+                // Ignore pointer capture errors (rare on desktop)
+            }
+            canvas.style.cursor = 'grabbing';
+
+            const value = computeValue(event);
+            applyValue(state.index, value);
+            event.preventDefault();
+        },
+        pointermove: (event) => {
+            if (!state.active) return;
+            const value = computeValue(event);
+            applyValue(state.index, value);
+            event.preventDefault();
+        },
+        pointerup: (event) => {
+            if (!state.active) return;
+            try {
+                canvas.releasePointerCapture(state.pointerId);
+            } catch (err) {
+                // Ignore release errors
+            }
+            finalize();
+            event.preventDefault();
+        },
+        pointercancel: () => {
+            if (!state.active) return;
+            finalize();
+        },
+        pointerleave: () => {
+            if (!state.active) return;
+            finalize();
+        }
+    };
+
+    Object.entries(handlers).forEach(([evt, handler]) => {
+        canvas.addEventListener(evt, handler);
+    });
+
+    canvas._radarHandlers = handlers;
+    canvas.style.cursor = 'grab';
 }
 
 // Redraw radar chart on window resize with debouncing
