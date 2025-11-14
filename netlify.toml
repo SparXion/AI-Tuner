@@ -1,4 +1,4 @@
-# Netlify Configuration for AI Tuner
+# Netlify Configuration for AI Tuner v3.0
 [build]
   # No build step needed - static HTML site
   publish = "."
@@ -9,15 +9,13 @@
   to = "/index.html"
   status = 200
 
+# Legacy v2.0 redirects to archived location
 [[redirects]]
-  from = "/v3"
-  to = "/index-v6.html"
+  from = "/v2.0"
+  to = "/v2.0/index.html"
   status = 200
 
-[[redirects]]
-  from = "/v3.0"
-  to = "/index-v6.html"
-  status = 200
+# v3.0 is now the default (served via root index.html)
 
 # Headers for CORS if needed
 [[headers]]
