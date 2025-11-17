@@ -252,7 +252,7 @@ function drawRadarV6(levers) {
     }
     
     // Destroy existing chart if it exists (synchronously, before setTimeout)
-    if (radarChart) {
+    if (radarChart && typeof radarChart.destroy === 'function') {
         try {
             radarChart.destroy();
         } catch (e) {
@@ -282,7 +282,7 @@ function drawRadarV6(levers) {
             return;
         }
         
-        if (radarChart) {
+        if (radarChart && typeof radarChart.destroy === 'function') {
             try {
                 radarChart.destroy();
             } catch (e) {
@@ -362,7 +362,10 @@ function drawRadarV6(levers) {
             if (radarChart && typeof radarChart.resize === 'function') {
                 setTimeout(() => {
                     try {
-                        radarChart.resize();
+                        // Check if chart is still valid before resizing
+                        if (radarChart && radarChart.canvas && radarChart.canvas.ownerDocument) {
+                            radarChart.resize();
+                        }
                     } catch (e) {
                         console.warn('Error resizing chart:', e);
                     }
@@ -536,7 +539,7 @@ function handleResize() {
             // Check if canvas is in the DOM and visible
             if (!canvas.offsetParent && canvas.offsetWidth === 0 && canvas.offsetHeight === 0) {
                 // Canvas is hidden, destroy chart if it exists
-                if (radarChart) {
+                if (radarChart && typeof radarChart.destroy === 'function') {
                     try {
                         radarChart.destroy();
                     } catch (e) {
@@ -552,11 +555,17 @@ function handleResize() {
             if (radarChart) {
                 try {
                     // Check if chart is still valid (canvas hasn't been removed)
-                    if (radarChart.canvas && radarChart.canvas.ownerDocument) {
+                    if (radarChart && radarChart.canvas && radarChart.canvas.ownerDocument && typeof radarChart.resize === 'function') {
                         radarChart.resize();
                     } else {
                         // Chart is invalid, destroy and recreate
-                        radarChart.destroy();
+                        if (radarChart && typeof radarChart.destroy === 'function') {
+                            try {
+                                radarChart.destroy();
+                            } catch (e2) {
+                                // Ignore destroy errors
+                            }
+                        }
                         radarChart = null;
                         // Redraw if we have data
                         if (window.aiTuner && window.aiTuner.levers && typeof drawRadarV6 === 'function') {
@@ -568,14 +577,14 @@ function handleResize() {
                     // If resize fails, try to redraw
                     if (window.aiTuner && window.aiTuner.levers && typeof drawRadarV6 === 'function') {
                         // Destroy invalid chart first
-                        if (radarChart) {
+                        if (radarChart && typeof radarChart.destroy === 'function') {
                             try {
                                 radarChart.destroy();
                             } catch (e2) {
                                 // Ignore destroy errors
                             }
-                            radarChart = null;
                         }
+                        radarChart = null;
                         drawRadarV6(window.aiTuner.levers);
                     }
                 }

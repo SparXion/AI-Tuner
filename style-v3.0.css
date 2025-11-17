@@ -134,6 +134,35 @@
     font-size: 1.5rem;
     font-weight: 500;
     color: #000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+/* Reset Tuner Button */
+.reset-tuner-btn {
+    margin-left: auto;
+    background: #f5f5f5;
+    border: 1px solid #ccc;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: #666;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.reset-tuner-btn:hover {
+    background: #e8e8e8;
+    border-color: #999;
+    color: #333;
+}
+
+.reset-tuner-btn:active {
+    background: #ddd;
+    transform: scale(0.98);
 }
 
 .step-description {
@@ -915,6 +944,22 @@ body.dark-mode .step-title,
 body.dark-mode .step-title h2,
 body.dark-mode .step-title h2 span {
     color: #fff !important;
+}
+
+body.dark-mode .reset-tuner-btn {
+    background: #333;
+    border-color: #555;
+    color: #ccc;
+}
+
+body.dark-mode .reset-tuner-btn:hover {
+    background: #444;
+    border-color: #666;
+    color: #fff;
+}
+
+body.dark-mode .reset-tuner-btn:active {
+    background: #555;
 }
 
 body.dark-mode .step-description {
