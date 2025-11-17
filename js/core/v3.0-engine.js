@@ -257,7 +257,10 @@ class AITunerV6 {
         control.dataset.lever = lever.key;
 
         const currentValue = this.levers[lever.key] || 5;
-        const range = lever.defaultRange || { min: 0, max: 10 };
+        // Always use full 0-10 range for sliders, regardless of defaultRange
+        // defaultRange is only used for initialization, not slider limits
+        const sliderMin = 0;
+        const sliderMax = 10;
 
         control.innerHTML = `
             <div class="lever-header">
@@ -270,8 +273,8 @@ class AITunerV6 {
                     type="range" 
                     class="lever-slider" 
                     id="lever-${lever.key}"
-                    min="${range.min}" 
-                    max="${range.max}" 
+                    min="${sliderMin}" 
+                    max="${sliderMax}" 
                     value="${currentValue}"
                     step="1"
                 />
@@ -629,6 +632,23 @@ class AITunerV6 {
 
         // Load and render saved presets on initialization
         this.loadAndRenderSavedPresets();
+
+        // Reset buttons
+        const resetModelBtn = document.getElementById('reset-model-btn');
+        if (resetModelBtn) {
+            resetModelBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.resetModel();
+            });
+        }
+
+        const resetPersonaBtn = document.getElementById('reset-persona-btn');
+        if (resetPersonaBtn) {
+            resetPersonaBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.resetPersona();
+            });
+        }
     }
 
     toggleMode() {
@@ -1139,6 +1159,71 @@ class AITunerV6 {
         this.elements.infoTitle.textContent = displayName;
         this.elements.infoContent.innerHTML = content;
         this.elements.infoOverlay.style.display = 'flex';
+    }
+
+    resetModel() {
+        // Clear model selection
+        this.selectedModel = null;
+        
+        // Update UI - remove selected class from all model cards
+        document.querySelectorAll('.model-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        
+        // Reset levers to default values (middle: 5)
+        this.initializeLevers();
+        
+        // Update all sliders to show default value
+        Object.keys(this.levers).forEach(leverKey => {
+            const slider = document.getElementById(`lever-${leverKey}`);
+            if (slider) {
+                slider.value = this.levers[leverKey];
+                const valueLabel = document.getElementById(`lever-value-${leverKey}`);
+                if (valueLabel) {
+                    valueLabel.textContent = this.levers[leverKey];
+                }
+            }
+        });
+        
+        this.generatePrompt();
+    }
+
+    resetPersona() {
+        // Clear persona selection
+        this.selectedPersona = null;
+        
+        // Update UI - remove selected class from all persona cards
+        document.querySelectorAll('.persona-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        
+        // If a model is selected, restore its defaults
+        if (this.selectedModel && window.AI_MODELS_V6[this.selectedModel]) {
+            const defaults = window.AI_MODELS_V6[this.selectedModel].defaults;
+            Object.keys(defaults).forEach(leverKey => {
+                this.levers[leverKey] = defaults[leverKey];
+                const slider = document.getElementById(`lever-${leverKey}`);
+                if (slider) {
+                    slider.value = defaults[leverKey];
+                    document.getElementById(`lever-value-${leverKey}`).textContent = defaults[leverKey];
+                }
+            });
+        } else {
+            // No model selected, reset to middle values
+            this.initializeLevers();
+            Object.keys(this.levers).forEach(leverKey => {
+                const slider = document.getElementById(`lever-${leverKey}`);
+                if (slider) {
+                    slider.value = this.levers[leverKey];
+                    const valueLabel = document.getElementById(`lever-value-${leverKey}`);
+                    if (valueLabel) {
+                        valueLabel.textContent = this.levers[leverKey];
+                    }
+                }
+            });
+        }
+        
+        this.generatePrompt();
     }
 }
 

@@ -41,7 +41,7 @@ window.LEVERS_V6 = {
         description: "How much formatting (tables, bullets, headers) is used",
         low: "Prose - Paragraphs only",
         high: "Tables - Structured sections",
-        defaultRange: { min: 4, max: 10 },
+        defaultRange: { min: 0, max: 10 },
         category: "Formatting & Output"
     },
     formattingMinimalism: {
